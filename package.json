@@ -1,0 +1,55 @@
+{
+	"name": "is-equal",
+	"version": "0.0.0",
+	"description": "Are these two values conceptually equal?",
+	"author": "Jordan Harband",
+	"license": "MIT",
+	"main": "index.js",
+	"scripts": {
+		"test": "node test.js",
+		"coverage": "covert test.js",
+		"coverage-quiet": "covert test.js --quiet"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/ljharb/is-equal.git"
+	},
+	"bugs": {
+		"url": "https://github.com/ljharb/is-equal/issues"
+	},
+	"homepage": "https://github.com/ljharb/is-equal",
+	"keywords": [
+		"equal",
+		"is",
+		"compare",
+		"comparison",
+		"equality"
+	],
+	"dependencies": {},
+	"devDependencies": {
+		"tape": "~2.3.2",
+		"covert": "~0.3.0"
+	},
+	"testling": {
+		"files": "test.js",
+		"browsers": [
+			"iexplore/6.0..latest",
+			"firefox/3.0..6.0",
+			"firefox/15.0..latest",
+			"firefox/nightly",
+			"chrome/4.0..10.0",
+			"chrome/20.0..latest",
+			"chrome/canary",
+			"opera/10.0..latest",
+			"opera/next",
+			"safari/4.0..latest",
+			"ipad/6.0..latest",
+			"iphone/6.0..latest",
+			"android-browser/4.2"
+		]
+	},
+	"engines": {
+		"node": ">= 0.4"
+	}
+}
+

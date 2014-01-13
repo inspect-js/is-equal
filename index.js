@@ -44,6 +44,7 @@ module.exports = function isEqual(value, other) {
 
 	if (type === arrayType) {
 		if (value.length !== other.length) { return false; }
+		if (String(value) !== String(other)) { return false; }
 
 		var index = value.length;
 		do {

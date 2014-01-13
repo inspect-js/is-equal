@@ -98,8 +98,11 @@ test('functions', function (t) {
 	var anon1 = function () { /* ANONYMOUS! */ };
 	var anon2 = function () { /* ANONYMOUS! */ };
 
+	var anon1withArg = function (a) { /* ANONYMOUS! */ };
+
 	t.ok(isEqual(f1, f1), 'same function is equal to itself');
 	t.ok(isEqual(anon1, anon1), 'same anon function is equal to itself');
+	t.notOk(isEqual(anon1, anon1withArg), 'similar anon function with different lengths are not equal');
 
 	t.notOk(isEqual(f1, g), 'functions with different names but same implementations are not equal');
 	t.ok(isEqual(f1, f2), 'functions with same names but same implementations are equal');

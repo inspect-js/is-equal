@@ -54,7 +54,10 @@ module.exports = function isEqual(value, other) {
 	}
 
 	if (type === funcType) {
-		return isEqual(value.name, other.name) && isEqual(String(value), String(other));
+		if (!isEqual(value.name, other.name)) { return false; }
+		if (!isEqual(value.length, other.length)) { return false; }
+
+		return isEqual(String(value), String(other));
 	}
 
 	if (type === objType) {

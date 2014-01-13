@@ -3,6 +3,29 @@
 var toString = Object.prototype.toString;
 var has = Object.prototype.hasOwnProperty;
 
+var getPrototypeOf = Object.getPrototypeOf;
+if (!getPrototypeOf) {
+	if (typeof this.__proto__ === "object") {
+		getPrototypeOf = function (obj) {
+			return obj.__proto__;
+		};
+	} else {
+		getPrototypeOf = function (obj) {
+			var constructor = obj.constructor,
+				oldConstructor;
+			if (has.call(obj, 'constructor')) {
+				oldConstructor = constructor;
+				if (!(delete obj.constructor)) { // reset constructor
+					return null; // can't delete obj.constructor, return null
+				}
+				constructor = obj.constructor; // get real constructor
+				obj.constructor = oldConstructor; // restore constructor
+			}
+			return constructor ? constructor.prototype : null; // needed for IE
+		};
+	}
+}
+
 var dateType = '[object Date]';
 var regexType = '[object RegExp]';
 var arrayType = '[object Array]';
@@ -34,7 +57,7 @@ module.exports = function isEqual(value, other) {
 	}
 
 	if (type === objType) {
-		if (Object.getPrototypeOf(value) !== Object.getPrototypeOf(other)) { return false; }
+		if (getPrototypeOf(value) !== getPrototypeOf(other)) { return false; }
 		var key;
 		for (key in value) {
 			if (has.call(value, key)) {

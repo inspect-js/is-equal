@@ -5,7 +5,7 @@ var has = Object.prototype.hasOwnProperty;
 
 var getPrototypeOf = Object.getPrototypeOf;
 if (!getPrototypeOf) {
-	if (typeof this.__proto__ === "object") {
+	if (typeof ({}).__proto__ === "object") {
 		getPrototypeOf = function (obj) {
 			return obj.__proto__;
 		};

@@ -91,12 +91,21 @@ test('objects', function (t) {
 });
 
 test('functions', function (t) {
-	var f1 = function f() { /* SOME STUFF */ };
-	var f2 = function f() { /* SOME STUFF */ };
-	var f3 = function f() { /* SOME DIFFERENT STUFF */ };
-	var g = function g() { /* SOME STUFF */};
-	var anon1 = function () { /* ANONYMOUS! */ };
-	var anon2 = function () { /* ANONYMOUS! */ };
+	var f1 = function f() { /* SOME STUFF */ return 1; };
+	var f2 = function f() { /* SOME STUFF */ return 1; };
+	var f3 = function f() { /* SOME DIFFERENT STUFF */ return 2; };
+	var g = function g() { /* SOME STUFF */ return 1; };
+	var anon1 = function () { /* ANONYMOUS! */ return 'anon'; };
+	var anon2 = function () { /* ANONYMOUS! */ return 'anon'; };
+
+	/* for code coverage */
+	f1();
+	f2();
+	f3();
+	g();
+	anon1();
+	anon2();
+	/* end for code coverage */
 
 	var anon1withArg = function (a) { /* ANONYMOUS! */ };
 

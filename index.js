@@ -1,7 +1,8 @@
 "use strict";
 
-var toString = Object.prototype.toString;
-var has = Object.prototype.hasOwnProperty;
+var ObjectPrototype = Object.prototype;
+var toString = ObjectPrototype.toString;
+var has = ObjectPrototype.hasOwnProperty;
 
 var getPrototypeOf = Object.getPrototypeOf;
 if (!getPrototypeOf) {
@@ -21,7 +22,7 @@ if (!getPrototypeOf) {
 				constructor = obj.constructor; // get real constructor
 				obj.constructor = oldConstructor; // restore constructor
 			}
-			return constructor ? constructor.prototype : null; // needed for IE
+			return constructor ? constructor.prototype : ObjectPrototype; // needed for IE
 		};
 	}
 }

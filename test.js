@@ -67,7 +67,9 @@ test('objects', function (t) {
 		st.notOk(isEqual(f1, i1), 'two instances of different things with a different prototype are not equal');
 
 		var isParentEqualToChild = isEqual(f1, g1);
-		// st.notOk(isParentEqualToChild, 'two instances of a parent and child are not equal');
+		st.notOk(isParentEqualToChild, 'two instances of a parent and child are not equal');
+		var isChildEqualToParent = isEqual(g1, f1);
+		st.notOk(isChildEqualToParent, 'two instances of a child and parent are not equal');
 
 		g1.foo = 'bar';
 		var g2 = new G();

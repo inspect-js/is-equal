@@ -27,6 +27,9 @@ if (!getPrototypeOf) {
 	}
 }
 
+var boolType = '[object Boolean]';
+var numberType = '[object Number]';
+var stringType = '[object String]';
 var dateType = '[object Date]';
 var regexType = '[object RegExp]';
 var arrayType = '[object Array]';
@@ -38,6 +41,14 @@ module.exports = function isEqual(value, other) {
 
 	var type = toString.call(value);
 	if (type !== toString.call(other)) { return false; }
+
+	if (type === boolType) { return value.valueOf() === other.valueOf(); }
+
+	if (type === numberType) {
+		return (Number(value) === Number(other)) || (isNaN(value) && isNaN(other));
+	}
+
+	if (type === stringType) { return String(value) === String(other); }
 
 	if (type === dateType) { return value.getTime() === other.getTime(); }
 

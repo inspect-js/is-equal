@@ -11,6 +11,21 @@ test('primitives', function (t) {
 	t.ok(isEqual('foo', 'foo'), 'strings are equal');
 	t.ok(isEqual(42, 42), 'numbers are equal');
 	t.ok(isEqual(0 / Infinity, -0 / Infinity), 'opposite sign zeroes are equal');
+	t.ok(isEqual(Infinity, Infinity), 'infinities are equal');
+	t.end();
+});
+
+test('NaN', function (t) {
+	t.ok(isEqual(NaN, NaN), 'NaNs are equal');
+	t.end();
+});
+
+test('boxed primitives', function (t) {
+	t.ok(isEqual(new String(''), ''), 'Empty String and empty string are equal');
+	t.ok(isEqual(new String('foo'), 'foo'), 'String and string are equal');
+	t.ok(isEqual(new Boolean(true), true), 'Boolean true and boolean true are equal');
+	t.ok(isEqual(new Boolean(false), false), 'Boolean false and boolean false are equal');
+	t.ok(isEqual(new Number(42), 42), 'Number and number literal are equal');
 	t.end();
 });
 

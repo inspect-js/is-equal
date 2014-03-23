@@ -66,6 +66,7 @@ test('objects', function (t) {
 		};
 		var G = function G() {};
 		G.prototype = new F();
+		G.prototype.constructor = G;
 		var H = function H() {};
 		H.prototype = G.prototype;
 		var I = function I() {};

@@ -73,7 +73,7 @@ module.exports = function isEqual(value, other) {
 	}
 
 	if (type === objType) {
-        if (value.isPrototypeOf(other) || other.isPrototypeOf(value)) { return false; }
+		if (value.isPrototypeOf(other) || other.isPrototypeOf(value)) { return false; }
 		if (getPrototypeOf(value) !== getPrototypeOf(other)) { return false; }
 		var key;
 		for (key in value) {

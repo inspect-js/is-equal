@@ -6,9 +6,9 @@ var has = ObjectPrototype.hasOwnProperty;
 
 var getPrototypeOf = Object.getPrototypeOf;
 if (!getPrototypeOf) {
-	if (typeof ({}).__proto__ === "object") {
+	if (typeof 'test'['__proto__'] === "object") {
 		getPrototypeOf = function (obj) {
-			return obj.__proto__;
+			return obj['__proto__'];
 		};
 	} else {
 		getPrototypeOf = function (obj) {

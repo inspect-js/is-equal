@@ -61,7 +61,7 @@ module.exports = function isEqual(value, other) {
 		var index = value.length;
 		do {
 			--index;
-		} while (index > 0 && index in value && index in other && isEqual(value[index], other[index]));
+		} while (index > 0 && has.call(value, index) && has.call(other, index) && isEqual(value[index], other[index]));
 		return index <= 0;
 	}
 
@@ -78,13 +78,13 @@ module.exports = function isEqual(value, other) {
 		var key;
 		for (key in value) {
 			if (has.call(value, key)) {
-				if (!(key in other)) { return false; }
+				if (!has.call(other, key)) { return false; }
 				if (!isEqual(value[key], other[key])) { return false; }
 			}
 		}
 		for (key in other) {
 			if (has.call(other, key)) {
-				if (!(key in value)) { return false; }
+				if (!has.call(value, key)) { return false; }
 				if (!isEqual(other[key], value[key])) { return false; }
 			}
 		}

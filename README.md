@@ -31,11 +31,11 @@ Simply clone the repo, `npm install`, and run `npm test`
 
 [1]: https://npmjs.org/package/is-equal
 [2]: http://vb.teelaun.ch/ljharb/is-equal.svg
-[3]: https://travis-ci.org/ljharb/is-equal.png
+[3]: https://travis-ci.org/ljharb/is-equal.svg
 [4]: https://travis-ci.org/ljharb/is-equal
-[5]: https://david-dm.org/ljharb/is-equal.png
+[5]: https://david-dm.org/ljharb/is-equal.svg
 [6]: https://david-dm.org/ljharb/is-equal
-[7]: https://david-dm.org/ljharb/is-equal/dev-status.png
+[7]: https://david-dm.org/ljharb/is-equal/dev-status.svg
 [8]: https://david-dm.org/ljharb/is-equal#info=devDependencies
 [9]: https://ci.testling.com/ljharb/is-equal.png
 [10]: https://ci.testling.com/ljharb/is-equal

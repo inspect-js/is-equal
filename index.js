@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var ObjectPrototype = Object.prototype;
 var toString = ObjectPrototype.toString;
@@ -6,7 +6,7 @@ var has = ObjectPrototype.hasOwnProperty;
 
 var getPrototypeOf = Object.getPrototypeOf;
 if (!getPrototypeOf) {
-	if (typeof 'test'['__proto__'] === "object") {
+	if (typeof 'test'['__proto__'] === 'object') {
 		getPrototypeOf = function (obj) {
 			return obj['__proto__'];
 		};

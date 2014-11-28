@@ -141,3 +141,13 @@ test('functions', function (t) {
 	t.end();
 });
 
+test('symbols', { skip: typeof Symbol !== 'function' }, function (t) {
+	var foo = 'foo';
+	var fooSym = Symbol(foo);
+	t.ok(isEqual(fooSym, fooSym), 'Symbol("foo") is equal to itself');
+	t.ok(isEqual(String(fooSym), String(Symbol(foo))), 'Symbol("foo") stringifies the same even for different instances');
+	t.notOk(isEqual(Symbol(foo), Symbol(foo)), 'Symbol("foo") is not equal to Symbol("foo"), even when the string is the same instance');
+
+	t.end();
+});
+

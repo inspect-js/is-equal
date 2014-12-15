@@ -3,6 +3,11 @@
 var test = require('tape');
 var isEqual = require('./');
 
+var forEach = require('foreach');
+var copyFunction = function (fn) {
+	return Function('return ' + String(fn))();
+};
+
 test('primitives', function (t) {
 	t.ok(isEqual(), 'undefineds are equal');
 	t.ok(isEqual(null, null), 'nulls are equal');

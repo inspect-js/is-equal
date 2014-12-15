@@ -30,7 +30,8 @@
 	"devDependencies": {
 		"tape": "~3.0.3",
 		"covert": "1.0.0",
-		"jscs": "~1.8.1"
+		"jscs": "~1.8.1",
+		"foreach": "~2.0.5"
 	},
 	"testling": {
 		"files": "test.js",

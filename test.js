@@ -3,6 +3,8 @@
 var test = require('tape');
 var isEqual = require('./');
 var hasGeneratorSupport = typeof require('make-generator-function') === 'function';
+var arrowFunctions = require('make-arrow-function').list();
+var hasArrowFunctionSupport = arrowFunctions.length > 0;
 
 var forEach = require('foreach');
 var copyFunction = function (fn) {
@@ -157,6 +159,15 @@ test('functions', function (t) {
 		forEach(generators, function (generator) {
 			st.ok(isEqual(generator, generator), generator + ' is equal to itself');
 			st.ok(isEqual(generator, copyFunction(generator)), generator + ' is equal to copyFunction(generator)');
+		});
+		st.end();
+	});
+
+	t.test('arrow functions', { skip: !hasArrowFunctionSupport }, function (st) {
+		forEach(arrowFunctions, function (fn) {
+			st.notOk(isEqual(fnNoSpace, fn), fn + ' not equal to ' + fnNoSpace);
+			st.ok(isEqual(fn, fn), fn + ' equal to itself');
+			st.ok(isEqual(fn, copyFunction(fn)), fn + ' equal to copyFunction(fn)');
 		});
 		st.end();
 	});

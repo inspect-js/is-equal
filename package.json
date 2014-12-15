@@ -27,6 +27,7 @@
 		"equality"
 	],
 	"dependencies": {
+		"is-arrow-function": "~2.0.0",
 		"is-generator-function": "~1.0.0"
 	},
 	"devDependencies": {
@@ -34,6 +35,7 @@
 		"covert": "1.0.0",
 		"jscs": "~1.8.1",
 		"foreach": "~2.0.5",
+		"make-arrow-function": "~1.0.0",
 		"make-generator-function": "~1.0.0"
 	},
 	"testling": {

@@ -79,7 +79,14 @@ module.exports = function isEqual(value, other) {
 		var otherIsArrow = isArrowFunction(other);
 		if (valueIsArrow !== otherIsArrow) { return false; }
 
-		return isEqual(String(value), String(other));
+		var valueStr = String(value);
+		var otherStr = String(other);
+		if (isEqual(valueStr, otherStr)) { return true; }
+
+		if (!valueIsGen && !valueIsArrow) {
+			return isEqual(valueStr.replace(/\)\s*\{/, '){'), otherStr.replace(/\)\s*\{/, '){'));
+		}
+		return isEqual(valueStr, otherStr);;
 	}
 
 	if (type === objType) {

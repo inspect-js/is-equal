@@ -128,6 +128,9 @@ test('functions', function (t) {
 	/* jscs: disable */
 	var fnNoSpace = function(){};
 	/* jscs: enable */
+	var fnWithSpaceBeforeBody = function () {};
+	var emptyFnWithName = function a() {};
+	var emptyFnOneArg = function (a) {};
 
 	/* for code coverage */
 	f1();
@@ -148,6 +151,10 @@ test('functions', function (t) {
 	t.ok(isEqual(f1, f2), 'functions with same names but same implementations are equal');
 	t.notOk(isEqual(f1, f3), 'functions with same names but different implementations are not equal');
 	t.ok(isEqual(anon1, anon2), 'anon functions with same implementations are equal');
+
+	t.ok(isEqual(fnNoSpace, fnWithSpaceBeforeBody), 'functions with same arity/name/body are equal despite whitespace between signature and body');
+	t.notOk(isEqual(emptyFnWithName, fnNoSpace), 'functions with same arity/body, diff name, are not equal');
+	t.notOk(isEqual(emptyFnOneArg, fnNoSpace), 'functions with same name/body, diff arity, are not equal');
 
 	t.test('generators', { skip: !hasGeneratorSupport }, function (st) {
 		var genFnStar = Function('return function* () {};')();

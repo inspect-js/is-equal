@@ -2,6 +2,7 @@
 
 var test = require('tape');
 var isEqual = require('./');
+var hasGeneratorSupport = typeof require('make-generator-function') === 'function';
 
 var forEach = require('foreach');
 var copyFunction = function (fn) {
@@ -122,6 +123,9 @@ test('functions', function (t) {
 	var g = function g() { /* SOME STUFF */ return 1; };
 	var anon1 = function () { /* ANONYMOUS! */ return 'anon'; };
 	var anon2 = function () { /* ANONYMOUS! */ return 'anon'; };
+	/* jscs: disable */
+	var fnNoSpace = function(){};
+	/* jscs: enable */
 
 	/* for code coverage */
 	f1();
@@ -142,6 +146,20 @@ test('functions', function (t) {
 	t.ok(isEqual(f1, f2), 'functions with same names but same implementations are equal');
 	t.notOk(isEqual(f1, f3), 'functions with same names but different implementations are not equal');
 	t.ok(isEqual(anon1, anon2), 'anon functions with same implementations are equal');
+
+	t.test('generators', { skip: !hasGeneratorSupport }, function (st) {
+		var genFnStar = Function('return function* () {};')();
+		var genFnSpaceStar = Function('return function *() {};')();
+		var genNoSpaces = Function('return function*(){};')();
+		st.notOk(isEqual(fnNoSpace, genNoSpaces), 'generator and fn that are otherwise identical are not equal');
+
+		var generators = [genFnStar, genFnSpaceStar, genNoSpaces];
+		forEach(generators, function (generator) {
+			st.ok(isEqual(generator, generator), generator + ' is equal to itself');
+			st.ok(isEqual(generator, copyFunction(generator)), generator + ' is equal to copyFunction(generator)');
+		});
+		st.end();
+	});
 
 	t.end();
 });

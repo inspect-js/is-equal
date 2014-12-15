@@ -3,6 +3,7 @@
 var ObjectPrototype = Object.prototype;
 var toString = ObjectPrototype.toString;
 var has = ObjectPrototype.hasOwnProperty;
+var isGenerator = require('is-generator-function');
 
 var getPrototypeOf = Object.getPrototypeOf;
 if (!getPrototypeOf) {
@@ -68,6 +69,10 @@ module.exports = function isEqual(value, other) {
 	if (type === funcType) {
 		if (!isEqual(value.name, other.name)) { return false; }
 		if (!isEqual(value.length, other.length)) { return false; }
+
+		var valueIsGen = isGenerator(value);
+		var otherIsGen = isGenerator(other);
+		if (valueIsGen !== otherIsGen) { return false; }
 
 		return isEqual(String(value), String(other));
 	}

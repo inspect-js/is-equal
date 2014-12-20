@@ -27,8 +27,8 @@
 		"equality"
 	],
 	"dependencies": {
-		"is-arrow-function": "~2.0.0",
-		"is-generator-function": "~1.0.0"
+		"is-arrow-function": "~2.0.1",
+		"is-generator-function": "~1.0.1"
 	},
 	"devDependencies": {
 		"tape": "~3.0.3",

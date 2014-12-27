@@ -33,7 +33,7 @@
 	"devDependencies": {
 		"tape": "~3.0.3",
 		"covert": "1.0.0",
-		"jscs": "~1.8.1",
+		"jscs": "~1.9.0",
 		"foreach": "~2.0.5",
 		"make-arrow-function": "~1.0.0",
 		"make-generator-function": "~1.0.0"

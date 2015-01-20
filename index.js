@@ -36,7 +36,12 @@ var dateType = '[object Date]';
 var regexType = '[object RegExp]';
 var arrayType = '[object Array]';
 var funcType = '[object Function]';
+var v8GeneratorFuncType = '[object GeneratorFunction]';
 var objType = '[object Object]';
+
+var isFunction = function (type) {
+	return type === funcType || type === v8GeneratorFuncType;
+};
 
 module.exports = function isEqual(value, other) {
 	if (value === other) { return true; }
@@ -67,7 +72,7 @@ module.exports = function isEqual(value, other) {
 		return index <= 0;
 	}
 
-	if (type === funcType) {
+	if (isFunction(type)) {
 		if (!isEqual(value.name, other.name)) { return false; }
 		if (!isEqual(value.length, other.length)) { return false; }
 

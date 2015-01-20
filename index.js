@@ -1,7 +1,7 @@
 'use strict';
 
 var ObjectPrototype = Object.prototype;
-var toString = ObjectPrototype.toString;
+var toStr = ObjectPrototype.toString;
 var has = ObjectPrototype.hasOwnProperty;
 var isGenerator = require('is-generator-function');
 var isArrowFunction = require('is-arrow-function');
@@ -41,8 +41,8 @@ var objType = '[object Object]';
 module.exports = function isEqual(value, other) {
 	if (value === other) { return true; }
 
-	var type = toString.call(value);
-	if (type !== toString.call(other)) { return false; }
+	var type = toStr.call(value);
+	if (type !== toStr.call(other)) { return false; }
 
 	if (type === boolType) { return value.valueOf() === other.valueOf(); }
 

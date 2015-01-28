@@ -66,6 +66,7 @@ var isFunction = function (value) {
 
 module.exports = function isEqual(value, other) {
 	if (value === other) { return true; }
+	if (value == null || other == null) { return value === other; }
 
 	var type = toStr.call(value);
 	if (type !== toStr.call(other)) { return false; }

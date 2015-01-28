@@ -42,7 +42,16 @@ var isBoolean = function isBoolean(value) {
 		return false;
 	}
 };
-var stringType = '[object String]';
+
+var strToStr = String.prototype.valueOf;
+var isString = function isString(value) {
+	try {
+		strToStr.call(value);
+		return true;
+	} catch (e) {
+		return false;
+	}
+};
 var arrayType = '[object Array]';
 var objType = '[object Object]';
 
@@ -73,7 +82,11 @@ module.exports = function isEqual(value, other) {
 		return valIsNumber && otherIsNumber && (Number(value) === Number(other) || (isNaN(value) && isNaN(other)));
 	}
 
-	if (type === stringType) { return String(value) === String(other); }
+	var valIsString = isString(value);
+	var otherIsString = isString(other);
+	if (valIsString || otherIsString) {
+		return valIsString && otherIsString && String(value) === String(other);
+	}
 
 	var valIsDate = isDate(value);
 	var otherIsDate = isDate(other);

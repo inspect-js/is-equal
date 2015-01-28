@@ -53,7 +53,6 @@ var isString = function isString(value) {
 	}
 };
 var arrayType = '[object Array]';
-var objType = '[object Object]';
 
 var isFunction = function (value) {
 	try {
@@ -134,7 +133,8 @@ module.exports = function isEqual(value, other) {
 		return isEqual(valueStr, otherStr);;
 	}
 
-	if (type === objType) {
+	if (typeof value === 'object' || typeof other === 'object') {
+		if (typeof value !== typeof other) { return false; }
 		if (value.isPrototypeOf(other) || other.isPrototypeOf(value)) { return false; }
 		if (getPrototypeOf(value) !== getPrototypeOf(other)) { return false; }
 		var key;

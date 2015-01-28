@@ -1,3 +1,7 @@
+1.2.0 / 2015-01-28
+=================
+  * Remove most `Object#toString` checks, to prepare for an ES6 @@toStringTag world where they aren’t reliable.
+
 1.1.1 / 2015-01-20
 =================
   * Fix generator function detection in newer v8 / io.js

@@ -2,6 +2,7 @@
 
 var ObjectPrototype = Object.prototype;
 var toStr = ObjectPrototype.toString;
+var fnToStr = Function.prototype.toString;
 var has = ObjectPrototype.hasOwnProperty;
 var isArrowFunction = require('is-arrow-function');
 var isDate = require('is-date-object');
@@ -43,12 +44,15 @@ var isBoolean = function isBoolean(value) {
 };
 var stringType = '[object String]';
 var arrayType = '[object Array]';
-var funcType = '[object Function]';
-var v8GeneratorFuncType = '[object GeneratorFunction]';
 var objType = '[object Object]';
 
-var isFunction = function (type) {
-	return type === funcType || type === v8GeneratorFuncType;
+var isFunction = function (value) {
+	try {
+		fnToStr.call(value);
+		return true;
+	} catch (e) {
+		return false;
+	}
 };
 
 module.exports = function isEqual(value, other) {
@@ -94,17 +98,17 @@ module.exports = function isEqual(value, other) {
 		return index <= 0;
 	}
 
-	if (isFunction(type)) {
+	var valueIsGen = isGenerator(value);
+	var otherIsGen = isGenerator(other);
+	if (valueIsGen !== otherIsGen) { return false; }
+
+	var valueIsArrow = isArrowFunction(value);
+	var otherIsArrow = isArrowFunction(other);
+	if (valueIsArrow !== otherIsArrow) { return false; }
+
+	if (isFunction(value) || isFunction(other)) {
 		if (!isEqual(value.name, other.name)) { return false; }
 		if (!isEqual(value.length, other.length)) { return false; }
-
-		var valueIsGen = isGenerator(value);
-		var otherIsGen = isGenerator(other);
-		if (valueIsGen !== otherIsGen) { return false; }
-
-		var valueIsArrow = isArrowFunction(value);
-		var otherIsArrow = isArrowFunction(other);
-		if (valueIsArrow !== otherIsArrow) { return false; }
 
 		var valueStr = String(value);
 		var otherStr = String(other);

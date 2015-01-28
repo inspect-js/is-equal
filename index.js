@@ -32,7 +32,15 @@ if (!getPrototypeOf) {
 	}
 }
 
-var boolType = '[object Boolean]';
+var booleanValue = Boolean.prototype.valueOf;
+var isBoolean = function isBoolean(value) {
+	try {
+		booleanValue.call(value);
+		return true;
+	} catch (e) {
+		return false;
+	}
+};
 var stringType = '[object String]';
 var arrayType = '[object Array]';
 var funcType = '[object Function]';
@@ -49,7 +57,11 @@ module.exports = function isEqual(value, other) {
 	var type = toStr.call(value);
 	if (type !== toStr.call(other)) { return false; }
 
-	if (type === boolType) { return value.valueOf() === other.valueOf(); }
+	var valIsBool = isBoolean(value);
+	var otherIsBool = isBoolean(other);
+	if (valIsBool || otherIsBool) {
+		return valIsBool && otherIsBool && booleanValue.call(value) === booleanValue.call(other);
+	}
 
 	var valIsNumber = isNumber(value);
 	var otherIsNumber = isNumber(value);

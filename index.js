@@ -52,8 +52,6 @@ var isString = function isString(value) {
 		return false;
 	}
 };
-var arrayType = '[object Array]';
-
 var isFunction = function (value) {
 	try {
 		fnToStr.call(value);
@@ -63,12 +61,15 @@ var isFunction = function (value) {
 	}
 };
 
+var isArray = Array.isArray || function (value) {
+	return toStr.call(value) === '[object Array]';
+};
+
 module.exports = function isEqual(value, other) {
 	if (value === other) { return true; }
 	if (value == null || other == null) { return value === other; }
 
-	var type = toStr.call(value);
-	if (type !== toStr.call(other)) { return false; }
+	if (toStr.call(value) !== toStr.call(other)) { return false; }
 
 	var valIsBool = isBoolean(value);
 	var otherIsBool = isBoolean(other);
@@ -100,7 +101,10 @@ module.exports = function isEqual(value, other) {
 		return valIsRegex && otherIsRegex && String(value) === String(other);
 	}
 
-	if (type === arrayType) {
+	var valIsArray = isArray(value);
+	var otherIsArray = isArray(other);
+	if (valIsArray || otherIsArray) {
+		if (!valIsArray || !otherIsArray) { return false; }
 		if (value.length !== other.length) { return false; }
 		if (String(value) !== String(other)) { return false; }
 

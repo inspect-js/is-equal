@@ -3,8 +3,11 @@
 var ObjectPrototype = Object.prototype;
 var toStr = ObjectPrototype.toString;
 var has = ObjectPrototype.hasOwnProperty;
-var isGenerator = require('is-generator-function');
 var isArrowFunction = require('is-arrow-function');
+var isDate = require('is-date-object');
+var isGenerator = require('is-generator-function');
+var isNumber = require('is-number-object');
+var isRegex = require('is-regex');
 
 var getPrototypeOf = Object.getPrototypeOf;
 if (!getPrototypeOf) {
@@ -30,10 +33,7 @@ if (!getPrototypeOf) {
 }
 
 var boolType = '[object Boolean]';
-var numberType = '[object Number]';
 var stringType = '[object String]';
-var dateType = '[object Date]';
-var regexType = '[object RegExp]';
 var arrayType = '[object Array]';
 var funcType = '[object Function]';
 var v8GeneratorFuncType = '[object GeneratorFunction]';
@@ -51,15 +51,25 @@ module.exports = function isEqual(value, other) {
 
 	if (type === boolType) { return value.valueOf() === other.valueOf(); }
 
-	if (type === numberType) {
-		return (Number(value) === Number(other)) || (isNaN(value) && isNaN(other));
+	var valIsNumber = isNumber(value);
+	var otherIsNumber = isNumber(value);
+	if (valIsNumber || otherIsNumber) {
+		return valIsNumber && otherIsNumber && (Number(value) === Number(other) || (isNaN(value) && isNaN(other)));
 	}
 
 	if (type === stringType) { return String(value) === String(other); }
 
-	if (type === dateType) { return value.getTime() === other.getTime(); }
+	var valIsDate = isDate(value);
+	var otherIsDate = isDate(other);
+	if (valIsDate || otherIsDate) {
+		return valIsDate && otherIsDate && +value === +other;
+	}
 
-	if (type === regexType) { return String(value) === String(other); }
+	var valIsRegex = isRegex(value);
+	var otherIsRegex = isRegex(other);
+	if (valIsRegex || otherIsRegex) {
+		return valIsRegex && otherIsRegex && String(value) === String(other);
+	}
 
 	if (type === arrayType) {
 		if (value.length !== other.length) { return false; }

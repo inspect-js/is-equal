@@ -1,3 +1,7 @@
+1.2.1 / 2015-01-29
+=================
+  * Use `is-string` and `is-callable` modules.
+
 1.2.0 / 2015-01-28
 =================
   * Remove most `Object#toString` checks, to prepare for an ES6 @@toStringTag world where they aren’t reliable.

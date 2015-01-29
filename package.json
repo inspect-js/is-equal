@@ -27,13 +27,13 @@
 		"equality"
 	],
 	"dependencies": {
-		"is-arrow-function": "~2.0.1",
-		"is-callable": "~1.0.0",
+		"is-arrow-function": "~2.0.2",
+		"is-callable": "~1.0.3",
 		"is-date-object": "~1.0.0",
 		"is-generator-function": "~1.0.2",
-		"is-number-object": "~1.0.0",
+		"is-number-object": "~1.0.2",
 		"is-regex": "~1.0.1",
-		"is-string": "~1.0.0"
+		"is-string": "~1.0.2"
 	},
 	"devDependencies": {
 		"tape": "~3.4.0",

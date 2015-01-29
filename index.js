@@ -2,13 +2,14 @@
 
 var ObjectPrototype = Object.prototype;
 var toStr = ObjectPrototype.toString;
-var fnToStr = Function.prototype.toString;
 var has = ObjectPrototype.hasOwnProperty;
 var isArrowFunction = require('is-arrow-function');
 var isDate = require('is-date-object');
 var isGenerator = require('is-generator-function');
 var isNumber = require('is-number-object');
 var isRegex = require('is-regex');
+var isString = require('is-string');
+var isCallable = require('is-callable');
 
 var getPrototypeOf = Object.getPrototypeOf;
 if (!getPrototypeOf) {
@@ -37,24 +38,6 @@ var booleanValue = Boolean.prototype.valueOf;
 var isBoolean = function isBoolean(value) {
 	try {
 		booleanValue.call(value);
-		return true;
-	} catch (e) {
-		return false;
-	}
-};
-
-var strToStr = String.prototype.valueOf;
-var isString = function isString(value) {
-	try {
-		strToStr.call(value);
-		return true;
-	} catch (e) {
-		return false;
-	}
-};
-var isFunction = function (value) {
-	try {
-		fnToStr.call(value);
 		return true;
 	} catch (e) {
 		return false;
@@ -123,7 +106,7 @@ module.exports = function isEqual(value, other) {
 	var otherIsArrow = isArrowFunction(other);
 	if (valueIsArrow !== otherIsArrow) { return false; }
 
-	if (isFunction(value) || isFunction(other)) {
+	if (isCallable(value) || isCallable(other)) {
 		if (!isEqual(value.name, other.name)) { return false; }
 		if (!isEqual(value.length, other.length)) { return false; }
 

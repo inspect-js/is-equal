@@ -1,3 +1,7 @@
+1.2.2 / 2015-01-29
+=================
+  * Update `is-arrow-function`, `is-callable`, `is-number-object`, `is-string`
+
 1.2.1 / 2015-01-29
 =================
   * Use `is-string` and `is-callable` modules.

@@ -1,3 +1,8 @@
+1.2.3 / 2015-02-06
+=================
+  * Update `is-callable`, `is-number-object`, `is-string`, `is-generator-function`, `tape`, `jscs`
+  * Run `travis-ci` tests on `iojs` and `node` v0.12; speed up builds; allow 0.8 failures.
+
 1.2.2 / 2015-01-29
 =================
   * Update `is-arrow-function`, `is-callable`, `is-number-object`, `is-string`

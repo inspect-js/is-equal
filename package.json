@@ -42,7 +42,7 @@
 		"foreach": "^2.0.5",
 		"make-arrow-function": "^1.0.0",
 		"make-generator-function": "^1.0.0",
-		"semver": "^4.2.2"
+		"semver": "^4.3.0"
 	},
 	"testling": {
 		"files": "test.js",

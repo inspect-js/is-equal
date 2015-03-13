@@ -41,8 +41,8 @@
 		"jscs": "^1.11.3",
 		"foreach": "^2.0.5",
 		"make-arrow-function": "^1.0.0",
-		"make-generator-function": "^1.0.0",
-		"semver": "^4.3.0"
+		"make-generator-function": "^1.1.0",
+		"semver": "^4.3.1"
 	},
 	"testling": {
 		"files": "test.js",

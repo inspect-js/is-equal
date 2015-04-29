@@ -29,11 +29,11 @@ test('NaN', function (t) {
 });
 
 test('boxed primitives', function (t) {
-	t.ok(isEqual(new String(''), ''), 'Empty String and empty string are equal');
-	t.ok(isEqual(new String('foo'), 'foo'), 'String and string are equal');
-	t.ok(isEqual(new Boolean(true), true), 'Boolean true and boolean true are equal');
-	t.ok(isEqual(new Boolean(false), false), 'Boolean false and boolean false are equal');
-	t.ok(isEqual(new Number(42), 42), 'Number and number literal are equal');
+	t.ok(isEqual(Object(''), ''), 'Empty String and empty string are equal');
+	t.ok(isEqual(Object('foo'), 'foo'), 'String and string are equal');
+	t.ok(isEqual(Object(true), true), 'Boolean true and boolean true are equal');
+	t.ok(isEqual(Object(false), false), 'Boolean false and boolean false are equal');
+	t.ok(isEqual(Object(42), 42), 'Number and number literal are equal');
 	t.end();
 });
 
@@ -126,11 +126,16 @@ test('functions', function (t) {
 	var anon1 = function () { /* ANONYMOUS! */ return 'anon'; };
 	var anon2 = function () { /* ANONYMOUS! */ return 'anon'; };
 	/* jscs: disable */
+	/* eslint-disable space-before-function-paren */
 	var fnNoSpace = function(){};
+	/* eslint-enable space-before-function-paren */
 	/* jscs: enable */
 	var fnWithSpaceBeforeBody = function () {};
 	var emptyFnWithName = function a() {};
+	/* eslint-disable no-unused-vars */
 	var emptyFnOneArg = function (a) {};
+	var anon1withArg = function (a) { /* ANONYMOUS! */ return 'anon'; };
+	/* eslint-enable no-unused-vars */
 
 	/* for code coverage */
 	f1();
@@ -140,8 +145,6 @@ test('functions', function (t) {
 	anon1();
 	anon2();
 	/* end for code coverage */
-
-	var anon1withArg = function (a) { /* ANONYMOUS! */ };
 
 	t.ok(isEqual(f1, f1), 'same function is equal to itself');
 	t.ok(isEqual(anon1, anon1), 'same anon function is equal to itself');
@@ -191,4 +194,3 @@ test('symbols', { skip: !hasSymbols }, function (t) {
 
 	t.end();
 });
-

@@ -13,6 +13,7 @@ var isCallable = require('is-callable');
 
 var getPrototypeOf = Object.getPrototypeOf;
 if (!getPrototypeOf) {
+	/* eslint-disable no-proto */
 	if (typeof 'test'['__proto__'] === 'object') {
 		getPrototypeOf = function (obj) {
 			return obj['__proto__'];
@@ -32,6 +33,7 @@ if (!getPrototypeOf) {
 			return constructor ? constructor.prototype : ObjectPrototype; // needed for IE
 		};
 	}
+	/* eslint-enable no-proto */
 }
 
 var booleanValue = Boolean.prototype.valueOf;
@@ -117,7 +119,7 @@ module.exports = function isEqual(value, other) {
 		if (!valueIsGen && !valueIsArrow) {
 			return isEqual(valueStr.replace(/\)\s*\{/, '){'), otherStr.replace(/\)\s*\{/, '){'));
 		}
-		return isEqual(valueStr, otherStr);;
+		return isEqual(valueStr, otherStr);
 	}
 
 	if (typeof value === 'object' || typeof other === 'object') {
@@ -142,4 +144,3 @@ module.exports = function isEqual(value, other) {
 
 	return false;
 };
-

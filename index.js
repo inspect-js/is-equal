@@ -14,9 +14,9 @@ var isCallable = require('is-callable');
 var getPrototypeOf = Object.getPrototypeOf;
 if (!getPrototypeOf) {
 	/* eslint-disable no-proto */
-	if (typeof 'test'['__proto__'] === 'object') {
+	if (typeof 'test'.__proto__ === 'object') {
 		getPrototypeOf = function (obj) {
-			return obj['__proto__'];
+			return obj.__proto__;
 		};
 	} else {
 		getPrototypeOf = function (obj) {

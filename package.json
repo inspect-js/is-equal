@@ -40,13 +40,13 @@
 	},
 	"devDependencies": {
 		"tape": "^4.0.0",
-		"covert": "^1.0.1",
-		"jscs": "^1.13.0",
+		"covert": "^1.1.0",
+		"jscs": "^1.13.1",
 		"foreach": "^2.0.5",
 		"make-arrow-function": "^1.0.0",
 		"make-generator-function": "^1.1.0",
-		"semver": "^4.3.3",
-		"eslint": "^0.20.0",
+		"semver": "^4.3.4",
+		"eslint": "^0.21.2",
 		"nsp": "^1.0.1"
 	},
 	"testling": {

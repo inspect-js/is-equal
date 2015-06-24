@@ -6,7 +6,7 @@
 	"license": "MIT",
 	"main": "index.js",
 	"scripts": {
-		"test": "npm run lint && node --harmony --es-staging test.js && npm run security",
+		"test": "npm run lint && node --es-staging test.js && npm run security",
 		"coverage": "covert test.js",
 		"coverage-quiet": "covert test.js --quiet",
 		"lint": "npm run jscs && npm run eslint",
@@ -45,9 +45,9 @@
 		"foreach": "^2.0.5",
 		"make-arrow-function": "^1.0.0",
 		"make-generator-function": "^1.1.0",
-		"semver": "^4.3.4",
-		"eslint": "^0.21.2",
-		"nsp": "^1.0.1"
+		"semver": "^4.3.6",
+		"eslint": "^0.23.0",
+		"nsp": "^1.0.3"
 	},
 	"testling": {
 		"files": "test.js",

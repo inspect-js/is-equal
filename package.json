@@ -46,7 +46,7 @@
 		"make-arrow-function": "^1.0.0",
 		"make-generator-function": "^1.1.0",
 		"semver": "^4.3.6",
-		"eslint": "^0.23.0",
+		"eslint": "^0.24.0",
 		"nsp": "^1.0.3"
 	},
 	"testling": {

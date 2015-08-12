@@ -34,7 +34,7 @@ assert.equal(isEqual(new Date(timestamp), new Date(timestamp)), true);
 Simply clone the repo, `npm install`, and run `npm test`
 
 [1]: https://npmjs.org/package/is-equal
-[2]: http://vb.teelaun.ch/ljharb/is-equal.svg
+[2]: http://versionbadg.es/ljharb/is-equal.svg
 [3]: https://travis-ci.org/ljharb/is-equal.svg
 [4]: https://travis-ci.org/ljharb/is-equal
 [5]: https://david-dm.org/ljharb/is-equal.svg

@@ -41,7 +41,7 @@
 	"devDependencies": {
 		"tape": "^4.0.3",
 		"covert": "^1.1.0",
-		"jscs": "^2.0.0",
+		"jscs": "^2.1.0",
 		"foreach": "^2.0.5",
 		"make-arrow-function": "^1.0.0",
 		"make-generator-function": "^1.1.0",

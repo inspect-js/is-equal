@@ -1,3 +1,13 @@
+1.2.4 / 2015-09-27
+================='
+  * [Fix] Boxed Symbols should be coerced to primitives before testing for equality
+  * [Refactor] Use `is-boolean-object` to reliably detect Booleans
+  * [Deps] update `is-arrow-function`, `is-date-object`
+  * [Docs] Switch from vb.teelaun.ch to versionbadg.es for the npm version badge SVG
+  * [Tests] up to `io.js` `v3.3`, `node` `v4.1`
+  * [Tests] add `npm run security` and `npm run eslint`
+  * [Dev Deps] update `tape`, `jscs`, `make-arrow-function`, `make-generator-function`, `semver`, `eslint`, `@ljharb/eslint-config`, `nsp`, `covert`
+
 1.2.3 / 2015-02-06
 =================
   * Update `is-callable`, `is-number-object`, `is-string`, `is-generator-function`, `tape`, `jscs`

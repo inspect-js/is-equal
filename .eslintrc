@@ -5,6 +5,7 @@
 
 	"rules": {
 		"complexity": [1, 10],
+		"eqeqeq": [2, "allow-null"],
 		"id-length": [2, { "min": 1, "max": 23 }],
 		"max-statements": [1, 10],
 		"no-extra-parens": [1],
@@ -13,6 +14,6 @@
 			"number": false,
 			"string": true
 		}],
-		"no-new-func": [1],
+		"no-restricted-syntax": [2, "BreakStatement", "ContinueStatement", "DebuggerStatement", "LabeledStatement", "WithStatement"]
 	}
 }

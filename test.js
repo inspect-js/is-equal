@@ -8,6 +8,7 @@ var hasArrowFunctionSupport = arrowFunctions.length > 0;
 
 var forEach = require('foreach');
 var copyFunction = function (fn) {
+	/* eslint-disable no-new-func */
 	return Function('return ' + String(fn))();
 };
 
@@ -160,6 +161,7 @@ test('functions', function (t) {
 	t.notOk(isEqual(emptyFnOneArg, fnNoSpace), 'functions with same name/body, diff arity, are not equal');
 
 	t.test('generators', { skip: !hasGeneratorSupport }, function (st) {
+		/* eslint-disable no-new-func */
 		var genFnStar = Function('return function* () {};')();
 		var genFnSpaceStar = Function('return function *() {};')();
 		var genNoSpaces = Function('return function*(){};')();

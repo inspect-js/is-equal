@@ -2,8 +2,10 @@
 
 var ObjectPrototype = Object.prototype;
 var toStr = ObjectPrototype.toString;
+var booleanValue = Boolean.prototype.valueOf;
 var has = ObjectPrototype.hasOwnProperty;
 var isArrowFunction = require('is-arrow-function');
+var isBoolean = require('is-boolean-object');
 var isDate = require('is-date-object');
 var isGenerator = require('is-generator-function');
 var isNumber = require('is-number-object');
@@ -35,16 +37,6 @@ if (!getPrototypeOf) {
 	}
 	/* eslint-enable no-proto */
 }
-
-var booleanValue = Boolean.prototype.valueOf;
-var isBoolean = function isBoolean(value) {
-	try {
-		booleanValue.call(value);
-		return true;
-	} catch (e) {
-		return false;
-	}
-};
 
 var isArray = Array.isArray || function (value) {
 	return toStr.call(value) === '[object Array]';

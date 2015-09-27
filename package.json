@@ -30,9 +30,9 @@
 		"equality"
 	],
 	"dependencies": {
-		"is-arrow-function": "^2.0.2",
+		"is-arrow-function": "^2.0.3",
 		"is-callable": "^1.0.4",
-		"is-date-object": "^1.0.0",
+		"is-date-object": "^1.0.1",
 		"is-generator-function": "^1.0.3",
 		"is-number-object": "^1.0.3",
 		"is-regex": "^1.0.3",

@@ -191,8 +191,11 @@ var hasSymbols = typeof Symbol === 'function' && typeof Symbol('foo') === 'symbo
 test('symbols', { skip: !hasSymbols }, function (t) {
 	var foo = 'foo';
 	var fooSym = Symbol(foo);
+	var objectFooSym = Object(fooSym);
 	t.ok(isEqual(fooSym, fooSym), 'Symbol("foo") is equal to itself');
+	t.ok(isEqual(fooSym, objectFooSym), 'Symbol("foo") is equal to the object form of itself');
 	t.notOk(isEqual(Symbol(foo), Symbol(foo)), 'Symbol("foo") is not equal to Symbol("foo"), even when the string is the same instance');
+	t.notOk(isEqual(Symbol(foo), Object(Symbol(foo))), 'Symbol("foo") is not equal to Object(Symbol("foo")), even when the string is the same instance');
 
 	t.end();
 });

@@ -11,7 +11,10 @@ var isGenerator = require('is-generator-function');
 var isNumber = require('is-number-object');
 var isRegex = require('is-regex');
 var isString = require('is-string');
+var isSymbol = require('is-symbol');
 var isCallable = require('is-callable');
+
+var symbolValue = typeof Symbol === 'function' ? Symbol.prototype.valueOf : null;
 
 var getPrototypeOf = Object.getPrototypeOf;
 if (!getPrototypeOf) {
@@ -90,6 +93,13 @@ module.exports = function isEqual(value, other) {
 			--index;
 		} while (index > 0 && has.call(value, index) && has.call(other, index) && isEqual(value[index], other[index]));
 		return index <= 0;
+	}
+
+	var valueIsSym = isSymbol(value);
+	var otherIsSym = isSymbol(other);
+	if (valueIsSym !== otherIsSym) { return false; }
+	if (valueIsSym && otherIsSym) {
+		return symbolValue.call(value) === symbolValue.call(other);
 	}
 
 	var valueIsGen = isGenerator(value);

@@ -2,7 +2,8 @@
 
 var test = require('tape');
 var isEqual = require('./');
-var hasGeneratorSupport = typeof require('make-generator-function') === 'function';
+var genFn = require('make-generator-function');
+var hasGeneratorSupport = typeof genFn === 'function';
 var arrowFunctions = require('make-arrow-function').list();
 var hasArrowFunctionSupport = arrowFunctions.length > 0;
 
@@ -128,7 +129,9 @@ test('functions', function (t) {
 	var anon2 = function () { /* ANONYMOUS! */ return 'anon'; };
 	/* jscs: disable */
 	/* eslint-disable space-before-function-paren */
+	/* eslint-disable space-before-blocks */
 	var fnNoSpace = function(){};
+	/* eslint-enable space-before-blocks */
 	/* eslint-enable space-before-function-paren */
 	/* jscs: enable */
 	var fnWithSpaceBeforeBody = function () {};

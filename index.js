@@ -90,7 +90,7 @@ module.exports = function isEqual(value, other) {
 
 		var index = value.length;
 		do {
-			--index;
+			index -= 1;
 		} while (index > 0 && has.call(value, index) && has.call(other, index) && isEqual(value[index], other[index]));
 		return index <= 0;
 	}

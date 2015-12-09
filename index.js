@@ -13,6 +13,7 @@ var isRegex = require('is-regex');
 var isString = require('is-string');
 var isSymbol = require('is-symbol');
 var isCallable = require('is-callable');
+var entries = require('object.entries');
 
 var symbolValue = typeof Symbol === 'function' ? Symbol.prototype.valueOf : null;
 
@@ -128,20 +129,8 @@ module.exports = function isEqual(value, other) {
 		if (typeof value !== typeof other) { return false; }
 		if (value.isPrototypeOf(other) || other.isPrototypeOf(value)) { return false; }
 		if (getPrototypeOf(value) !== getPrototypeOf(other)) { return false; }
-		var key;
-		for (key in value) {
-			if (has.call(value, key)) {
-				if (!has.call(other, key)) { return false; }
-				if (!isEqual(value[key], other[key])) { return false; }
-			}
-		}
-		for (key in other) {
-			if (has.call(other, key)) {
-				if (!has.call(value, key)) { return false; }
-				if (!isEqual(other[key], value[key])) { return false; }
-			}
-		}
-		return true;
+
+		return isEqual(entries(value), entries(other));
 	}
 
 	return false;

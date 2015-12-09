@@ -39,7 +39,8 @@
 		"is-number-object": "^1.0.3",
 		"is-regex": "^1.0.3",
 		"is-string": "^1.0.4",
-		"is-symbol": "^1.0.1"
+		"is-symbol": "^1.0.1",
+		"object.entries": "^1.0.3"
 	},
 	"devDependencies": {
 		"tape": "^4.2.2",

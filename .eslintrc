@@ -14,6 +14,7 @@
 			"number": false,
 			"string": true
 		}],
+		"no-magic-numbers": [0],
 		"no-restricted-syntax": [2, "BreakStatement", "ContinueStatement", "DebuggerStatement", "LabeledStatement", "WithStatement"]
 	}
 }

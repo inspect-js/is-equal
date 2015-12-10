@@ -3,7 +3,7 @@
 require('es6-shim');
 
 var test = require('tape');
-var isEqual = require('./');
+var isEqual = require('../');
 var isSymbol = require('is-symbol');
 var genFn = require('make-generator-function');
 var hasGeneratorSupport = typeof genFn === 'function';

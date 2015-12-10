@@ -1,3 +1,15 @@
+1.3.1 / 2015-12-10
+=================
+  * [Fix] Partially revert 2517c2151d57451f7f7009df065bf1601316ee46, since object key ordering shouldn't matter. Reopens #2.
+  * [Fix] handle `Map`/`Set` in Safari 8, which lacks `Symbol.iterator` (#3)
+  * [Fix] normalize function signature whitespace, for IE 9.
+  * [Fix] ignore function name when comparing in engines that lack the "name" property (IE)
+  * [Tests] Only skip generic iterable tests when there's no Symbol.iterator (#3)
+  * [Refactor] don't attempt to run iterable comparisons when there's no Symbol.iterator
+  * [Tests] Separate shimmed from native tests
+  * [Tests] relocate native tests
+  * [Tests] add tests for circular references (#2)
+
 1.3.0 / 2015-12-09
 =================
   * [New] add support for comparing iterables, including native or `es6-shim`med `Map` and `Set` (#1)

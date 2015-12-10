@@ -138,25 +138,27 @@ module.exports = function isEqual(value, other) {
 		if (value.isPrototypeOf(other) || other.isPrototypeOf(value)) { return false; }
 		if (getPrototypeOf(value) !== getPrototypeOf(other)) { return false; }
 
-		var valueIteratorFn = value[symbolIterator];
-		var valueIsIterable = isCallable(valueIteratorFn);
-		var otherIteratorFn = other[symbolIterator];
-		var otherIsIterable = isCallable(otherIteratorFn);
-		if (valueIsIterable !== otherIsIterable) {
-			return false;
-		}
-		if (valueIsIterable && otherIsIterable) {
-			var valueIterator = valueIteratorFn.call(value);
-			var otherIterator = otherIteratorFn.call(other);
-			var valueNext, otherNext;
-			do {
-				valueNext = valueIterator.next();
-				otherNext = otherIterator.next();
-				if (!valueNext.done && !otherNext.done && !isEqual(valueNext, otherNext)) {
-					return false;
-				}
-			} while (!valueNext.done && !otherNext.done);
-			return valueNext.done === otherNext.done;
+		if (symbolIterator) {
+			var valueIteratorFn = value[symbolIterator];
+			var valueIsIterable = isCallable(valueIteratorFn);
+			var otherIteratorFn = other[symbolIterator];
+			var otherIsIterable = isCallable(otherIteratorFn);
+			if (valueIsIterable !== otherIsIterable) {
+				return false;
+			}
+			if (valueIsIterable && otherIsIterable) {
+				var valueIterator = valueIteratorFn.call(value);
+				var otherIterator = otherIteratorFn.call(other);
+				var valueNext, otherNext;
+				do {
+					valueNext = valueIterator.next();
+					otherNext = otherIterator.next();
+					if (!valueNext.done && !otherNext.done && !isEqual(valueNext, otherNext)) {
+						return false;
+					}
+				} while (!valueNext.done && !otherNext.done);
+				return valueNext.done === otherNext.done;
+			}
 		}
 
 		return isEqual(entries(value), entries(other));

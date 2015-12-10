@@ -15,6 +15,9 @@ var isSymbol = require('is-symbol');
 var isCallable = require('is-callable');
 var entries = require('object.entries');
 
+var foo = function foo() {};
+var functionsHaveNames = foo.name === 'foo';
+
 var symbolValue = typeof Symbol === 'function' ? Symbol.prototype.valueOf : null;
 var symbolIterator = typeof Symbol === 'function' && isSymbol(Symbol.iterator) ? Symbol.iterator : null;
 if (typeof Object.getOwnPropertyNames === 'function' && typeof Map === 'function' && typeof Map.prototype.entries === 'function') {
@@ -120,7 +123,7 @@ module.exports = function isEqual(value, other) {
 	if (valueIsArrow !== otherIsArrow) { return false; }
 
 	if (isCallable(value) || isCallable(other)) {
-		if (!isEqual(value.name, other.name)) { return false; }
+		if (functionsHaveNames && !isEqual(value.name, other.name)) { return false; }
 		if (!isEqual(value.length, other.length)) { return false; }
 
 		var valueStr = String(value);

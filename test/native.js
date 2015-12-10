@@ -10,6 +10,9 @@ var hasArrowFunctionSupport = arrowFunctions.length > 0;
 var objectEntries = require('object.entries');
 var forEach = require('foreach');
 
+var fooFn = function fooFn() {};
+var functionsHaveNames = fooFn.name === 'fooFn';
+
 var symbolIterator = typeof Symbol === 'function' && isSymbol(Symbol.iterator) ? Symbol.iterator : null;
 if (typeof Object.getOwnPropertyNames === 'function' && typeof Map === 'function' && typeof Map.prototype.entries === 'function') {
 	forEach(Object.getOwnPropertyNames(Map.prototype), function (name) {
@@ -165,13 +168,21 @@ test('functions', function (t) {
 	t.ok(isEqual(anon1, anon1), 'same anon function is equal to itself');
 	t.notOk(isEqual(anon1, anon1withArg), 'similar anon function with different lengths are not equal');
 
-	t.notOk(isEqual(f1, g), 'functions with different names but same implementations are not equal');
+	if (functionsHaveNames) {
+		t.notOk(isEqual(f1, g), 'functions with different names but same implementations are not equal');
+	} else {
+		t.notOk(isEqual(f1, g), '* function names not supported * functions with different names but same implementations are not equal');
+	}
 	t.ok(isEqual(f1, f2), 'functions with same names but same implementations are equal');
 	t.notOk(isEqual(f1, f3), 'functions with same names but different implementations are not equal');
 	t.ok(isEqual(anon1, anon2), 'anon functions with same implementations are equal');
 
 	t.ok(isEqual(fnNoSpace, fnWithSpaceBeforeBody), 'functions with same arity/name/body are equal despite whitespace between signature and body');
-	t.notOk(isEqual(emptyFnWithName, fnNoSpace), 'functions with same arity/body, diff name, are not equal');
+	if (functionsHaveNames) {
+		t.notOk(isEqual(emptyFnWithName, fnNoSpace), 'functions with same arity/body, diff name, are not equal');
+	} else {
+		t.notOk(isEqual(emptyFnWithName, fnNoSpace), '* function names not supported * functions with same arity/body, diff name, are not equal');
+	}
 	t.notOk(isEqual(emptyFnOneArg, fnNoSpace), 'functions with same name/body, diff arity, are not equal');
 
 	t.test('generators', { skip: !hasGeneratorSupport }, function (st) {

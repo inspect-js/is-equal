@@ -27,6 +27,8 @@ if (typeof Object.getOwnPropertyNames === 'function' && typeof Map === 'function
 		}
 	});
 }
+var mapForEach = typeof Map === 'function' ? Map.prototype.forEach : null;
+var setForEach = typeof Set === 'function' ? Set.prototype.forEach : null;
 
 var getPrototypeOf = Object.getPrototypeOf;
 if (!getPrototypeOf) {
@@ -60,6 +62,24 @@ var isArray = Array.isArray || function (value) {
 var normalizeFnWhitespace = function normalizeFnWhitespace(fnStr) {
 	// this is needed in IE 9, at least, which has inconsistencies here.
 	return fnStr.replace(/^function ?\(/, 'function (').replace('){', ') {');
+};
+
+var tryMapSetEntries = function tryMapSetEntries(collection) {
+	var foundEntries = [];
+	try {
+		mapForEach.call(collection, function (key, value) {
+			foundEntries.push([key, value]);
+		});
+	} catch (notMap) {
+		try {
+			setForEach.call(collection, function (value) {
+				foundEntries.push([value]);
+			});
+		} catch (notSet) {
+			return false;
+		}
+	}
+	return foundEntries;
 };
 
 module.exports = function isEqual(value, other) {
@@ -166,6 +186,15 @@ module.exports = function isEqual(value, other) {
 					}
 				} while (!valueNext.done && !otherNext.done);
 				return valueNext.done === otherNext.done;
+			}
+		} else if (mapForEach || setForEach) {
+			var valueEntries = tryMapSetEntries(value);
+			var otherEntries = tryMapSetEntries(other);
+			if (isArray(valueEntries) !== isArray(otherEntries)) {
+				return false; // either: neither is a Map/Set, or one is and the other isn't.
+			}
+			if (valueEntries && otherEntries) {
+				return isEqual(valueEntries, otherEntries);
 			}
 		}
 

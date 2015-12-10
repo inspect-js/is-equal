@@ -1,5 +1,15 @@
+1.3.0 / 2015-12-09
+=================
+  * [New] add support for comparing iterables, including native or `es6-shim`med `Map` and `Set` (#1)
+  * [Refactor] Use `object.entries` to compare objects instead of for loops
+  * [Deps] update `is-callable`
+  * [Dev Deps] update `tape`, `jscs`, `semver`, `eslint`, `@ljharb/eslint-config`, `nsp`
+  * [Tests] fix npm upgrades for older nodes
+  * [Tests] up to `node` `v5.1`
+  * [Tests] ensure node 0.8 doesn't fail
+
 1.2.4 / 2015-09-27
-================='
+=================
   * [Fix] Boxed Symbols should be coerced to primitives before testing for equality
   * [Refactor] Use `is-boolean-object` to reliably detect Booleans
   * [Deps] update `is-arrow-function`, `is-date-object`

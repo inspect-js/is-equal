@@ -13,7 +13,6 @@ var isRegex = require('is-regex');
 var isString = require('is-string');
 var isSymbol = require('is-symbol');
 var isCallable = require('is-callable');
-var entries = require('object.entries');
 
 var foo = function foo() {};
 var functionsHaveNames = foo.name === 'foo';
@@ -198,7 +197,20 @@ module.exports = function isEqual(value, other) {
 			}
 		}
 
-		return isEqual(entries(value), entries(other));
+		var key;
+		for (key in value) {
+			if (has.call(value, key)) {
+				if (!has.call(other, key)) { return false; }
+				if (!isEqual(value[key], other[key])) { return false; }
+			}
+		}
+		for (key in other) {
+			if (has.call(other, key)) {
+				if (!has.call(value, key)) { return false; }
+				if (!isEqual(other[key], value[key])) { return false; }
+			}
+		}
+		return true;
 	}
 
 	return false;

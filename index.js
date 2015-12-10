@@ -3,7 +3,7 @@
 var ObjectPrototype = Object.prototype;
 var toStr = ObjectPrototype.toString;
 var booleanValue = Boolean.prototype.valueOf;
-var has = ObjectPrototype.hasOwnProperty;
+var has = require('has');
 var isArrowFunction = require('is-arrow-function');
 var isBoolean = require('is-boolean-object');
 var isDate = require('is-date-object');
@@ -40,7 +40,7 @@ if (!getPrototypeOf) {
 		getPrototypeOf = function (obj) {
 			var constructor = obj.constructor,
 				oldConstructor;
-			if (has.call(obj, 'constructor')) {
+			if (has(obj, 'constructor')) {
 				oldConstructor = constructor;
 				if (!(delete obj.constructor)) { // reset constructor
 					return null; // can't delete obj.constructor, return null
@@ -127,7 +127,7 @@ module.exports = function isEqual(value, other) {
 		var index = value.length;
 		do {
 			index -= 1;
-		} while (index > 0 && has.call(value, index) && has.call(other, index) && isEqual(value[index], other[index]));
+		} while (index > 0 && has(value, index) && has(other, index) && isEqual(value[index], other[index]));
 		return index <= 0;
 	}
 
@@ -199,14 +199,14 @@ module.exports = function isEqual(value, other) {
 
 		var key;
 		for (key in value) {
-			if (has.call(value, key)) {
-				if (!has.call(other, key)) { return false; }
+			if (has(value, key)) {
+				if (!has(other, key)) { return false; }
 				if (!isEqual(value[key], other[key])) { return false; }
 			}
 		}
 		for (key in other) {
-			if (has.call(other, key)) {
-				if (!has.call(value, key)) { return false; }
+			if (has(other, key)) {
+				if (!has(value, key)) { return false; }
 				if (!isEqual(other[key], value[key])) { return false; }
 			}
 		}

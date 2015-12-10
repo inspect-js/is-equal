@@ -1,13 +1,26 @@
 'use strict';
 
+require('es6-shim');
+
 var test = require('tape');
 var isEqual = require('./');
+var isSymbol = require('is-symbol');
 var genFn = require('make-generator-function');
 var hasGeneratorSupport = typeof genFn === 'function';
 var arrowFunctions = require('make-arrow-function').list();
 var hasArrowFunctionSupport = arrowFunctions.length > 0;
-
+var objectEntries = require('object.entries');
 var forEach = require('foreach');
+
+var symbolIterator = typeof Symbol === 'function' && isSymbol(Symbol.iterator) ? Symbol.iterator : null;
+if (typeof Object.getOwnPropertyNames === 'function' && typeof Map === 'function' && typeof Map.prototype.entries === 'function') {
+	forEach(Object.getOwnPropertyNames(Map.prototype), function (name) {
+		if (name !== 'entries' && name !== 'size' && Map.prototype[name] === Map.prototype.entries) {
+			symbolIterator = name;
+		}
+	});
+}
+
 var copyFunction = function (fn) {
 	/* eslint-disable no-new-func */
 	return Function('return ' + String(fn))();
@@ -190,7 +203,7 @@ test('functions', function (t) {
 	t.end();
 });
 
-var hasSymbols = typeof Symbol === 'function' && typeof Symbol('foo') === 'symbol';
+var hasSymbols = typeof Symbol === 'function' && isSymbol(Symbol('foo'));
 test('symbols', { skip: !hasSymbols }, function (t) {
 	var foo = 'foo';
 	var fooSym = Symbol(foo);
@@ -199,6 +212,94 @@ test('symbols', { skip: !hasSymbols }, function (t) {
 	t.ok(isEqual(fooSym, objectFooSym), 'Symbol("foo") is equal to the object form of itself');
 	t.notOk(isEqual(Symbol(foo), Symbol(foo)), 'Symbol("foo") is not equal to Symbol("foo"), even when the string is the same instance');
 	t.notOk(isEqual(Symbol(foo), Object(Symbol(foo))), 'Symbol("foo") is not equal to Object(Symbol("foo")), even when the string is the same instance');
+
+	t.end();
+});
+
+var genericIterator = function (obj) {
+	var entries = objectEntries(obj);
+	return function iterator() {
+		return {
+			next: function () {
+				return {
+					done: entries.length === 0,
+					value: entries.shift()
+				};
+			}
+		};
+	};
+};
+
+test('iterables', { skip: !symbolIterator }, function (t) {
+	t.test('Maps', { skip: typeof Map !== 'function' }, function (mt) {
+		var a = new Map();
+		a.set('a', 'b');
+		a.set('c', 'd');
+		var b = new Map();
+		b.set('a', 'b');
+		b.set('c', 'd');
+		var c = new Map();
+		c.set('a', 'b');
+
+		mt.equal(isEqual(a, b), true, 'equal Maps (a, b) are equal');
+		mt.equal(isEqual(b, a), true, 'equal Maps (b, a) are equal');
+		mt.equal(isEqual(a, c), false, 'unequal Maps (a, c) are not equal');
+		mt.equal(isEqual(b, c), false, 'unequal Maps (b, c) are not equal');
+
+		mt.end();
+	});
+
+	t.test('Sets', { skip: typeof Set !== 'function' }, function (st) {
+		var a = new Set();
+		a.add('a');
+		a.add('b');
+		var b = new Set();
+		b.add('a');
+		b.add('b');
+		var c = new Set();
+		c.add('a');
+
+		st.equal(isEqual(a, b), true, 'equal Set (a, b) are equal');
+		st.equal(isEqual(b, a), true, 'equal Set (b, a) are equal');
+		st.equal(isEqual(a, c), false, 'unequal Set (a, c) are not equal');
+		st.equal(isEqual(b, c), false, 'unequal Set (b, c) are not equal');
+
+		st.end();
+	});
+
+	var obj = { a: { aa: true }, b: [2] };
+	t.test('generic iterables', function (it) {
+		var a = { foo: 'bar' };
+		var b = { bar: 'baz' };
+
+		it.equal(isEqual(a, b), false, 'normal a and normal b are not equal');
+
+		a[symbolIterator] = genericIterator(obj);
+		it.equal(isEqual(a, b), false, 'iterable a / normal b are not equal');
+		it.equal(isEqual(b, a), false, 'iterable b / normal a are not equal');
+		it.equal(isEqual(a, obj), false, 'iterable a / normal obj are not equal');
+		it.equal(isEqual(obj, a), false, 'normal obj / iterable a are not equal');
+
+		b[symbolIterator] = genericIterator(obj);
+		it.equal(isEqual(a, b), true, 'iterable a / iterable b are equal');
+		it.equal(isEqual(b, a), true, 'iterable b / iterable a are equal');
+		it.equal(isEqual(b, obj), false, 'iterable b and normal obj are not equal');
+		it.equal(isEqual(obj, b), false, 'normal obj / iterable b are not equal');
+
+		it.end();
+	});
+
+	t.test('unequal iterables', function (it) {
+		var c = {};
+		c[symbolIterator] = genericIterator({});
+		var d = {};
+		d[symbolIterator] = genericIterator(obj);
+
+		it.equal(isEqual(c, d), false, 'iterable c / iterable d are not equal');
+		it.equal(isEqual(d, c), false, 'iterable d / iterable c are not equal');
+
+		it.end();
+	});
 
 	t.end();
 });

@@ -16,6 +16,14 @@ var isCallable = require('is-callable');
 var entries = require('object.entries');
 
 var symbolValue = typeof Symbol === 'function' ? Symbol.prototype.valueOf : null;
+var symbolIterator = typeof Symbol === 'function' && isSymbol(Symbol.iterator) ? Symbol.iterator : null;
+if (typeof Object.getOwnPropertyNames === 'function' && typeof Map === 'function' && typeof Map.prototype.entries === 'function') {
+	Object.getOwnPropertyNames(Map.prototype).forEach(function (name) {
+		if (name !== 'entries' && name !== 'size' && Map.prototype[name] === Map.prototype.entries) {
+			symbolIterator = name;
+		}
+	});
+}
 
 var getPrototypeOf = Object.getPrototypeOf;
 if (!getPrototypeOf) {
@@ -129,6 +137,27 @@ module.exports = function isEqual(value, other) {
 		if (typeof value !== typeof other) { return false; }
 		if (value.isPrototypeOf(other) || other.isPrototypeOf(value)) { return false; }
 		if (getPrototypeOf(value) !== getPrototypeOf(other)) { return false; }
+
+		var valueIteratorFn = value[symbolIterator];
+		var valueIsIterable = isCallable(valueIteratorFn);
+		var otherIteratorFn = other[symbolIterator];
+		var otherIsIterable = isCallable(otherIteratorFn);
+		if (valueIsIterable !== otherIsIterable) {
+			return false;
+		}
+		if (valueIsIterable && otherIsIterable) {
+			var valueIterator = valueIteratorFn.call(value);
+			var otherIterator = otherIteratorFn.call(other);
+			var valueNext, otherNext;
+			do {
+				valueNext = valueIterator.next();
+				otherNext = otherIterator.next();
+				if (!valueNext.done && !otherNext.done && !isEqual(valueNext, otherNext)) {
+					return false;
+				}
+			} while (!valueNext.done && !otherNext.done);
+			return valueNext.done === otherNext.done;
+		}
 
 		return isEqual(entries(value), entries(other));
 	}

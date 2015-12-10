@@ -57,6 +57,11 @@ var isArray = Array.isArray || function (value) {
 	return toStr.call(value) === '[object Array]';
 };
 
+var normalizeFnWhitespace = function normalizeFnWhitespace(fnStr) {
+	// this is needed in IE 9, at least, which has inconsistencies here.
+	return fnStr.replace(/^function ?\(/, 'function (').replace('){', ') {');
+};
+
 module.exports = function isEqual(value, other) {
 	if (value === other) { return true; }
 	if (value == null || other == null) { return value === other; }
@@ -126,8 +131,8 @@ module.exports = function isEqual(value, other) {
 		if (functionsHaveNames && !isEqual(value.name, other.name)) { return false; }
 		if (!isEqual(value.length, other.length)) { return false; }
 
-		var valueStr = String(value);
-		var otherStr = String(other);
+		var valueStr = normalizeFnWhitespace(String(value));
+		var otherStr = normalizeFnWhitespace(String(other));
 		if (isEqual(valueStr, otherStr)) { return true; }
 
 		if (!valueIsGen && !valueIsArrow) {

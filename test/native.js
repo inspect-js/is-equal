@@ -228,7 +228,7 @@ var genericIterator = function (obj) {
 	};
 };
 
-test('iterables', { skip: !symbolIterator }, function (t) {
+test('iterables', function (t) {
 	t.test('Maps', { skip: typeof Map !== 'function' }, function (mt) {
 		var a = new Map();
 		a.set('a', 'b');
@@ -266,7 +266,7 @@ test('iterables', { skip: !symbolIterator }, function (t) {
 	});
 
 	var obj = { a: { aa: true }, b: [2] };
-	t.test('generic iterables', function (it) {
+	t.test('generic iterables', { skip: !symbolIterator }, function (it) {
 		var a = { foo: 'bar' };
 		var b = { bar: 'baz' };
 
@@ -287,7 +287,7 @@ test('iterables', { skip: !symbolIterator }, function (t) {
 		it.end();
 	});
 
-	t.test('unequal iterables', function (it) {
+	t.test('unequal iterables', { skip: !symbolIterator }, function (it) {
 		var c = {};
 		c[symbolIterator] = genericIterator({});
 		var d = {};

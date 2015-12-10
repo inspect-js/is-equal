@@ -1,7 +1,5 @@
 'use strict';
 
-require('es6-shim');
-
 var test = require('tape');
 var isEqual = require('../');
 var isSymbol = require('is-symbol');

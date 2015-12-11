@@ -1,3 +1,8 @@
+1.4.0 / 2015-12-10
+=================
+  * [New] Restore basic circular reference support
+  * [Deps] use `has` instead of relying on `Function#call`
+
 1.3.1 / 2015-12-10
 =================
   * [Fix] Partially revert 2517c2151d57451f7f7009df065bf1601316ee46, since object key ordering shouldn't matter. Reopens #2.

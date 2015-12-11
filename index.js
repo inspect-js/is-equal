@@ -197,17 +197,31 @@ module.exports = function isEqual(value, other) {
 			}
 		}
 
-		var key;
+		var key, valueKeyIsRecursive, otherKeyIsRecursive;
 		for (key in value) {
 			if (has(value, key)) {
 				if (!has(other, key)) { return false; }
-				if (!isEqual(value[key], other[key])) { return false; }
+				valueKeyIsRecursive = value[key] && value[key][key] === value;
+				otherKeyIsRecursive = other[key] && other[key][key] === other;
+				if (valueKeyIsRecursive !== otherKeyIsRecursive) {
+					return false;
+				}
+				if (!valueKeyIsRecursive && !otherKeyIsRecursive && !isEqual(value[key], other[key])) {
+					return false;
+				}
 			}
 		}
 		for (key in other) {
 			if (has(other, key)) {
 				if (!has(value, key)) { return false; }
-				if (!isEqual(other[key], value[key])) { return false; }
+				valueKeyIsRecursive = value[key] && value[key][key] === value;
+				otherKeyIsRecursive = other[key] && other[key][key] === other;
+				if (valueKeyIsRecursive !== otherKeyIsRecursive) {
+					return false;
+				}
+				if (!valueKeyIsRecursive && !otherKeyIsRecursive && !isEqual(other[key], value[key])) {
+					return false;
+				}
 			}
 		}
 		return true;

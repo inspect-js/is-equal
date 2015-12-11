@@ -316,7 +316,7 @@ test('iterables', function (t) {
 var Circular = function Circular() {
 	this.circularRef = this;
 };
-test.skip('circular references', function (t) {
+test('circular references', function (t) {
 	var a = new Circular();
 	var b = new Circular();
 	t.equal(isEqual(a, b), true, 'two circular referencing instances are equal');

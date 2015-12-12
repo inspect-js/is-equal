@@ -279,10 +279,27 @@ test('iterables', function (t) {
 		var c = new Set();
 		c.add('a');
 
-		st.equal(isEqual(a, b), true, 'equal Set (a, b) are equal');
-		st.equal(isEqual(b, a), true, 'equal Set (b, a) are equal');
-		st.equal(isEqual(a, c), false, 'unequal Set (a, c) are not equal');
-		st.equal(isEqual(b, c), false, 'unequal Set (b, c) are not equal');
+		st.ok(isEqual(a, b), 'equal Set (a, b) are equal');
+		st.ok(isEqual(b, a), 'equal Set (b, a) are equal');
+		st.notOk(isEqual(a, c), 'unequal Set (a, c) are not equal');
+		st.notOk(isEqual(b, c), 'unequal Set (b, c) are not equal');
+
+		st.test('Sets with strings as iterables', function (sst) {
+			var ab = new Set('ab');
+			if (ab.size !== 2) {
+				// work around IE 11 (and others) bug accepting iterables
+				ab.add('a');
+				ab.add('b');
+			}
+			var ac = new Set('ac');
+			if (ab.size !== 2) {
+				// work around IE 11 (and others) bug accepting iterables
+				ab.add('a');
+				ab.add('c');
+			}
+			st.notOk(isEqual(ab, ac), 'Sets initially populated with different strings are not equal');
+			sst.end();
+		});
 
 		st.end();
 	});

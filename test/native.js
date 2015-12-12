@@ -128,6 +128,13 @@ test('objects', function (t) {
 
 		st.notOk(isEqual({ a: 42, b: 0 }, { a: 42 }), 'first hash missing a key is not equal');
 		st.notOk(isEqual({ a: 42 }, { a: 42, b: 0 }), 'second hash missing a key is not equal');
+	});
+
+	t.test('key ordering', function (st) {
+		var a = { a: 1, b: 2 };
+		var b = { b: 2 };
+		b.a = 1;
+		st.ok(isEqual(a, b), 'objects with different key orderings but same contents are equal');
 		st.end();
 	});
 

@@ -285,13 +285,15 @@ test('iterables', function (t) {
 		st.notOk(isEqual(b, c), 'unequal Set (b, c) are not equal');
 
 		st.test('Sets with strings as iterables', function (sst) {
-			var ab = new Set('ab');
+			var ab;
+			try { ab = new Set('ab'); } catch (e) { ab = new Set(); } // node 0.12 throws when given a string
 			if (ab.size !== 2) {
 				// work around IE 11 (and others) bug accepting iterables
 				ab.add('a');
 				ab.add('b');
 			}
-			var ac = new Set('ac');
+			var ac;
+			try { ac = new Set('ac'); } catch (e) { ac = new Set(); } // node 0.12 throws when given a string
 			if (ab.size !== 2) {
 				// work around IE 11 (and others) bug accepting iterables
 				ab.add('a');

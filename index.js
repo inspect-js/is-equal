@@ -14,6 +14,8 @@ var isString = require('is-string');
 var isSymbol = require('is-symbol');
 var isCallable = require('is-callable');
 
+var isProto = Object.prototype.isPrototypeOf;
+
 var foo = function foo() {};
 var functionsHaveNames = foo.name === 'foo';
 
@@ -162,7 +164,7 @@ module.exports = function isEqual(value, other) {
 
 	if (typeof value === 'object' || typeof other === 'object') {
 		if (typeof value !== typeof other) { return false; }
-		if (value.isPrototypeOf(other) || other.isPrototypeOf(value)) { return false; }
+		if (isProto.call(value, other) || isProto.call(other, value)) { return false; }
 		if (getPrototypeOf(value) !== getPrototypeOf(other)) { return false; }
 
 		if (symbolIterator) {

@@ -20,14 +20,8 @@ var foo = function foo() {};
 var functionsHaveNames = foo.name === 'foo';
 
 var symbolValue = typeof Symbol === 'function' ? Symbol.prototype.valueOf : null;
-var symbolIterator = typeof Symbol === 'function' && isSymbol(Symbol.iterator) ? Symbol.iterator : null;
-if (typeof Object.getOwnPropertyNames === 'function' && typeof Map === 'function' && typeof Map.prototype.entries === 'function') {
-	Object.getOwnPropertyNames(Map.prototype).forEach(function (name) {
-		if (name !== 'entries' && name !== 'size' && Map.prototype[name] === Map.prototype.entries) {
-			symbolIterator = name;
-		}
-	});
-}
+var symbolIterator = require('./getSymbolIterator')();
+
 var mapForEach = typeof Map === 'function' ? Map.prototype.forEach : null;
 var setForEach = typeof Set === 'function' ? Set.prototype.forEach : null;
 

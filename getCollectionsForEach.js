@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = function () {
 	var mapForEach = (function () {
 		if (typeof Map !== 'function') { return null; }

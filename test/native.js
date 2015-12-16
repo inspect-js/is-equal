@@ -82,6 +82,23 @@ test('arrays', function (t) {
 		st.ok(isEqual([[1, 2], [2, 3], [3, 4]], [[1, 2], [2, 3], [3, 4]]), 'arrays with same array values are equal');
 		st.end();
 	});
+
+	t.test('nested objects', function (st) {
+		var arr1 = [
+			{ a: 0, b: '1', c: false },
+			{ a: 1, b: '2', c: false }
+		];
+		var arr2 = [
+			{ a: 0, b: '1', c: true },
+			{ a: 1, b: '2', c: false }
+		];
+		st.notOk(isEqual(arr1[0], arr2[0]), 'array items 0 are not equal');
+		st.ok(isEqual(arr1[1], arr2[1]), 'array items 1 are equal');
+		st.notOk(isEqual(arr1, arr2), 'two arrays with nested inequal objects are not equal');
+
+		st.end();
+	});
+
 	t.end();
 });
 
@@ -133,6 +150,10 @@ test('objects', function (t) {
 
 		st.notOk(isEqual({ a: 1 }, { a: 2 }), 'two objects with equal keys but inequal values are not equal');
 		st.notOk(isEqual({ c: 1 }, { a: 1 }), 'two objects with inequal keys but same values are not equal');
+
+		var obj1 = { a: 0, b: '1', c: false };
+		var obj2 = { a: 0, b: '1', c: true };
+		st.notOk(isEqual(obj1, obj2), 'two objects with inequal boolean keys are not equal');
 		st.end();
 	});
 

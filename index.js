@@ -119,11 +119,13 @@ module.exports = function isEqual(value, other) {
 		if (value.length !== other.length) { return false; }
 		if (String(value) !== String(other)) { return false; }
 
-		var index = value.length;
-		do {
+		var index = value.length - 1;
+		var equal = true;
+		while (equal && index >= 0) {
+			equal = has(value, index) && has(other, index) && isEqual(value[index], other[index]);
 			index -= 1;
-		} while (index > 0 && has(value, index) && has(other, index) && isEqual(value[index], other[index]));
-		return index <= 0;
+		}
+		return equal;
 	}
 
 	var valueIsSym = isSymbol(value);

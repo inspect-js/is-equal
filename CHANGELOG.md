@@ -1,3 +1,7 @@
+1.4.2 / 2015-12-16
+=================
+  * [Fix] avoid false positives when the first items in two arrays are not equal (#5)
+
 1.4.1 / 2015-12-15
 =================
   * [Fix] ensure that https://github.com/zloirock/core-js/issues/144 doesn't cause false positives (#4)

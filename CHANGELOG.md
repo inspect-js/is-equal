@@ -1,3 +1,11 @@
+1.4.1 / 2015-12-15
+=================
+  * [Fix] ensure that https://github.com/zloirock/core-js/issues/144 doesn't cause false positives (#4)
+  * [Refactor] move `Map`/`Set` `forEach` method detection to a separate module
+  * [Refactor] Factor out "get Symbol.iterator" logic
+  * [Robustness] cache `Object#isPrototypeOf`
+  * [Tests] add more tests (#3, #4)
+
 1.4.0 / 2015-12-10
 =================
   * [New] Restore basic circular reference support

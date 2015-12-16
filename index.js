@@ -22,8 +22,7 @@ var functionsHaveNames = foo.name === 'foo';
 var symbolValue = typeof Symbol === 'function' ? Symbol.prototype.valueOf : null;
 var symbolIterator = require('./getSymbolIterator')();
 
-var mapForEach = typeof Map === 'function' ? Map.prototype.forEach : null;
-var setForEach = typeof Set === 'function' ? Set.prototype.forEach : null;
+var collectionsForEach = require('./getCollectionsForEach')();
 
 var getPrototypeOf = Object.getPrototypeOf;
 if (!getPrototypeOf) {
@@ -62,12 +61,12 @@ var normalizeFnWhitespace = function normalizeFnWhitespace(fnStr) {
 var tryMapSetEntries = function tryMapSetEntries(collection) {
 	var foundEntries = [];
 	try {
-		mapForEach.call(collection, function (key, value) {
+		collectionsForEach.Map.call(collection, function (key, value) {
 			foundEntries.push([key, value]);
 		});
 	} catch (notMap) {
 		try {
-			setForEach.call(collection, function (value) {
+			collectionsForEach.Set.call(collection, function (value) {
 				foundEntries.push([value]);
 			});
 		} catch (notSet) {
@@ -182,7 +181,7 @@ module.exports = function isEqual(value, other) {
 				} while (!valueNext.done && !otherNext.done);
 				return valueNext.done === otherNext.done;
 			}
-		} else if (mapForEach || setForEach) {
+		} else if (collectionsForEach.Map || collectionsForEach.Set) {
 			var valueEntries = tryMapSetEntries(value);
 			var otherEntries = tryMapSetEntries(other);
 			if (isArray(valueEntries) !== isArray(otherEntries)) {

@@ -10,6 +10,8 @@ var hasArrowFunctionSupport = arrowFunctions.length > 0;
 var objectEntries = require('object.entries');
 var forEach = require('foreach');
 
+var collectionsForEach = require('../getCollectionsForEach')();
+
 var fooFn = function fooFn() {};
 var functionsHaveNames = fooFn.name === 'fooFn';
 
@@ -251,7 +253,7 @@ var genericIterator = function (obj) {
 };
 
 test('iterables', function (t) {
-	t.test('Maps', { skip: typeof Map !== 'function' }, function (mt) {
+	t.test('Maps', { skip: !collectionsForEach.Map }, function (mt) {
 		var a = new Map();
 		a.set('a', 'b');
 		a.set('c', 'd');
@@ -269,7 +271,7 @@ test('iterables', function (t) {
 		mt.end();
 	});
 
-	t.test('Sets', { skip: typeof Set !== 'function' }, function (st) {
+	t.test('Sets', { skip: !collectionsForEach.Set }, function (st) {
 		var a = new Set();
 		a.add('a');
 		a.add('b');

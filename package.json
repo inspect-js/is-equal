@@ -59,7 +59,7 @@
 		"@ljharb/eslint-config": "^1.6.0",
 		"nsp": "^2.1.0",
 		"replace": "^0.3.0",
-		"es6-shim": "^0.33.13",
+		"es6-shim": "^0.34.0",
 		"core-js": "^1.2.6"
 	},
 	"testling": {

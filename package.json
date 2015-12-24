@@ -47,7 +47,7 @@
 		"object.entries": "^1.0.3"
 	},
 	"devDependencies": {
-		"tape": "^4.2.2",
+		"tape": "^4.3.0",
 		"covert": "^1.1.0",
 		"jscs": "^2.7.0",
 		"foreach": "^2.0.5",
@@ -57,10 +57,10 @@
 		"semver": "^5.1.0",
 		"eslint": "^1.10.3",
 		"@ljharb/eslint-config": "^1.6.0",
-		"nsp": "^2.1.0",
+		"nsp": "^2.2.0",
 		"replace": "^0.3.0",
 		"es6-shim": "^0.34.0",
-		"core-js": "^1.2.6"
+		"core-js": "^2.0.0"
 	},
 	"testling": {
 		"files": "test/native.js",

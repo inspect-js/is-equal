@@ -60,7 +60,7 @@
 		"nsp": "^2.1.0",
 		"replace": "^0.3.0",
 		"es6-shim": "^0.34.0",
-		"core-js": "^1.2.6"
+		"core-js": "^2.0.0"
 	},
 	"testling": {
 		"files": "test/native.js",

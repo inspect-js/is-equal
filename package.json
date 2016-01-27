@@ -35,7 +35,7 @@
 	],
 	"dependencies": {
 		"has": "^1.0.1",
-		"is-arrow-function": "^2.0.3",
+		"is-arrowfunction": "^1.0.0",
 		"is-boolean-object": "^1.0.0",
 		"is-callable": "^1.1.1",
 		"is-date-object": "^1.0.1",

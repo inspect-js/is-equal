@@ -147,6 +147,12 @@
 
 	"requireEnhancedObjectLiterals": false,
 
-	"requireObjectDestructuring": false
+	"requireObjectDestructuring": false,
+
+	"requireEarlyReturn": false,
+
+	"requireCapitalizedConstructorsNew": {
+		"allExcept": ["Function", "String", "Object", "Symbol", "Number", "Date", "RegExp", "Error", "Boolean", "Array"]
+	}
 }
 

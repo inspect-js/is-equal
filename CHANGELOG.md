@@ -1,3 +1,13 @@
+1.5.0 / 2016-02-15
+=================
+  * [New] add “whyNotEqual” at `require(‘is-equal/why’)` to provide an inequality reason
+  * [Refactor] use `whyNotEqual` internally in `isEqual`
+  * [Deps] update `is-callable`
+  * [Dev Deps] update `es6-shim`, `tape`, `nsp`, `core-js`, `jscs`, `eslint`, `@ljharb/eslint-config`
+  * [Tests] add some more tests
+  * [Tests] use `getSymbolIterator` internal module
+  * [Tests] up to `node` `v5.6`, `v4.3`
+
 1.4.2 / 2015-12-16
 =================
   * [Fix] avoid false positives when the first items in two arrays are not equal (#5)

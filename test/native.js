@@ -15,14 +15,7 @@ var collectionsForEach = require('../getCollectionsForEach')();
 var fooFn = function fooFn() {};
 var functionsHaveNames = fooFn.name === 'fooFn';
 
-var symbolIterator = typeof Symbol === 'function' && isSymbol(Symbol.iterator) ? Symbol.iterator : null;
-if (typeof Object.getOwnPropertyNames === 'function' && typeof Map === 'function' && typeof Map.prototype.entries === 'function') {
-	forEach(Object.getOwnPropertyNames(Map.prototype), function (name) {
-		if (name !== 'entries' && name !== 'size' && Map.prototype[name] === Map.prototype.entries) {
-			symbolIterator = name;
-		}
-	});
-}
+var symbolIterator = require('../getSymbolIterator')();
 
 var copyFunction = function (fn) {
 	/* eslint-disable no-new-func */

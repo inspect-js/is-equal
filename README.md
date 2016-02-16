@@ -36,9 +36,9 @@ Will return an empty string if `isEqual` would return `true` - otherwise will re
 ```
 var whyNotEqual = require('is-equal/why');
 
-assert.equal(isEqual(1, 1), '');
+assert.equal(whyNotEqual(1, 1), '');
 assert.equal(
-  isEqual({ a: 1 }, { a: 2 }),
+  whyNotEqual({ a: 1 }, { a: 2 }),
   'value at key "a" differs: numbers are different: 1 !== 2'
 );
 ```

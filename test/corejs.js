@@ -2,4 +2,6 @@
 
 require('core-js');
 
+require('./why');
+
 require('./native');

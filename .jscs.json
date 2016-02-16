@@ -122,7 +122,7 @@
 
 	"disallowArrowFunctions": true,
 
-	"disallowMultiLineTernary": true,
+	"disallowMultiLineTernary": false,
 
 	"validateOrderInObjectKeys": "asc-insensitive",
 

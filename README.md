@@ -30,6 +30,19 @@ var timestamp = Date.now();
 assert.equal(isEqual(new Date(timestamp), new Date(timestamp)), true);
 ```
 
+## Want to know *why* two values are not equal?
+Will return an empty string if `isEqual` would return `true` - otherwise will return a non-empty string that hopefully explains the reasoning.
+
+```
+var whyNotEqual = require('is-equal/why');
+
+assert.equal(isEqual(1, 1), '');
+assert.equal(
+  isEqual({ a: 1 }, { a: 2 }),
+  'value at key "a" differs: numbers are different: 1 !== 2'
+);
+```
+
 ## Tests
 Simply clone the repo, `npm install`, and run `npm test`
 

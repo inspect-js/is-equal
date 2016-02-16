@@ -34,6 +34,8 @@ test('primitives', function (t) {
 	t.ok(isEqual(null, null), 'nulls are equal');
 	t.ok(isEqual(true, true), 'trues are equal');
 	t.ok(isEqual(false, false), 'falses are equal');
+	t.notOk(isEqual(true, false), 'true:false is not equal');
+	t.notOk(isEqual(false, true), 'false:true is not equal');
 	t.ok(isEqual('foo', 'foo'), 'strings are equal');
 	t.ok(isEqual(42, 42), 'numbers are equal');
 	t.ok(isEqual(0 / Infinity, -0 / Infinity), 'opposite sign zeroes are equal');
@@ -51,6 +53,12 @@ test('boxed primitives', function (t) {
 	t.ok(isEqual(Object('foo'), 'foo'), 'String and string are equal');
 	t.ok(isEqual(Object(true), true), 'Boolean true and boolean true are equal');
 	t.ok(isEqual(Object(false), false), 'Boolean false and boolean false are equal');
+	t.ok(isEqual(true, Object(true)), 'boolean true and Boolean true are equal');
+	t.ok(isEqual(false, Object(false)), 'boolean false and Boolean false are equal');
+	t.notOk(isEqual(Object(true), false), 'Boolean true and boolean false are not equal');
+	t.notOk(isEqual(Object(false), true), 'Boolean false and boolean true are not equal');
+	t.notOk(isEqual(false, Object(true)), 'boolean false and Boolean true are not equal');
+	t.notOk(isEqual(true, Object(false)), 'boolean true and Boolean false are not equal');
 	t.ok(isEqual(Object(42), 42), 'Number and number literal are equal');
 	t.end();
 });
@@ -63,7 +71,8 @@ test('dates', function (t) {
 
 test('regexes', function (t) {
 	t.ok(isEqual(/a/g, /a/g), 'two regex literals are equal');
-	t.notOk(isEqual(/a/g, /b/g), 'two different regex literals are not equal');
+	t.notOk(isEqual(/a/g, /b/g), 'two different regex literals (same flags, diff source) are not equal');
+	t.notOk(isEqual(/a/i, /a/g), 'two different regex literals (same source, diff flags) are not equal');
 	t.ok(isEqual(new RegExp('a', 'g'), new RegExp('a', 'g')), 'two regex objects are equal');
 	t.notOk(isEqual(new RegExp('a', 'g'), new RegExp('b', 'g')), 'two different regex objects are equal');
 	t.ok(isEqual(new RegExp('a', 'g'), /a/g), 'regex object and literal, same content, are equal');
@@ -205,7 +214,8 @@ test('functions', function (t) {
 	if (functionsHaveNames) {
 		t.notOk(isEqual(f1, g), 'functions with different names but same implementations are not equal');
 	} else {
-		t.notOk(isEqual(f1, g), '* function names not supported * functions with different names but same implementations are not equal');
+		t.comment('* function names not supported *');
+		t.ok(isEqual(f1, g), 'functions with different names but same implementations should not be equal, but are');
 	}
 	t.ok(isEqual(f1, f2), 'functions with same names but same implementations are equal');
 	t.notOk(isEqual(f1, f3), 'functions with same names but different implementations are not equal');
@@ -215,7 +225,8 @@ test('functions', function (t) {
 	if (functionsHaveNames) {
 		t.notOk(isEqual(emptyFnWithName, fnNoSpace), 'functions with same arity/body, diff name, are not equal');
 	} else {
-		t.notOk(isEqual(emptyFnWithName, fnNoSpace), '* function names not supported * functions with same arity/body, diff name, are not equal');
+		t.comment('* function names not supported *');
+		t.notOk(isEqual(emptyFnWithName, fnNoSpace), 'functions with same arity/body, diff name, should not be equal, but are');
 	}
 	t.notOk(isEqual(emptyFnOneArg, fnNoSpace), 'functions with same name/body, diff arity, are not equal');
 
@@ -288,6 +299,8 @@ test('iterables', function (t) {
 		mt.equal(isEqual(b, a), true, 'equal Maps (b, a) are equal');
 		mt.equal(isEqual(a, c), false, 'unequal Maps (a, c) are not equal');
 		mt.equal(isEqual(b, c), false, 'unequal Maps (b, c) are not equal');
+		mt.equal(isEqual(c, a), false, 'unequal Maps (c, a) are not equal');
+		mt.equal(isEqual(c, b), false, 'unequal Maps (c, b) are not equal');
 
 		mt.end();
 	});
@@ -306,6 +319,8 @@ test('iterables', function (t) {
 		st.ok(isEqual(b, a), 'equal Set (b, a) are equal');
 		st.notOk(isEqual(a, c), 'unequal Set (a, c) are not equal');
 		st.notOk(isEqual(b, c), 'unequal Set (b, c) are not equal');
+		st.notOk(isEqual(c, a), 'unequal Set (c, a) are not equal');
+		st.notOk(isEqual(c, b), 'unequal Set (c, b) are not equal');
 
 		st.test('Sets with strings as iterables', function (sst) {
 			var ab;

@@ -147,8 +147,8 @@ test('objects', function (t) {
 		st.ok(isEqual({ nested: a }, { nested: a }), 'similar hashes with same nested hash are equal');
 		st.ok(isEqual({ nested: a }, { nested: b }), 'similar hashes with similar nested hash are equal');
 
-		st.notOk(isEqual({ a: 42, b: 0 }, { a: 42 }), 'first hash missing a key is not equal');
-		st.notOk(isEqual({ a: 42 }, { a: 42, b: 0 }), 'second hash missing a key is not equal');
+		st.notOk(isEqual({ a: 42, b: 0 }, { a: 42 }), 'second hash missing a key is not equal');
+		st.notOk(isEqual({ a: 42 }, { a: 42, b: 0 }), 'first hash missing a key is not equal');
 
 		st.notOk(isEqual({ a: 1 }, { a: 2 }), 'two objects with equal keys but inequal values are not equal');
 		st.notOk(isEqual({ c: 1 }, { a: 1 }), 'two objects with inequal keys but same values are not equal');

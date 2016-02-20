@@ -232,12 +232,12 @@ test('objects', function (t) {
 		st.equal(
 			isEqualWhy({ a: 42, b: 0 }, { a: 42 }),
 			'first argument has key "b"; second does not',
-			'first hash missing a key is not equal'
+			'second hash missing a key is not equal'
 		);
 		st.equal(
 			isEqualWhy({ a: 42 }, { a: 42, b: 0 }),
 			'second argument has key "b"; first does not',
-			'second hash missing a key is not equal'
+			'first hash missing a key is not equal'
 		);
 
 		st.equal(

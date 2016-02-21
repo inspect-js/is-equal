@@ -628,5 +628,21 @@ test('circular references', function (t) {
 		'two objects with different circular references are not equal'
 	);
 
+	var e = {};
+	var f = {};
+	e.e = e;
+	f.e = null;
+	t.equal(
+		isEqualWhy(e, f),
+		'first argument has a circular reference at key "e"; second does not',
+		'two objects without corresponding circular references are not equal'
+	);
+
+	t.equal(
+		isEqualWhy(f, e),
+		'second argument has a circular reference at key "e"; first does not',
+		'two objects without corresponding circular references are not equal'
+	);
+
 	t.end();
 });

@@ -1,3 +1,10 @@
+1.5.1 / 2016-02-22
+=================
+  * [Fix] fix "why" message for circular reference inequality (#12)
+  * [Refactor] Delete unreachable code (#13)
+  * [Tests] fix assertion messages (#11)
+  * [Docs] fix example (#10)
+
 1.5.0 / 2016-02-15
 =================
   * [New] add “whyNotEqual” at `require(‘is-equal/why’)` to provide an inequality reason

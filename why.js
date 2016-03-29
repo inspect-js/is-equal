@@ -283,7 +283,9 @@ module.exports = function whyNotEqual(value, other) {
 			}
 		}
 		for (key in other) {
-			if (has(other, key) && !has(value, key)) { return 'second argument has key "' + key + '"; first does not'; }
+			if (has(other, key) && !has(value, key)) {
+				return 'second argument has key "' + key + '"; first does not';
+			}
 		}
 		return '';
 	}

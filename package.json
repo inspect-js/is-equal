@@ -52,7 +52,7 @@
 	"devDependencies": {
 		"tape": "^4.5.1",
 		"covert": "^1.1.0",
-		"jscs": "^2.11.0",
+		"jscs": "^3.0.0",
 		"foreach": "^2.0.5",
 		"object.entries": "^1.0.3",
 		"make-arrow-function": "^1.1.0",

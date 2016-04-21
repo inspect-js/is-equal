@@ -60,7 +60,7 @@
 		"semver": "^5.1.0",
 		"eslint": "^2.7.0",
 		"@ljharb/eslint-config": "^2.2.0",
-		"nsp": "^2.3.0",
+		"nsp": "^2.3.1",
 		"replace": "^0.3.0",
 		"es6-shim": "^0.35.0",
 		"core-js": "^2.2.2"

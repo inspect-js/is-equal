@@ -1,3 +1,11 @@
+1.5.2 / 2016-05-18
+=================
+  * [Deps] update `is-callable`
+  * [Dev Deps] update `tape`, `jscs`, `eslint`, `@ljharb/eslint-config`, `nsp`, `es6-shim`, `core-js`
+  * [Tests] up to `node` `v6.1`, `v5.11`, `v4.4`
+  * [Tests] use pretest/posttest for linting/security
+  * [Fix] fix `Object.prototype.toString()` comparison
+
 1.5.1 / 2016-02-22
 =================
   * [Fix] fix "why" message for circular reference inequality (#12)

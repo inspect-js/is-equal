@@ -358,11 +358,14 @@ test('functions', function (t) {
 		var genFnStar = Function('return function* () {};')();
 		var genFnSpaceStar = Function('return function *() {};')();
 		var genNoSpaces = Function('return function*(){};')();
-		st.equal(
-			'second argument is a Generator; first is not',
-			isEqualWhy(fnNoSpace, genNoSpaces),
-			'generator and fn that are otherwise identical are not equal'
-		);
+		var reasonsMap = {
+			'second argument is a Generator; first is not': true,
+			'toStringTag is not the same: [object Function] !== [object GeneratorFunction]': true
+		};
+		var reasons = objectEntries(reasonsMap);
+		var actual = isEqualWhy(fnNoSpace, genNoSpaces);
+		reasonsMap[actual] = true;
+		st.deepEqual(objectEntries(reasonsMap), reasons, 'generator and fn that are otherwise identical are not equal');
 
 		var generators = [genFnStar, genFnSpaceStar, genNoSpaces];
 		forEach(generators, function (generator) {

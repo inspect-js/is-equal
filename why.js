@@ -83,7 +83,7 @@ module.exports = function whyNotEqual(value, other) {
 	}
 
 	var valToStr = toStr.call(value);
-	var otherToStr = toStr.call(value);
+	var otherToStr = toStr.call(other);
 	if (valToStr !== otherToStr) {
 		return 'toStringTag is not the same: ' + valToStr + ' !== ' + otherToStr;
 	}

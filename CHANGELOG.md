@@ -1,3 +1,7 @@
+1.5.3 / 2016-05-24
+=================
+  * [Fix] avoid false circular reference positives with falsy values in nested objects (#24)
+
 1.5.2 / 2016-05-18
 =================
   * [Deps] update `is-callable`

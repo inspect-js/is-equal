@@ -647,5 +647,27 @@ test('circular references', function (t) {
 		'two objects without corresponding circular references are not equal'
 	);
 
+	t.test('false positives', function (st) {
+		st.equal(
+			isEqualWhy({ bar: { baz: 'abc' } }, { bar: { baz: null } }),
+			'value at key "bar" differs: value at key "baz" differs: abc !== null',
+			'two nested structures with a string vs null key are not equal'
+		);
+
+		st.equal(
+			isEqualWhy({ bar: { baz: 'abc' } }, { bar: { baz: undefined } }),
+			'value at key "bar" differs: value at key "baz" differs: abc !== undefined',
+			'two nested structures with a string vs null key are not equal'
+		);
+
+		st.equal(
+			isEqualWhy({ bar: { baz: 'abc' } }, { bar: { baz: '' } }),
+			'value at key "bar" differs: value at key "baz" differs: string values are different: "abc" !== ""',
+			'two nested structures with different string keys are not equal'
+		);
+
+		st.end();
+	});
+
 	t.end();
 });

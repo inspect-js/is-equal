@@ -268,8 +268,8 @@ module.exports = function whyNotEqual(value, other) {
 		for (key in value) {
 			if (has(value, key)) {
 				if (!has(other, key)) { return 'first argument has key "' + key + '"; second does not'; }
-				valueKeyIsRecursive = value[key] && value[key][key] === value;
-				otherKeyIsRecursive = other[key] && other[key][key] === other;
+				valueKeyIsRecursive = !!value[key] && value[key][key] === value;
+				otherKeyIsRecursive = !!other[key] && other[key][key] === other;
 				if (valueKeyIsRecursive !== otherKeyIsRecursive) {
 					if (valueKeyIsRecursive) { return 'first argument has a circular reference at key "' + key + '"; second does not'; }
 					return 'second argument has a circular reference at key "' + key + '"; first does not';

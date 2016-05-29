@@ -10,6 +10,7 @@
 		"max-depth": [2, 5],
 		"max-nested-callbacks": [2, 3],
 		"max-statements": [1, 10],
+		"max-statements-per-line": [2, { "max": 2 }],
 		"no-extra-parens": [1],
 		"no-implicit-coercion": [2, {
 			"boolean": false,

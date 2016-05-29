@@ -522,6 +522,7 @@ test('iterables', function (t) {
 
 		st.test('Sets with strings as iterables', function (sst) {
 			var ab;
+			// eslint-disable-next-line max-statements-per-line
 			try { ab = new Set('ab'); } catch (e) { ab = new Set(); } // node 0.12 throws when given a string
 			if (ab.size !== 2) {
 				// work around IE 11 (and others) bug accepting iterables
@@ -529,6 +530,7 @@ test('iterables', function (t) {
 				ab.add('b');
 			}
 			var ac;
+			// eslint-disable-next-line max-statements-per-line
 			try { ac = new Set('ac'); } catch (e) { ac = new Set(); } // node 0.12 throws when given a string
 			if (ac.size !== 2) {
 				// work around IE 11 (and others) bug accepting iterables

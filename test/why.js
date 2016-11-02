@@ -273,24 +273,24 @@ test('objects', function (t) {
 });
 
 test('functions', function (t) {
-	var f1 = function f() { /* SOME STUFF */ return 1; };
-	var f2 = function f() { /* SOME STUFF */ return 1; };
-	var f3 = function f() { /* SOME DIFFERENT STUFF */ return 2; };
-	var g = function g() { /* SOME STUFF */ return 1; };
-	var anon1 = function () { /* ANONYMOUS! */ return 'anon'; };
-	var anon2 = function () { /* ANONYMOUS! */ return 'anon'; };
+	var f1 = Object(function f() { /* SOME STUFF */ return 1; });
+	var f2 = Object(function f() { /* SOME STUFF */ return 1; });
+	var f3 = Object(function f() { /* SOME DIFFERENT STUFF */ return 2; });
+	var g = Object(function g() { /* SOME STUFF */ return 1; });
+	var anon1 = Object(function () { /* ANONYMOUS! */ return 'anon'; });
+	var anon2 = Object(function () { /* ANONYMOUS! */ return 'anon'; });
 	/* jscs: disable */
 	/* eslint-disable space-before-function-paren */
 	/* eslint-disable space-before-blocks */
-	var fnNoSpace = function(){};
+	var fnNoSpace = Object(function(){});
 	/* eslint-enable space-before-blocks */
 	/* eslint-enable space-before-function-paren */
 	/* jscs: enable */
-	var fnWithSpaceBeforeBody = function () {};
-	var emptyFnWithName = function a() {};
+	var fnWithSpaceBeforeBody = Object(function () {});
+	var emptyFnWithName = Object(function a() {});
 	/* eslint-disable no-unused-vars */
-	var emptyFnOneArg = function (a) {};
-	var anon1withArg = function (a) { /* ANONYMOUS! */ return 'anon'; };
+	var emptyFnOneArg = Object(function (a) {});
+	var anon1withArg = Object(function (a) { /* ANONYMOUS! */ return 'anon'; });
 	/* eslint-enable no-unused-vars */
 
 	/* for code coverage */

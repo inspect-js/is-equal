@@ -16,8 +16,8 @@ var isCallable = require('is-callable');
 
 var isProto = Object.prototype.isPrototypeOf;
 
-var foo = function foo() {};
-var functionsHaveNames = foo.name === 'foo';
+var namedFoo = function foo() {};
+var functionsHaveNames = namedFoo.name === 'foo';
 
 var symbolValue = typeof Symbol === 'function' ? Symbol.prototype.valueOf : null;
 var symbolIterator = require('./getSymbolIterator')();
@@ -53,12 +53,12 @@ var isArray = Array.isArray || function (value) {
 	return toStr.call(value) === '[object Array]';
 };
 
-var normalizeFnWhitespace = function normalizeFnWhitespace(fnStr) {
+var normalizeFnWhitespace = function normalizeWhitespace(fnStr) {
 	// this is needed in IE 9, at least, which has inconsistencies here.
 	return fnStr.replace(/^function ?\(/, 'function (').replace('){', ') {');
 };
 
-var tryMapSetEntries = function tryMapSetEntries(collection) {
+var tryMapSetEntries = function tryCollectionEntries(collection) {
 	var foundEntries = [];
 	try {
 		collectionsForEach.Map.call(collection, function (key, value) {

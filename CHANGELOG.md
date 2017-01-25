@@ -1,3 +1,10 @@
+1.5.4 / 2017-01-25
+=================
+  * Exclude `html` files, which were never intentionally added to the package (#4)
+  * [Deps] update `object-entries`, `is-generator-function`
+  * [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `tape`, `jscs`, `semver`, `nsp`, `es6-shim`; remove extra `object.entries`
+  * [Tests] up to `node` `v7.4`, `v6.9`, `v4.7`; improve test matrix
+
 1.5.3 / 2016-05-24
 =================
   * [Fix] avoid false circular reference positives with falsy values in nested objects (#24)

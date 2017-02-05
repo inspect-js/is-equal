@@ -115,7 +115,7 @@ test('arrays', function (t) {
 	t.equal('', isEqualWhy([], []), 'empty arrays are equal');
 	t.equal('', isEqualWhy([1, 2, 3], [1, 2, 3]), 'same arrays are equal');
 	t.equal(
-		'stringified Arrays differ',
+		'numbers are different: 3 !== 1',
 		isEqualWhy([1, 2, 3], [3, 2, 1]),
 		'arrays in different order with same values are not equal'
 	);
@@ -409,6 +409,22 @@ test('symbols', { skip: !hasSymbols }, function (t) {
 		'Symbol("foo") is not equal to Object(Symbol("foo")), even when the string is the same instance'
 	);
 
+	t.test('arrays containing symbols', function (st) {
+		st.equal(
+			'',
+			isEqualWhy([fooSym], [fooSym]),
+			'Arrays each containing the same instance of Symbol("foo") are equal'
+		);
+
+		st.equal(
+			'first Symbol value !== second Symbol value',
+			isEqualWhy([Symbol(foo)], [Object(Symbol(foo))]),
+			'An array containing Symbol("foo") is not equal to Object(Symbol("foo")), even when the string is the same instance'
+		);
+
+		st.end();
+	});
+
 	t.end();
 });
 
@@ -541,7 +557,7 @@ test('iterables', function (t) {
 				isEqualWhy(ab, ac),
 				symbolIterator
 					? 'iteration results are not equal: value at key "value" differs: string values are different: "b" !== "c"'
-					: 'Collection entries differ: stringified Arrays differ',
+					: 'Collection entries differ: string values are different: "b" !== "c"',
 				'Sets initially populated with different strings are not equal'
 			);
 			sst.end();

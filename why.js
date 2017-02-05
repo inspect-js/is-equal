@@ -160,7 +160,6 @@ module.exports = function whyNotEqual(value, other) {
 		if (value.length !== other.length) {
 			return 'arrays have different length: ' + value.length + ' !== ' + other.length;
 		}
-		if (String(value) !== String(other)) { return 'stringified Arrays differ'; }
 
 		var index = value.length - 1;
 		var equal = '';

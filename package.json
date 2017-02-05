@@ -1,6 +1,6 @@
 {
 	"name": "is-equal",
-	"version": "1.5.4",
+	"version": "1.5.5",
 	"description": "Are these two values conceptually equal?",
 	"author": "Jordan Harband",
 	"license": "MIT",

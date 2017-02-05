@@ -1,3 +1,8 @@
+1.5.5 / 2017-02-05
+=================
+  * [Fix] remove early failure for stringified arrays, to handle Symbols in arrays (https://github.com/mjackson/expect/issues/194)
+  * [Dev Deps] update `eslint`, `@ljharb/eslint-config`
+
 1.5.4 / 2017-01-25
 =================
   * Exclude `html` files, which were never intentionally added to the package (#4)

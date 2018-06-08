@@ -16,9 +16,7 @@
 		"test:corejs": "node test/corejs",
 		"coverage": "covert test/native test/why",
 		"coverage-quiet": "covert test/native.js --quiet",
-		"lint": "npm run --silent jscs && npm run --silent eslint",
-		"jscs": "jscs *.js test/*.js",
-		"eslint": "eslint *.js test/*.js",
+		"lint": "eslint *.js test/*.js",
 		"security": "nsp check"
 	},
 	"repository": {
@@ -56,7 +54,6 @@
 		"es6-shim": "^0.35.3",
 		"eslint": "^4.19.1",
 		"foreach": "^2.0.5",
-		"jscs": "^3.0.7",
 		"make-arrow-function": "^1.1.0",
 		"make-generator-function": "^1.1.0",
 		"nsp": "^3.2.1",

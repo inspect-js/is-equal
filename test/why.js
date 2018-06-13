@@ -702,6 +702,20 @@ test('circular references', function (t) {
 		'two objects without corresponding circular references are not equal'
 	);
 
+	t.test('deeper-nested cycles', function (st) {
+		var a = {};
+		var b = {};
+		a.x = { y: a };
+		b.x = { y: b };
+
+		st.equal(
+			isEqualWhy(a, b),
+			'',
+			'two objects with 2+ level nested cycles are equal'
+		);
+		st.end();
+	});
+
 	t.test('false positives', function (st) {
 		st.equal(
 			isEqualWhy({ bar: { baz: 'abc' } }, { bar: { baz: null } }),

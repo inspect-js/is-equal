@@ -13,6 +13,7 @@ var isRegex = require('is-regex');
 var isString = require('is-string');
 var isSymbol = require('is-symbol');
 var isCallable = require('is-callable');
+var isBigInt = require('is-bigint');
 
 var isProto = Object.prototype.isPrototypeOf;
 
@@ -21,6 +22,8 @@ var functionsHaveNames = namedFoo.name === 'foo';
 
 var symbolValue = typeof Symbol === 'function' ? Symbol.prototype.valueOf : null;
 var symbolIterator = require('./getSymbolIterator')();
+
+var bigIntValue = typeof BigInt === 'function' ? BigInt.prototype.valueOf : null;
 
 var collectionsForEach = require('./getCollectionsForEach')();
 
@@ -183,6 +186,16 @@ module.exports = function whyNotEqual(value, other) {
 	}
 	if (valueIsSym && otherIsSym) {
 		return symbolValue.call(value) === symbolValue.call(other) ? '' : 'first Symbol value !== second Symbol value';
+	}
+
+	var valueIsBigInt = isBigInt(value);
+	var otherIsBigInt = isBigInt(other);
+	if (valueIsBigInt !== otherIsBigInt) {
+		if (valueIsBigInt) { return 'first argument is BigInt; second is not'; }
+		return 'second argument is BigInt; first is not';
+	}
+	if (valueIsBigInt && otherIsBigInt) {
+		return bigIntValue.call(value) === bigIntValue.call(other) ? '' : 'first BigInt value !== second BigInt value';
 	}
 
 	var valueIsGen = isGenerator(value);

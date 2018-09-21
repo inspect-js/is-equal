@@ -427,6 +427,44 @@ test('symbols', { skip: !hasSymbols() }, function (t) {
 	t.end();
 });
 
+var hasBigInts = typeof BigInt === 'function';
+test('bigints', { skip: !hasBigInts }, function (t) {
+	var bigInt = BigInt(42);
+	var objectBigInt = Object(bigInt);
+	t.equal('', isEqualWhy(bigInt, bigInt), '42n is equal to itself');
+	t.equal('', isEqualWhy(bigInt, objectBigInt), '42n is equal to the object form of itself');
+
+	t.equal(
+		'first BigInt value !== second BigInt value',
+		isEqualWhy(bigInt, BigInt(40)),
+		'42n and 40n are not equal'
+	);
+
+	t.test('arrays containing bigints', function (st) {
+		st.equal(
+			'',
+			isEqualWhy([bigInt], [bigInt]),
+			'Arrays each containing 42n are equal'
+		);
+
+		st.equal(
+			'',
+			isEqualWhy([objectBigInt], [Object(bigInt)]),
+			'Arrays each containing different instances of Object(42n) are equal'
+		);
+
+		st.equal(
+			'',
+			isEqualWhy([bigInt], [objectBigInt]),
+			'An array containing 42n is equal to an array containing Object(42n)'
+		);
+
+		st.end();
+	});
+
+	t.end();
+});
+
 var genericIterator = function (obj) {
 	var entries = objectEntries(obj);
 	return function iterator() {

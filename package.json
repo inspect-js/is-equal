@@ -49,18 +49,18 @@
 		"object.entries": "^1.0.4"
 	},
 	"devDependencies": {
-		"@ljharb/eslint-config": "^12.2.1",
+		"@ljharb/eslint-config": "^13.0.0",
 		"core-js": "^2.5.7",
 		"covert": "^1.1.0",
 		"es6-shim": "^0.35.3",
-		"eslint": "^4.19.1",
+		"eslint": "^5.6.0",
 		"foreach": "^2.0.5",
 		"has-symbols": "^1.0.0",
 		"make-arrow-function": "^1.1.0",
 		"make-generator-function": "^1.1.0",
 		"nsp": "^3.2.1",
 		"replace": "^1.0.0",
-		"semver": "^5.5.0",
+		"semver": "^5.5.1",
 		"tape": "^4.9.1"
 	},
 	"testling": {

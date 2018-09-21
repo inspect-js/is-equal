@@ -2,7 +2,7 @@
 
 var test = require('tape');
 var isEqual = require('../');
-var isSymbol = require('is-symbol');
+var hasSymbols = require('has-symbols');
 var genFn = require('make-generator-function');
 var hasGeneratorSupport = typeof genFn === 'function';
 var arrowFunctions = require('make-arrow-function').list();
@@ -250,8 +250,7 @@ test('functions', function (t) {
 	t.end();
 });
 
-var hasSymbols = typeof Symbol === 'function' && isSymbol(Symbol('foo'));
-test('symbols', { skip: !hasSymbols }, function (t) {
+test('symbols', { skip: !hasSymbols() }, function (t) {
 	var foo = 'foo';
 	var fooSym = Symbol(foo);
 	var objectFooSym = Object(fooSym);

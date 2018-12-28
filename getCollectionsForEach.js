@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function () {
+module.exports = function getCollectionsforEach() {
 	var mapForEach = (function () {
 		if (typeof Map !== 'function') { return null; }
 		try {

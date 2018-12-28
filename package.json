@@ -8,7 +8,7 @@
 	"scripts": {
 		"pretest": "npm run --silent lint",
 		"test": "npm run --silent tests-only",
-		"posttest": "npm run --silent security",
+		"posttest": "npm run audit",
 		"tests-only": "npm run --silent test:native && npm run --silent test:why && npm run --silent test:shimmed && npm run --silent test:corejs",
 		"test:native": "node test/native",
 		"test:why": "node test/why",
@@ -17,7 +17,9 @@
 		"coverage": "covert test/native test/why",
 		"coverage-quiet": "covert test/native.js --quiet",
 		"lint": "eslint *.js test/*.js",
-		"security": "nsp check"
+		"preaudit": "npm install --package-lock --package-lock-only",
+		"audit": "npm audit",
+		"postaudit": "rm package-lock.json"
 	},
 	"repository": {
 		"type": "git",

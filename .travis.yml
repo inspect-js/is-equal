@@ -270,3 +270,4 @@ matrix:
     - os: osx
     - env: TEST=true ALLOW_FAILURE=true
     - env: COVERAGE=true
+    - env: POSTTEST=true

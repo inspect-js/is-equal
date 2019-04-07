@@ -51,19 +51,19 @@
 		"object.entries": "^1.1.0"
 	},
 	"devDependencies": {
-		"@ljharb/eslint-config": "^13.1.0",
-		"core-js": "^2.6.1",
-		"covert": "^1.1.0",
-		"es6-shim": "^0.35.4",
-		"eslint": "^5.11.1",
+		"@ljharb/eslint-config": "^13.1.1",
+		"core-js": "^2.6.5",
+		"covert": "^1.1.1",
+		"es6-shim": "^0.35.5",
+		"eslint": "^5.16.0",
 		"foreach": "^2.0.5",
 		"has-symbols": "^1.0.0",
 		"make-arrow-function": "^1.1.0",
 		"make-generator-function": "^1.1.0",
 		"nsp": "^3.2.1",
-		"replace": "^1.0.1",
-		"semver": "^5.6.0",
-		"tape": "^4.9.1"
+		"replace": "^1.1.0",
+		"semver": "^6.0.0",
+		"tape": "^4.10.1"
 	},
 	"testling": {
 		"files": "test/native.js",

@@ -49,7 +49,7 @@
 	},
 	"devDependencies": {
 		"@ljharb/eslint-config": "^13.1.1",
-		"core-js": "^2.6.5",
+		"core-js": "^2.6.5 || ^3",
 		"covert": "^1.1.1",
 		"es6-shim": "^0.35.5",
 		"eslint": "^5.16.0",

@@ -21,6 +21,7 @@ before_install:
   - 'nvm install-latest-npm'
 install:
   - 'if [ "${TRAVIS_NODE_VERSION}" = "0.6" ] || [ "${TRAVIS_NODE_VERSION}" = "0.9" ]; then nvm install --latest-npm 0.8 && npm install && nvm use "${TRAVIS_NODE_VERSION}"; else npm install; fi;'
+  - 'if [ -n "${COREJS}" ]; then npm install --no-save "core-js@${COREJS}"; fi'
 script:
   - 'if [ -n "${PRETEST-}" ]; then npm run pretest ; fi'
   - 'if [ -n "${POSTTEST-}" ]; then npm run posttest ; fi'
@@ -32,6 +33,10 @@ env:
 matrix:
   fast_finish: true
   include:
+    - node_js: "lts/*"
+      env: TEST=true COREJS=2
+    - node_js: "0.10"
+      env: TEST=true COREJS=2
     - node_js: "lts/*"
       env: PRETEST=true
     - node_js: "lts/*"

@@ -57,7 +57,6 @@
 		"has-symbols": "^1.0.0",
 		"make-arrow-function": "^1.1.0",
 		"make-generator-function": "^1.1.0",
-		"nsp": "^3.2.1",
 		"replace": "^1.1.1",
 		"semver": "^6.3.0",
 		"tape": "^4.11.0"

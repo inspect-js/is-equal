@@ -9,6 +9,7 @@
 	"license": "MIT",
 	"main": "index.js",
 	"scripts": {
+		"prepublish": "safe-publish-latest",
 		"pretest": "npm run --silent lint",
 		"test": "npm run --silent tests-only",
 		"posttest": "npx aud",
@@ -51,16 +52,17 @@
 		"object.entries": "^1.1.0"
 	},
 	"devDependencies": {
-		"@ljharb/eslint-config": "^14.1.0",
+		"@ljharb/eslint-config": "^15.0.1",
 		"core-js": "^2.6.5 || ^3",
 		"covert": "^1.1.1",
 		"es6-shim": "^0.35.5",
-		"eslint": "^6.3.0",
+		"eslint": "^6.6.0",
 		"foreach": "^2.0.5",
 		"has-symbols": "^1.0.0",
 		"make-arrow-function": "^1.1.0",
 		"make-generator-function": "^1.1.0",
 		"replace": "^1.1.1",
+		"safe-publish-latest": "^1.1.4",
 		"semver": "^6.3.0",
 		"tape": "^4.11.0"
 	},
@@ -85,5 +87,10 @@
 	},
 	"engines": {
 		"node": ">= 0.4"
+	},
+	"greenkeeper": {
+		"ignore": [
+			"core-js"
+		]
 	}
 }

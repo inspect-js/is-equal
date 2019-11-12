@@ -40,10 +40,12 @@ if (!getPrototypeOf) {
 				oldConstructor;
 			if (has(obj, 'constructor')) {
 				oldConstructor = constructor;
+				// eslint-disable-next-line no-param-reassign
 				if (!(delete obj.constructor)) { // reset constructor
 					return null; // can't delete obj.constructor, return null
 				}
 				constructor = obj.constructor; // get real constructor
+				// eslint-disable-next-line no-param-reassign
 				obj.constructor = oldConstructor; // restore constructor
 			}
 			return constructor ? constructor.prototype : ObjectPrototype; // needed for IE

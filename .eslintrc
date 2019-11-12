@@ -24,5 +24,15 @@
 			"string": true
 		}],
 		"no-restricted-syntax": [2, "BreakStatement", "ContinueStatement", "DebuggerStatement", "LabeledStatement", "WithStatement"]
-	}
+	},
+
+	"overrides": [
+		{
+			"files": "test/**",
+			"rules": {
+				"func-name-matching": 0,
+				"prefer-regex-literals": 0,
+			},
+		},
+	],
 }

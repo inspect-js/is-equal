@@ -1,4 +1,4 @@
-#is-equal <sup>[![Version Badge][2]][1]</sup>
+# is-equal <sup>[![Version Badge][2]][1]</sup>
 
 [![Build Status][3]][4]
 [![dependency status][5]][6]

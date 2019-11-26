@@ -26,12 +26,12 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git://github.com/ljharb/is-equal.git"
+		"url": "git://github.com/inspect-js/is-equal.git"
 	},
 	"bugs": {
-		"url": "https://github.com/ljharb/is-equal/issues"
+		"url": "https://github.com/inspect-js/is-equal/issues"
 	},
-	"homepage": "https://github.com/ljharb/is-equal",
+	"homepage": "https://github.com/inspect-js/is-equal",
 	"keywords": [
 		"equal",
 		"is",

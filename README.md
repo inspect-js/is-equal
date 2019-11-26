@@ -8,8 +8,6 @@
 
 [![npm badge][11]][1]
 
-[![browser support][9]][10]
-
 Are these two values conceptually equal?
 
 ## Example
@@ -47,15 +45,13 @@ assert.equal(
 Simply clone the repo, `npm install`, and run `npm test`
 
 [1]: https://npmjs.org/package/is-equal
-[2]: http://versionbadg.es/ljharb/is-equal.svg
-[3]: https://travis-ci.org/ljharb/is-equal.svg
-[4]: https://travis-ci.org/ljharb/is-equal
-[5]: https://david-dm.org/ljharb/is-equal.svg
-[6]: https://david-dm.org/ljharb/is-equal
-[7]: https://david-dm.org/ljharb/is-equal/dev-status.svg
-[8]: https://david-dm.org/ljharb/is-equal#info=devDependencies
-[9]: https://ci.testling.com/ljharb/is-equal.png
-[10]: https://ci.testling.com/ljharb/is-equal
+[2]: http://versionbadg.es/inspect-js/is-equal.svg
+[3]: https://travis-ci.org/inspect-js/is-equal.svg
+[4]: https://travis-ci.org/inspect-js/is-equal
+[5]: https://david-dm.org/inspect-js/is-equal.svg
+[6]: https://david-dm.org/inspect-js/is-equal
+[7]: https://david-dm.org/inspect-js/is-equal/dev-status.svg
+[8]: https://david-dm.org/inspect-js/is-equal#info=devDependencies
 [11]: https://nodei.co/npm/is-equal.png?downloads=true&stars=true
 [license-image]: http://img.shields.io/npm/l/is-equal.svg
 [license-url]: LICENSE

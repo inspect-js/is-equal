@@ -61,6 +61,8 @@
 		"es6-shim": "^0.35.5",
 		"eslint": "^6.7.1",
 		"foreach": "^2.0.5",
+		"functions-have-names": "^1.2.0",
+		"has-bigints": "^1.0.0",
 		"has-symbols": "^1.0.1",
 		"make-arrow-function": "^1.1.0",
 		"make-generator-function": "^1.1.0",

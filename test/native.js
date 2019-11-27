@@ -2,20 +2,18 @@
 
 var test = require('tape');
 var isEqual = require('../');
-var hasSymbols = require('has-symbols');
+var hasSymbols = require('has-symbols')();
+var hasSymbolShams = require('has-symbols/shams')();
+var hasBigInts = require('has-bigints')();
 var genFn = require('make-generator-function');
 var hasGeneratorSupport = typeof genFn === 'function';
 var arrowFunctions = require('make-arrow-function').list();
 var hasArrowFunctionSupport = arrowFunctions.length > 0;
 var objectEntries = require('object.entries');
 var forEach = require('foreach');
+var functionsHaveNames = require('functions-have-names')();
 
-var collectionsForEach = require('../getCollectionsForEach')();
-
-var fooFn = function fooFn() {};
-var functionsHaveNames = fooFn.name === 'fooFn';
-
-var symbolIterator = require('../getSymbolIterator')();
+var symbolIterator = (hasSymbols || hasSymbolShams) && Symbol.iterator;
 
 var copyFunction = function (fn) {
 	/* eslint-disable no-new-func */
@@ -250,7 +248,7 @@ test('functions', function (t) {
 	t.end();
 });
 
-test('symbols', { skip: !hasSymbols() }, function (t) {
+test('symbols', { skip: !hasSymbols }, function (t) {
 	var foo = 'foo';
 	var fooSym = Symbol(foo);
 	var objectFooSym = Object(fooSym);
@@ -276,7 +274,6 @@ test('symbols', { skip: !hasSymbols() }, function (t) {
 	t.end();
 });
 
-var hasBigInts = typeof BigInt === 'function';
 test('bigints', { skip: !hasBigInts }, function (t) {
 	var bigInt = BigInt(42);
 	var objectBigInt = Object(bigInt);
@@ -321,7 +318,7 @@ var genericIterator = function (obj) {
 };
 
 test('iterables', function (t) {
-	t.test('Maps', { skip: !collectionsForEach.Map }, function (mt) {
+	t.test('Maps', { skip: typeof Map !== 'function' }, function (mt) {
 		var a = new Map();
 		a.set('a', 'b');
 		a.set('c', 'd');
@@ -341,7 +338,7 @@ test('iterables', function (t) {
 		mt.end();
 	});
 
-	t.test('Sets', { skip: !collectionsForEach.Set }, function (st) {
+	t.test('Sets', { skip: typeof Set !== 'function' }, function (st) {
 		var a = new Set();
 		a.add('a');
 		a.add('b');

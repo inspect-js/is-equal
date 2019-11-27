@@ -4,20 +4,18 @@
 
 var test = require('tape');
 var isEqualWhy = require('../why');
-var hasSymbols = require('has-symbols');
+var hasSymbols = require('has-symbols')();
+var hasSymbolShams = require('has-symbols/shams')();
+var hasBigInts = require('has-bigints')();
 var genFn = require('make-generator-function');
 var hasGeneratorSupport = typeof genFn === 'function';
 var arrowFunctions = require('make-arrow-function').list();
 var hasArrowFunctionSupport = arrowFunctions.length > 0;
 var objectEntries = require('object.entries');
 var forEach = require('foreach');
+var functionsHaveNames = require('functions-have-names')();
 
-var collectionsForEach = require('../getCollectionsForEach')();
-
-var fooFn = function fooFn() {};
-var functionsHaveNames = fooFn.name === 'fooFn';
-
-var symbolIterator = require('../getSymbolIterator')();
+var symbolIterator = (hasSymbols || hasSymbolShams) && Symbol.iterator;
 
 var copyFunction = function (fn) {
 	/* eslint-disable no-new-func */
@@ -391,7 +389,7 @@ test('functions', function (t) {
 	t.end();
 });
 
-test('symbols', { skip: !hasSymbols() }, function (t) {
+test('symbols', { skip: !hasSymbols }, function (t) {
 	var foo = 'foo';
 	var fooSym = Symbol(foo);
 	var objectFooSym = Object(fooSym);
@@ -427,7 +425,6 @@ test('symbols', { skip: !hasSymbols() }, function (t) {
 	t.end();
 });
 
-var hasBigInts = typeof BigInt === 'function';
 test('bigints', { skip: !hasBigInts }, function (t) {
 	var bigInt = BigInt(42);
 	var objectBigInt = Object(bigInt);
@@ -480,7 +477,7 @@ var genericIterator = function (obj) {
 };
 
 test('iterables', function (t) {
-	t.test('Maps', { skip: !collectionsForEach.Map }, function (mt) {
+	t.test('Maps', { skip: typeof Map !== 'function' }, function (mt) {
 		var a = new Map();
 		a.set('a', 'b');
 		a.set('c', 'd');
@@ -502,37 +499,29 @@ test('iterables', function (t) {
 		);
 		mt.equal(
 			isEqualWhy(a, c),
-			symbolIterator
-				? 'second argument finished iterating before first'
-				: 'Collection entries differ: arrays have different length: 2 !== 1',
+			'second argument finished iterating before first',
 			'unequal Maps (a, c) are not equal'
 		);
 		mt.equal(
 			isEqualWhy(b, c),
-			symbolIterator
-				? 'second argument finished iterating before first'
-				: 'Collection entries differ: arrays have different length: 2 !== 1',
+			'second argument finished iterating before first',
 			'unequal Maps (b, c) are not equal'
 		);
 		mt.equal(
 			isEqualWhy(c, a),
-			symbolIterator
-				? 'first argument finished iterating before second'
-				: 'Collection entries differ: arrays have different length: 1 !== 2',
+			'first argument finished iterating before second',
 			'unequal Maps (c, a) are not equal'
 		);
 		mt.equal(
 			isEqualWhy(c, b),
-			symbolIterator
-				? 'first argument finished iterating before second'
-				: 'Collection entries differ: arrays have different length: 1 !== 2',
+			'first argument finished iterating before second',
 			'unequal Maps (c, b) are not equal'
 		);
 
 		mt.end();
 	});
 
-	t.test('Sets', { skip: !collectionsForEach.Set }, function (st) {
+	t.test('Sets', { skip: typeof Set !== 'function' }, function (st) {
 		var a = new Set();
 		a.add('a');
 		a.add('b');

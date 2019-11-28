@@ -4,6 +4,7 @@ var ObjectPrototype = Object.prototype;
 var toStr = ObjectPrototype.toString;
 var booleanValue = Boolean.prototype.valueOf;
 var has = require('has');
+var isArray = require('isarray');
 var isArrowFunction = require('is-arrow-function');
 var isBoolean = require('is-boolean-object');
 var isDate = require('is-date-object');
@@ -14,18 +15,19 @@ var isString = require('is-string');
 var isSymbol = require('is-symbol');
 var isCallable = require('is-callable');
 var isBigInt = require('is-bigint');
+var getIterator = require('es-get-iterator');
+var whichCollection = require('which-collection');
+var whichBoxedPrimitive = require('which-boxed-primitive');
+
+var objectType = function (v) { return whichCollection(v) || whichBoxedPrimitive(v) || typeof v; };
 
 var isProto = Object.prototype.isPrototypeOf;
 
-var namedFoo = function foo() {};
-var functionsHaveNames = namedFoo.name === 'foo';
+var functionsHaveNames = require('functions-have-names')();
 
 var symbolValue = typeof Symbol === 'function' ? Symbol.prototype.valueOf : null;
-var symbolIterator = require('./getSymbolIterator')();
 
 var bigIntValue = typeof BigInt === 'function' ? BigInt.prototype.valueOf : null;
-
-var collectionsForEach = require('./getCollectionsForEach')();
 
 var getPrototypeOf = Object.getPrototypeOf;
 if (!getPrototypeOf) {
@@ -54,31 +56,9 @@ if (!getPrototypeOf) {
 	/* eslint-enable no-proto */
 }
 
-var isArray = Array.isArray || function (value) {
-	return toStr.call(value) === '[object Array]';
-};
-
 var normalizeFnWhitespace = function normalizeWhitespace(fnStr) {
 	// this is needed in IE 9, at least, which has inconsistencies here.
 	return fnStr.replace(/^function ?\(/, 'function (').replace('){', ') {');
-};
-
-var tryMapSetEntries = function tryCollectionEntries(collection) {
-	var foundEntries = [];
-	try {
-		collectionsForEach.Map.call(collection, function (key, value) {
-			foundEntries.push([key, value]);
-		});
-	} catch (notMap) {
-		try {
-			collectionsForEach.Set.call(collection, function (value) {
-				foundEntries.push([value]);
-			});
-		} catch (notSet) {
-			return false;
-		}
-	}
-	return foundEntries;
 };
 
 module.exports = function whyNotEqual(value, other) {
@@ -238,44 +218,27 @@ module.exports = function whyNotEqual(value, other) {
 		if (isProto.call(other, value)) { return 'second argument is the [[Prototype]] of the first'; }
 		if (getPrototypeOf(value) !== getPrototypeOf(other)) { return 'arguments have a different [[Prototype]]'; }
 
-		if (symbolIterator) {
-			var valueIteratorFn = value[symbolIterator];
-			var valueIsIterable = isCallable(valueIteratorFn);
-			var otherIteratorFn = other[symbolIterator];
-			var otherIsIterable = isCallable(otherIteratorFn);
-			if (valueIsIterable !== otherIsIterable) {
-				if (valueIsIterable) { return 'first argument is iterable; second is not'; }
-				return 'second argument is iterable; first is not';
-			}
-			if (valueIsIterable && otherIsIterable) {
-				var valueIterator = valueIteratorFn.call(value);
-				var otherIterator = otherIteratorFn.call(other);
-				var valueNext, otherNext, nextWhy;
-				do {
-					valueNext = valueIterator.next();
-					otherNext = otherIterator.next();
-					if (!valueNext.done && !otherNext.done) {
-						nextWhy = whyNotEqual(valueNext, otherNext);
-						if (nextWhy !== '') {
-							return 'iteration results are not equal: ' + nextWhy;
-						}
+		var valueIterator = getIterator(value);
+		var otherIterator = getIterator(other);
+		if (!!valueIterator !== !!otherIterator) {
+			if (valueIterator) { return 'first argument is iterable; second is not'; }
+			return 'second argument is iterable; first is not';
+		}
+		if (valueIterator && otherIterator) { // both should be truthy or falsy at this point
+			var valueNext, otherNext, nextWhy;
+			do {
+				valueNext = valueIterator.next();
+				otherNext = otherIterator.next();
+				if (!valueNext.done && !otherNext.done) {
+					nextWhy = whyNotEqual(valueNext, otherNext);
+					if (nextWhy !== '') {
+						return 'iteration results are not equal: ' + nextWhy;
 					}
-				} while (!valueNext.done && !otherNext.done);
-				if (valueNext.done && !otherNext.done) { return 'first argument finished iterating before second'; }
-				if (!valueNext.done && otherNext.done) { return 'second argument finished iterating before first'; }
-				return '';
-			}
-		} else if (collectionsForEach.Map || collectionsForEach.Set) {
-			var valueEntries = tryMapSetEntries(value);
-			var otherEntries = tryMapSetEntries(other);
-			var valueEntriesIsArray = isArray(valueEntries);
-			var otherEntriesIsArray = isArray(otherEntries);
-			if (valueEntriesIsArray && !otherEntriesIsArray) { return 'first argument has Collection entries, second does not'; }
-			if (!valueEntriesIsArray && otherEntriesIsArray) { return 'second argument has Collection entries, first does not'; }
-			if (valueEntriesIsArray && otherEntriesIsArray) {
-				var entriesWhy = whyNotEqual(valueEntries, otherEntries);
-				return entriesWhy === '' ? '' : 'Collection entries differ: ' + entriesWhy;
-			}
+				}
+			} while (!valueNext.done && !otherNext.done);
+			if (valueNext.done && !otherNext.done) { return 'first ' + objectType(value) + ' argument finished iterating before second ' + objectType(other); }
+			if (!valueNext.done && otherNext.done) { return 'second ' + objectType(other) + ' argument finished iterating before first ' + objectType(value); }
+			return '';
 		}
 
 		var key, valueKeyIsRecursive, otherKeyIsRecursive, keyWhy;

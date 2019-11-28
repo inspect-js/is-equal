@@ -1,5 +1,7 @@
 'use strict';
 
+// TODO: delete in next semver-major
+
 module.exports = function getCollectionsforEach() {
 	var mapForEach = (function () {
 		if (typeof Map !== 'function') { return null; }

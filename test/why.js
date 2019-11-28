@@ -499,22 +499,22 @@ test('iterables', function (t) {
 		);
 		mt.equal(
 			isEqualWhy(a, c),
-			'second argument finished iterating before first',
+			'second Map argument finished iterating before first Map',
 			'unequal Maps (a, c) are not equal'
 		);
 		mt.equal(
 			isEqualWhy(b, c),
-			'second argument finished iterating before first',
+			'second Map argument finished iterating before first Map',
 			'unequal Maps (b, c) are not equal'
 		);
 		mt.equal(
 			isEqualWhy(c, a),
-			'first argument finished iterating before second',
+			'first Map argument finished iterating before second Map',
 			'unequal Maps (c, a) are not equal'
 		);
 		mt.equal(
 			isEqualWhy(c, b),
-			'first argument finished iterating before second',
+			'first Map argument finished iterating before second Map',
 			'unequal Maps (c, b) are not equal'
 		);
 
@@ -535,30 +535,22 @@ test('iterables', function (t) {
 		st.equal('', isEqualWhy(b, a), 'equal Set (b, a) are equal');
 		st.equal(
 			isEqualWhy(a, c),
-			symbolIterator
-				? 'second argument finished iterating before first'
-				: 'Collection entries differ: arrays have different length: 2 !== 1',
+			'second Set argument finished iterating before first Set',
 			'unequal Set (a, c) are not equal'
 		);
 		st.equal(
 			isEqualWhy(b, c),
-			symbolIterator
-				? 'second argument finished iterating before first'
-				: 'Collection entries differ: arrays have different length: 2 !== 1',
+			'second Set argument finished iterating before first Set',
 			'unequal Set (b, c) are not equal'
 		);
 		st.equal(
 			isEqualWhy(c, a),
-			symbolIterator
-				? 'first argument finished iterating before second'
-				: 'Collection entries differ: arrays have different length: 1 !== 2',
+			'first Set argument finished iterating before second Set',
 			'unequal Set (c, a) are not equal'
 		);
 		st.equal(
 			isEqualWhy(c, b),
-			symbolIterator
-				? 'first argument finished iterating before second'
-				: 'Collection entries differ: arrays have different length: 1 !== 2',
+			'first Set argument finished iterating before second Set',
 			'unequal Set (b, c) are not equal'
 		);
 
@@ -581,9 +573,7 @@ test('iterables', function (t) {
 			}
 			st.equal(
 				isEqualWhy(ab, ac),
-				symbolIterator
-					? 'iteration results are not equal: value at key "value" differs: string values are different: "b" !== "c"'
-					: 'Collection entries differ: string values are different: "b" !== "c"',
+				'iteration results are not equal: value at key "value" differs: string values are different: "b" !== "c"',
 				'Sets initially populated with different strings are not equal'
 			);
 			sst.end();
@@ -638,12 +628,12 @@ test('iterables', function (t) {
 
 		it.equal(
 			isEqualWhy(c, d),
-			'first argument finished iterating before second',
+			'first object argument finished iterating before second object',
 			'iterable c / iterable d are not equal'
 		);
 		it.equal(
 			isEqualWhy(d, c),
-			'second argument finished iterating before first',
+			'second object argument finished iterating before first object',
 			'iterable d / iterable c are not equal'
 		);
 

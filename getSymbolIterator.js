@@ -1,5 +1,7 @@
 'use strict';
 
+// TODO: delete in next semver-major
+
 var isSymbol = require('is-symbol');
 
 module.exports = function getSymbolIterator() {

@@ -15,7 +15,7 @@
 		"pretest": "npm run --silent lint",
 		"test": "npm run --silent tests-only",
 		"posttest": "npx aud",
-		"tests-only": "npm run --silent test:native && npm run --silent test:why && npm run --silent test:shimmed && npm run --silent test:corejs",
+		"tests-only": "npm run test:native && npm run test:why && npm run test:shimmed && npm run test:corejs",
 		"test:native": "node test/native",
 		"test:why": "node test/why",
 		"test:shimmed": "node test/shimmed",
@@ -40,6 +40,8 @@
 		"equality"
 	],
 	"dependencies": {
+		"es-get-iterator": "^1.0.1",
+		"functions-have-names": "^1.2.0",
 		"has": "^1.0.3",
 		"is-arrow-function": "^2.0.3",
 		"is-bigint": "^1.0.0",
@@ -51,7 +53,11 @@
 		"is-regex": "^1.0.4",
 		"is-string": "^1.0.4",
 		"is-symbol": "^1.0.3",
-		"object.entries": "^1.1.0"
+		"isarray": "^2.0.5",
+		"object-inspect": "^1.7.0",
+		"object.entries": "^1.1.0",
+		"which-boxed-primitive": "^1.0.1",
+		"which-collection": "^1.0.0"
 	},
 	"devDependencies": {
 		"@ljharb/eslint-config": "^15.0.2",
@@ -61,7 +67,6 @@
 		"es6-shim": "^0.35.5",
 		"eslint": "^6.7.1",
 		"foreach": "^2.0.5",
-		"functions-have-names": "^1.2.0",
 		"has-bigints": "^1.0.0",
 		"has-symbols": "^1.0.1",
 		"make-arrow-function": "^1.1.0",

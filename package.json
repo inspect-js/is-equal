@@ -71,9 +71,7 @@
 		"has-symbols": "^1.0.1",
 		"make-arrow-function": "^1.1.0",
 		"make-generator-function": "^1.1.0",
-		"replace": "^1.1.1",
 		"safe-publish-latest": "^1.1.4",
-		"semver": "^6.3.0",
 		"tape": "^4.11.0"
 	},
 	"testling": {

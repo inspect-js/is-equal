@@ -7,8 +7,8 @@ var isEqualWhy = require('../why');
 var hasSymbols = require('has-symbols')();
 var hasSymbolShams = require('has-symbols/shams')();
 var hasBigInts = require('has-bigints')();
-var genFn = require('make-generator-function');
-var hasGeneratorSupport = typeof genFn === 'function';
+var generators = require('make-generator-function')();
+var hasGeneratorSupport = generators.length > 0;
 var arrowFunctions = require('make-arrow-function').list();
 var hasArrowFunctionSupport = arrowFunctions.length > 0;
 var objectEntries = require('object.entries');
@@ -19,7 +19,11 @@ var symbolIterator = (hasSymbols || hasSymbolShams) && Symbol.iterator;
 
 var copyFunction = function (fn) {
 	/* eslint-disable no-new-func */
-	return Function('return ' + String(fn))();
+	try {
+		return Function('return ' + String(fn))();
+	} catch (e) {
+		return Function('return {' + String(fn) + '}["' + fn.name + '"];')();
+	}
 };
 
 test('primitives', function (t) {
@@ -365,8 +369,7 @@ test('functions', function (t) {
 		reasonsMap[actual] = true;
 		st.deepEqual(objectEntries(reasonsMap), reasons, 'generator and fn that are otherwise identical are not equal');
 
-		var generators = [genFnStar, genFnSpaceStar, genNoSpaces];
-		forEach(generators, function (generator) {
+		forEach(generators.concat(genFnStar, genFnSpaceStar, genNoSpaces), function (generator) {
 			st.equal('', isEqualWhy(generator, generator), generator + ' is equal to itself');
 			st.equal('', isEqualWhy(generator, copyFunction(generator)), generator + ' is equal to copyFunction(generator)');
 		});
@@ -571,7 +574,7 @@ test('iterables', function (t) {
 				ac.add('a');
 				ac.add('c');
 			}
-			st.equal(
+			sst.equal(
 				isEqualWhy(ab, ac),
 				'iteration results are not equal: value at key "value" differs: string values are different: "b" !== "c"',
 				'Sets initially populated with different strings are not equal'

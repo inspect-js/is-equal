@@ -61,7 +61,8 @@
 	},
 	"devDependencies": {
 		"@ljharb/eslint-config": "^16.0.0",
-		"auto-changelog": "^1.16.3",
+		"aud": "^1.1.0",
+		"auto-changelog": "^2.0.0",
 		"core-js": "^2.6.5 || ^3",
 		"covert": "^1.1.1",
 		"es6-shim": "^0.35.5",

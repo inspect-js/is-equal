@@ -55,7 +55,7 @@
 		"is-symbol": "^1.0.3",
 		"isarray": "^2.0.5",
 		"object-inspect": "^1.7.0",
-		"object.entries": "^1.1.1",
+		"object.entries": "^1.1.2",
 		"which-boxed-primitive": "^1.0.1",
 		"which-collection": "^1.0.1"
 	},

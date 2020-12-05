@@ -1,3 +1,5 @@
+# gitignore
+
 lib-cov
 *.seed
 *.log
@@ -15,5 +17,13 @@ npm-debug.log
 node_modules
 
 html/
-.travis.yml
-Makefile
+
+# Only apps should have lockfiles
+npm-shrinkwrap.json
+package-lock.json
+yarn.lock
+
+coverage/
+.nyc_output/
+
+.github/workflows

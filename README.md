@@ -1,6 +1,5 @@
 # is-equal <sup>[![Version Badge][2]][1]</sup>
 
-[![Build Status][3]][4]
 [![dependency status][5]][6]
 [![dev dependency status][7]][8]
 [![License][license-image]][license-url]
@@ -46,8 +45,6 @@ Simply clone the repo, `npm install`, and run `npm test`
 
 [1]: https://npmjs.org/package/is-equal
 [2]: http://versionbadg.es/inspect-js/is-equal.svg
-[3]: https://travis-ci.org/inspect-js/is-equal.svg
-[4]: https://travis-ci.org/inspect-js/is-equal
 [5]: https://david-dm.org/inspect-js/is-equal.svg
 [6]: https://david-dm.org/inspect-js/is-equal
 [7]: https://david-dm.org/inspect-js/is-equal/dev-status.svg

@@ -44,14 +44,14 @@ assert.equal(
 Simply clone the repo, `npm install`, and run `npm test`
 
 [1]: https://npmjs.org/package/is-equal
-[2]: http://versionbadg.es/inspect-js/is-equal.svg
+[2]: https://versionbadg.es/inspect-js/is-equal.svg
 [5]: https://david-dm.org/inspect-js/is-equal.svg
 [6]: https://david-dm.org/inspect-js/is-equal
 [7]: https://david-dm.org/inspect-js/is-equal/dev-status.svg
 [8]: https://david-dm.org/inspect-js/is-equal#info=devDependencies
 [11]: https://nodei.co/npm/is-equal.png?downloads=true&stars=true
-[license-image]: http://img.shields.io/npm/l/is-equal.svg
+[license-image]: https://img.shields.io/npm/l/is-equal.svg
 [license-url]: LICENSE
-[downloads-image]: http://img.shields.io/npm/dm/is-equal.svg
-[downloads-url]: http://npm-stat.com/charts.html?package=is-equal
+[downloads-image]: https://img.shields.io/npm/dm/is-equal.svg
+[downloads-url]: https://npm-stat.com/charts.html?package=is-equal
 

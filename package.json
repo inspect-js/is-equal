@@ -58,7 +58,7 @@
 		"@ljharb/eslint-config": "^17.6.0",
 		"aud": "^1.1.5",
 		"auto-changelog": "^2.2.1",
-		"core-js": "^2.6.5 || ^3",
+		"core-js": "^2.6.5 || ^3 <3.9",
 		"es6-shim": "^0.35.6",
 		"eslint": "^7.25.0",
 		"foreach": "^2.0.5",

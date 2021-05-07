@@ -4,6 +4,8 @@
 	"reporter": ["text-summary", "text", "html", "json"],
 	"exclude": [
 		"coverage",
-		"test"
+		"test",
+		"getCollectionsForEach.js",
+		"getSymbolIterator.js"
 	]
 }

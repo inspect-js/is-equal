@@ -85,7 +85,7 @@ module.exports = function whyNotEqual(value, other) {
 	}
 
 	var valIsNumber = isNumber(value);
-	var otherIsNumber = isNumber(value);
+	var otherIsNumber = isNumber(other);
 	if (valIsNumber || otherIsNumber) {
 		if (!valIsNumber) { return 'first argument is not a number; second argument is'; }
 		if (!otherIsNumber) { return 'second argument is not a number; first argument is'; }

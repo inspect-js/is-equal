@@ -14,8 +14,10 @@ var hasArrowFunctionSupport = arrowFunctions.length > 0;
 var objectEntries = require('object.entries');
 var forEach = require('foreach');
 var functionsHaveNames = require('functions-have-names')();
+var inspect = require('object-inspect');
 
 var symbolIterator = (hasSymbols || hasSymbolShams) && Symbol.iterator;
+var symbolToStringTag = (hasSymbols || hasSymbolShams) && Symbol.toStringTag;
 
 var copyFunction = function (fn) {
 	/* eslint-disable no-new-func */
@@ -42,6 +44,20 @@ test('primitives', function (t) {
 
 test('NaN', function (t) {
 	t.equal('', isEqualWhy(NaN, NaN), 'NaNs are equal');
+
+	t.test('fakes', { skip: !symbolToStringTag }, function (st) {
+		var notNaN = { valueOf: function () { return NaN; } };
+		notNaN[symbolToStringTag] = 'Number';
+
+		st.equal(isEqualWhy(NaN, notNaN), 'second argument is not a number; first argument is', 'NaN and ' + inspect(notNaN) + ' are not equal');
+		st.equal(isEqualWhy(notNaN, NaN), 'first argument is not a number; second argument is', inspect(notNaN) + ' and NaN are not equal');
+
+		st.equal(isEqualWhy(NaN, Infinity), 'first argument is NaN; second is not', 'NaN and Infinity are not equal');
+		st.equal(isEqualWhy(Infinity, NaN), 'second argument is NaN; first is not', 'Infinity and NaN are not equal');
+
+		st.end();
+	});
+
 	t.end();
 });
 

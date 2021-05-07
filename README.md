@@ -56,7 +56,7 @@ Simply clone the repo, `npm install`, and run `npm test`
 [license-url]: LICENSE
 [downloads-image]: https://img.shields.io/npm/dm/is-equal.svg
 [downloads-url]: https://npm-stat.com/charts.html?package=is-equal
-[codecov-image]: https://codecov.io/gh/inspect-jd/is-equal/branch/main/graphs/badge.svg
-[codecov-url]: https://app.codecov.io/gh/inspect-jd/is-equal/
-[actions-image]: https://img.shields.io/endpoint?url=https://github-actions-badge-u3jn4tfpocch.runkit.sh/inspect-jd/is-equal
-[actions-url]: https://github.com/inspect-jd/is-equal/actions
+[codecov-image]: https://codecov.io/gh/inspect-js/is-equal/branch/main/graphs/badge.svg
+[codecov-url]: https://app.codecov.io/gh/inspect-js/is-equal/
+[actions-image]: https://img.shields.io/endpoint?url=https://github-actions-badge-u3jn4tfpocch.runkit.sh/inspect-js/is-equal
+[actions-url]: https://github.com/inspect-js/is-equal/actions

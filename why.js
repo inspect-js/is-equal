@@ -18,6 +18,7 @@ var isBigInt = require('is-bigint');
 var getIterator = require('es-get-iterator');
 var whichCollection = require('which-collection');
 var whichBoxedPrimitive = require('which-boxed-primitive');
+var getPrototypeOf = require('object.getprototypeof/polyfill')();
 
 var objectType = function (v) { return whichCollection(v) || whichBoxedPrimitive(v) || typeof v; };
 
@@ -28,33 +29,6 @@ var functionsHaveNames = require('functions-have-names')();
 var symbolValue = typeof Symbol === 'function' ? Symbol.prototype.valueOf : null;
 
 var bigIntValue = typeof BigInt === 'function' ? BigInt.prototype.valueOf : null;
-
-var getPrototypeOf = Object.getPrototypeOf;
-if (!getPrototypeOf) {
-	/* eslint-disable no-proto */
-	if (typeof 'test'.__proto__ === 'object') {
-		getPrototypeOf = function (obj) {
-			return obj.__proto__;
-		};
-	} else {
-		getPrototypeOf = function (obj) {
-			var constructor = obj.constructor,
-				oldConstructor;
-			if (has(obj, 'constructor')) {
-				oldConstructor = constructor;
-				// eslint-disable-next-line no-param-reassign
-				if (!(delete obj.constructor)) { // reset constructor
-					return null; // can't delete obj.constructor, return null
-				}
-				constructor = obj.constructor; // get real constructor
-				// eslint-disable-next-line no-param-reassign
-				obj.constructor = oldConstructor; // restore constructor
-			}
-			return constructor ? constructor.prototype : ObjectPrototype; // needed for IE
-		};
-	}
-	/* eslint-enable no-proto */
-}
 
 var normalizeFnWhitespace = function normalizeWhitespace(fnStr) {
 	// this is needed in IE 9, at least, which has inconsistencies here.

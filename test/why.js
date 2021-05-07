@@ -377,7 +377,7 @@ test('functions', function (t) {
 		var genFnSpaceStar = Function('return function *() {};')();
 		var genNoSpaces = Function('return function*(){};')();
 		var reasonsMap = {
-			'second argument is a Generator; first is not': true,
+			'second argument is a Generator function; first is not': true,
 			'toStringTag is not the same: [object Function] !== [object GeneratorFunction]': true
 		};
 		var reasons = objectEntries(reasonsMap);
@@ -395,7 +395,7 @@ test('functions', function (t) {
 	t.test('arrow functions', { skip: !hasArrowFunctionSupport }, function (st) {
 		forEach(arrowFunctions, function (fn) {
 			st.equal(
-				'second argument is an Arrow function; first is not',
+				'second argument is an arrow function; first is not',
 				isEqualWhy(fnNoSpace, fn),
 				fn + ' not equal to ' + fnNoSpace
 			);

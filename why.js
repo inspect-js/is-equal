@@ -183,15 +183,15 @@ module.exports = function whyNotEqual(value, other) {
 	var valueIsGen = isGenerator(value);
 	var otherIsGen = isGenerator(other);
 	if (valueIsGen !== otherIsGen) {
-		if (valueIsGen) { return 'first argument is a Generator; second is not'; }
-		return 'second argument is a Generator; first is not';
+		if (valueIsGen) { return 'first argument is a Generator function; second is not'; }
+		return 'second argument is a Generator function; first is not';
 	}
 
 	var valueIsArrow = isArrowFunction(value);
 	var otherIsArrow = isArrowFunction(other);
 	if (valueIsArrow !== otherIsArrow) {
-		if (valueIsArrow) { return 'first argument is an Arrow function; second is not'; }
-		return 'second argument is an Arrow function; first is not';
+		if (valueIsArrow) { return 'first argument is an arrow function; second is not'; }
+		return 'second argument is an arrow function; first is not';
 	}
 
 	if (isCallable(value) || isCallable(other)) {

@@ -7,14 +7,13 @@ var isEqualWhy = require('../why');
 var hasSymbols = require('has-symbols')();
 var hasSymbolShams = require('has-symbols/shams')();
 var hasBigInts = require('has-bigints')();
-var generators = require('make-generator-function')();
-var hasGeneratorSupport = generators.length > 0;
 var arrowFunctions = require('make-arrow-function').list();
-var hasArrowFunctionSupport = arrowFunctions.length > 0;
 var objectEntries = require('object.entries');
 var forEach = require('foreach');
 var functionsHaveNames = require('functions-have-names')();
 var inspect = require('object-inspect');
+var v = require('es-value-fixtures');
+var hasGeneratorSupport = v.generatorFunctions.length > 0;
 
 var symbolIterator = (hasSymbols || hasSymbolShams) && Symbol.iterator;
 var symbolToStringTag = (hasSymbols || hasSymbolShams) && Symbol.toStringTag;
@@ -28,24 +27,127 @@ var copyFunction = function (fn) {
 	}
 };
 
-test('primitives', function (t) {
-	t.equal('', isEqualWhy(), 'undefineds are equal');
+test('nullish', function (t) {
+	t.equal('', isEqualWhy(), 'absent undefineds are equal');
+	t.equal('', isEqualWhy(undefined, undefined), 'present undefineds are equal');
 	t.equal('', isEqualWhy(null, null), 'nulls are equal');
-	t.equal('', isEqualWhy(true, true), 'trues are equal');
-	t.equal('', isEqualWhy(false, false), 'falses are equal');
-	t.equal('primitive value of boolean arguments do not match: true !== false', isEqualWhy(true, false), 'true:false is not equal');
-	t.equal('primitive value of boolean arguments do not match: false !== true', isEqualWhy(false, true), 'false:true is not equal');
-	t.equal('', isEqualWhy('foo', 'foo'), 'strings are equal');
-	t.equal('', isEqualWhy(42, 42), 'numbers are equal');
-	t.equal('', isEqualWhy(0 / Infinity, -0 / Infinity), 'opposite sign zeroes are equal');
-	t.equal('', isEqualWhy(Infinity, Infinity), 'infinities are equal');
+
 	t.end();
 });
 
-test('NaN', function (t) {
-	t.equal('', isEqualWhy(NaN, NaN), 'NaNs are equal');
+test('strings', function (t) {
+	forEach(v.strings, function (str) {
+		t.equal(isEqualWhy(str, str), '', inspect(str) + ' is equal to itself');
+
+		var obj = Object(str);
+		t.equal(
+			isEqualWhy(obj, str),
+			'',
+			inspect(obj) + ' and ' + inspect(str) + ' are equal'
+		);
+		t.equal(
+			isEqualWhy(str, obj),
+			'',
+			inspect(str) + ' and ' + inspect(obj) + ' are equal'
+		);
+	});
 
 	t.test('fakes', { skip: !symbolToStringTag }, function (st) {
+		forEach(v.strings, function (str) {
+			var fake = { toString: function () { return str; } };
+			fake[symbolToStringTag] = 'String';
+
+			st.equal(
+				isEqualWhy(fake, str),
+				'second argument is string; first is not',
+				inspect(fake) + ' and ' + inspect(str) + ' are not equal'
+			);
+			st.equal(
+				isEqualWhy(str, fake),
+				'first argument is string; second is not',
+				inspect(str) + ' and ' + inspect(fake) + ' are not equal'
+			);
+		});
+
+		st.end();
+	});
+
+	t.equal(
+		isEqualWhy('42', 42),
+		'toStringTag is not the same: [object String] !== [object Number]',
+		'"42" and 42 are not equal'
+	);
+	t.equal(
+		isEqualWhy(42, '42'),
+		'toStringTag is not the same: [object Number] !== [object String]',
+		'42 and "42" are not equal'
+	);
+
+	t.end();
+});
+
+test('booleans', function (t) {
+	forEach(v.booleans, function (bool) {
+		t.equal(isEqualWhy(bool, bool), '', inspect(bool) + ' is equal to itself');
+		t.equal(
+			isEqualWhy(bool, !bool),
+			'primitive value of boolean arguments do not match: ' + bool + ' !== ' + !bool,
+			inspect(bool) + ' and ' + inspect(!bool) + ' are not equal'
+		);
+
+		var str = String(bool);
+		t.equal(
+			isEqualWhy(str, bool),
+			'toStringTag is not the same: [object String] !== [object Boolean]',
+			inspect(str) + ' and ' + inspect(bool) + ' are not equal'
+		);
+		t.equal(
+			isEqualWhy(bool, str),
+			'toStringTag is not the same: [object Boolean] !== [object String]',
+			inspect(bool) + ' and ' + inspect(str) + ' are not equal'
+		);
+
+		var obj = Object(bool);
+		t.equal(
+			isEqualWhy(obj, bool),
+			'',
+			inspect(obj) + ' and ' + inspect(bool) + ' are equal'
+		);
+		t.equal(
+			isEqualWhy(bool, obj),
+			'',
+			inspect(bool) + ' and ' + inspect(obj) + ' are equal'
+		);
+	});
+
+	t.test('fakes', { skip: !symbolToStringTag }, function (st) {
+		forEach(v.booleans, function (bool) {
+			var fake = { valueOf: function () { return bool; } };
+			if (symbolToStringTag) {
+				fake[symbolToStringTag] = 'Boolean';
+			}
+			st.equal(
+				isEqualWhy(fake, bool),
+				'first argument is not a boolean; second argument is',
+				inspect(fake) + ' and ' + inspect(bool) + ' are not equal'
+			);
+			st.equal(
+				isEqualWhy(bool, fake),
+				'second argument is not a boolean; first argument is',
+				inspect(bool) + ' and ' + inspect(fake) + ' are not equal'
+			);
+		});
+
+		st.end();
+	});
+
+	t.end();
+});
+
+test('numbers', function (t) {
+	t.equal(isEqualWhy(NaN, NaN), '', 'NaNs are equal');
+
+	t.test('fake', { skip: !symbolToStringTag }, function (st) {
 		var notNaN = { valueOf: function () { return NaN; } };
 		notNaN[symbolToStringTag] = 'Number';
 
@@ -57,6 +159,13 @@ test('NaN', function (t) {
 
 		st.end();
 	});
+
+	forEach(v.numbers, function (num) {
+		t.equal(isEqualWhy(num, num), '', inspect(num) + ' is equal to itself');
+	});
+
+	t.equal(isEqualWhy(+0, -0), '', '+0 and -0 are equal');
+	t.equal(isEqualWhy(-0, +0), '', '-0 and +0 are equal');
 
 	t.end();
 });
@@ -93,63 +202,145 @@ test('boxed primitives', function (t) {
 });
 
 test('dates', function (t) {
-	t.equal('', isEqualWhy(new Date(123), new Date(123)), 'two dates with the same timestamp are equal');
 	t.equal(
-		'Dates have different time values: 123 !== 456',
+		isEqualWhy(new Date(123), new Date(123)),
+		'',
+		'two dates with the same timestamp are equal'
+	);
+	t.equal(
 		isEqualWhy(new Date(123), new Date(456)),
+		'Dates have different time values: 123 !== 456',
 		'two dates with different timestamp are not equal'
 	);
+
+	t.test('fake', { skip: !symbolToStringTag }, function (st) {
+		var date = new Date(123);
+		var fake = {
+			__proto__: Date.prototype,
+			toString: function () { return String(date); },
+			valueOf: function () { return +date; }
+		};
+		fake[symbolToStringTag] = 'Date';
+
+		st.equal(
+			isEqualWhy(fake, date),
+			'second argument is Date, first is not',
+			inspect(fake) + ' and ' + inspect(date) + ' are not equal'
+		);
+		st.equal(
+			isEqualWhy(date, fake),
+			'first argument is Date, second is not',
+			inspect(date) + ' and ' + inspect(fake) + ' are not equal'
+		);
+
+		st.end();
+	});
+
 	t.end();
 });
 
 test('regexes', function (t) {
-	t.equal('', isEqualWhy(/a/g, /a/g), 'two regex literals are equal');
+	t.equal(isEqualWhy(/a/g, /a/g), '', 'two regex literals are equal');
 	t.equal(
-		'regular expressions differ: /a/g !== /b/g',
 		isEqualWhy(/a/g, /b/g),
+		'regular expressions differ: /a/g !== /b/g',
 		'two different regex literals are not equal'
 	);
 	t.equal(
-		'regular expressions differ: /a/i !== /a/g',
 		isEqualWhy(/a/i, /a/g),
+		'regular expressions differ: /a/i !== /a/g',
 		'two different regex literals (same source, diff flags) are not equal'
 	);
-	t.equal('', isEqualWhy(new RegExp('a', 'g'), new RegExp('a', 'g')), 'two regex objects are equal');
 	t.equal(
-		'regular expressions differ: /a/g !== /b/g',
+		isEqualWhy(new RegExp('a', 'g'), new RegExp('a', 'g')),
+		'',
+		'two regex objects are equal'
+	);
+	t.equal(
 		isEqualWhy(new RegExp('a', 'g'), new RegExp('b', 'g')),
+		'regular expressions differ: /a/g !== /b/g',
 		'two different regex objects are equal'
 	);
-	t.equal('', isEqualWhy(new RegExp('a', 'g'), /a/g), 'regex object and literal, same content, are equal');
 	t.equal(
-		'regular expressions differ: /a/g !== /b/g',
+		isEqualWhy(new RegExp('a', 'g'), /a/g),
+		'',
+		'regex object and literal, same content, are equal'
+	);
+	t.equal(
 		isEqualWhy(new RegExp('a', 'g'), /b/g),
+		'regular expressions differ: /a/g !== /b/g',
 		'regex object and literal, different content, are not equal'
 	);
+
+	t.test('fake', { skip: !symbolToStringTag }, function (st) {
+		var re = /a/g;
+		var fake = {
+			__proto__: RegExp.prototype,
+			source: re.source,
+			flags: 'g',
+			toString: function () { return String(re); }
+		};
+		fake[symbolToStringTag] = 'RegExp';
+
+		st.equal(
+			isEqualWhy(fake, re),
+			'second argument is RegExp, first is not',
+			inspect(fake) + ' and ' + inspect(re) + ' are not equal'
+		);
+		st.equal(
+			isEqualWhy(re, fake),
+			'first argument is RegExp, second is not',
+			inspect(re) + ' and ' + inspect(fake) + ' are not equal'
+		);
+
+		st.end();
+	});
+
 	t.end();
 });
 
 test('arrays', function (t) {
-	t.equal('', isEqualWhy([], []), 'empty arrays are equal');
-	t.equal('', isEqualWhy([1, 2, 3], [1, 2, 3]), 'same arrays are equal');
+	var arr = [1, 2, 3];
+	var two = arr.slice(0, 2);
+	var rev = arr.slice().reverse();
+
+	t.equal(isEqualWhy([], []), '', 'empty arrays are equal');
+	t.equal(isEqualWhy(arr, arr.slice()), '', 'same arrays are equal');
 	t.equal(
+		isEqualWhy(arr, rev),
 		'numbers are different: 3 !== 1',
-		isEqualWhy([1, 2, 3], [3, 2, 1]),
 		'arrays in different order with same values are not equal'
 	);
 	t.equal(
+		isEqualWhy(two, arr),
 		'arrays have different length: 2 !== 3',
-		isEqualWhy([1, 2], [1, 2, 3]),
 		'arrays with different lengths are not equal'
 	);
 	t.equal(
+		isEqualWhy(arr, two),
 		'arrays have different length: 3 !== 2',
-		isEqualWhy([1, 2, 3], [1, 2]),
 		'arrays with different lengths are not equal'
 	);
 
+	t.test('sparse arrays', function (st) {
+		var dense = [1, undefined, 3];
+		var sparse = [1, , 3]; // eslint-disable-line no-sparse-arrays
+		st.equal(
+			isEqualWhy(dense, sparse),
+			'first argument has index 1; second does not',
+			inspect(dense) + ' is not equal to ' + inspect(sparse)
+		);
+		st.equal(
+			isEqualWhy(sparse, dense),
+			'second argument has index 1; first does not',
+			inspect(sparse) + ' is not equal to ' + inspect(dense)
+		);
+
+		st.end();
+	});
+
 	t.test('nested values', function (st) {
-		st.equal('', isEqualWhy([[1, 2], [2, 3], [3, 4]], [[1, 2], [2, 3], [3, 4]]), 'arrays with same array values are equal');
+		st.equal(isEqualWhy([[1, 2], [2, 3], [3, 4]], [[1, 2], [2, 3], [3, 4]]), '', 'arrays with same array values are equal');
 		st.end();
 	});
 
@@ -176,6 +367,27 @@ test('arrays', function (t) {
 			isEqualWhy(arr1, arr2),
 			'value at key "c" differs: primitive value of boolean arguments do not match: false !== true',
 			'two arrays with nested inequal objects are not equal'
+		);
+
+		st.end();
+	});
+
+	t.test('fakes', { skip: !symbolToStringTag }, function (st) {
+		var fake = function (x) {}; // eslint-disable-line no-unused-vars
+		var fnArr = [String(fake)];
+		fake[symbolToStringTag] = 'Array';
+
+		st.equal(fake.length, fnArr.length, 'precondition: fake and fnArr have the same length');
+
+		st.equal(
+			isEqualWhy(fnArr, fake),
+			'first argument is an Array, second is not',
+			inspect(fnArr) + ' is not equal to ' + inspect(fake)
+		);
+		st.equal(
+			isEqualWhy(fake, fnArr),
+			'second argument is an Array, first is not',
+			inspect(fake) + ' is not equal to ' + inspect(fnArr)
 		);
 
 		st.end();
@@ -236,6 +448,18 @@ test('objects', function (t) {
 			'second argument has key "foo"; first does not',
 			'two instances of the same thing with different properties are not equal'
 		);
+
+		st.equal(
+			isEqualWhy(f1, F.prototype),
+			'second argument is the [[Prototype]] of the first',
+			inspect(f1) + ' is not equal to ' + inspect(F.prototype)
+		);
+		st.equal(
+			isEqualWhy(F.prototype, f1),
+			'first argument is the [[Prototype]] of the second',
+			inspect(F.prototype) + ' is not equal to ' + inspect(f1)
+		);
+
 		st.end();
 	});
 
@@ -376,32 +600,117 @@ test('functions', function (t) {
 		var genFnStar = Function('return function* () {};')();
 		var genFnSpaceStar = Function('return function *() {};')();
 		var genNoSpaces = Function('return function*(){};')();
-		var reasonsMap = {
-			'second argument is a Generator function; first is not': true,
-			'toStringTag is not the same: [object Function] !== [object GeneratorFunction]': true
-		};
-		var reasons = objectEntries(reasonsMap);
-		var actual = isEqualWhy(fnNoSpace, genNoSpaces);
-		reasonsMap[actual] = true;
-		st.deepEqual(objectEntries(reasonsMap), reasons, 'generator and fn that are otherwise identical are not equal');
 
-		forEach(generators.concat(genFnStar, genFnSpaceStar, genNoSpaces), function (generator) {
-			st.equal('', isEqualWhy(generator, generator), generator + ' is equal to itself');
-			st.equal('', isEqualWhy(generator, copyFunction(generator)), generator + ' is equal to copyFunction(generator)');
+		st.equal(
+			isEqualWhy(fnNoSpace, genNoSpaces),
+			genNoSpaces[symbolToStringTag]
+				? 'toStringTag is not the same: [object Function] !== [object GeneratorFunction]'
+				: 'second argument is a Generator function; first is not',
+			'generator ' + inspect(genNoSpaces) + ' and ' + inspect(fnNoSpace) + ' that are otherwise identical are not equal'
+		);
+		st.equal(
+			isEqualWhy(genNoSpaces, fnNoSpace),
+			genNoSpaces[symbolToStringTag]
+				? 'toStringTag is not the same: [object GeneratorFunction] !== [object Function]'
+				: 'first argument is a Generator function; second is not',
+			inspect(fnNoSpace) + ' and generator ' + inspect(genNoSpaces) + ' that are otherwise identical are not equal'
+		);
+
+		t.test('fakes', { skip: !symbolToStringTag }, function (s2t) {
+			var fake = copyFunction(fnNoSpace);
+			fake[symbolToStringTag] = 'GeneratorFunction';
+			s2t.equal(
+				isEqualWhy(fake, genNoSpaces),
+				genNoSpaces[symbolToStringTag]
+					? 'second argument is a Generator function; first is not'
+					: 'toStringTag is not the same: [object GeneratorFunction] !== [object Function]',
+				'generator ' + inspect(genNoSpaces) + ' and ' + inspect(fake) + ' that are otherwise identical are not equal'
+			);
+			s2t.equal(
+				isEqualWhy(genNoSpaces, fake),
+				genNoSpaces[symbolToStringTag]
+					? 'first argument is a Generator function; second is not'
+					: 'toStringTag is not the same: [object Function] !== [object GeneratorFunction]',
+				inspect(fake) + ' and generator ' + inspect(genNoSpaces) + ' that are otherwise identical are not equal'
+			);
+
+			s2t.end();
 		});
+
+		forEach(v.generatorFunctions.concat(genFnStar, genFnSpaceStar, genNoSpaces), function (generator) {
+			st.equal(isEqualWhy(generator, generator), '', inspect(generator) + ' is equal to itself');
+
+			var copied = copyFunction(generator);
+			st.equal(isEqualWhy(generator, copied), '', inspect(generator) + ' is equal to copyFunction(' + inspect(generator) + ')');
+			st.equal(isEqualWhy(copied, generator), '', 'copyFunction(' + inspect(generator) + ') is equal to ' + inspect(generator));
+		});
+
 		st.end();
 	});
 
-	t.test('arrow functions', { skip: !hasArrowFunctionSupport }, function (st) {
+	t.test('arrow functions', { skip: arrowFunctions.length === 0 }, function (st) {
 		forEach(arrowFunctions, function (fn) {
 			st.equal(
-				'second argument is an arrow function; first is not',
-				isEqualWhy(fnNoSpace, fn),
-				fn + ' not equal to ' + fnNoSpace
+				isEqualWhy(fn, fnNoSpace),
+				'first argument is an arrow function; second is not',
+				inspect(fn) + ' not equal to ' + inspect(fnNoSpace)
 			);
-			st.equal('', isEqualWhy(fn, fn), fn + ' equal to itself');
-			st.equal('', isEqualWhy(fn, copyFunction(fn)), fn + ' equal to copyFunction(fn)');
+			st.equal(
+				isEqualWhy(fnNoSpace, fn),
+				'second argument is an arrow function; first is not',
+				inspect(fnNoSpace) + ' not equal to ' + inspect(fn)
+			);
+			st.equal(isEqualWhy(fn, fn), '', inspect(fn) + ' is equal to itself');
+			st.equal(isEqualWhy(fn, copyFunction(fn)), '', inspect(fn) + ' is equal to copyFunction(fn)');
 		});
+
+		st.end();
+	});
+
+	t.test('async functions', { skip: v.asyncFunctions.length === 0 }, function (st) {
+		var asyncNoSpaces = Function('return async function(){};')();
+
+		forEach(v.asyncFunctions, function (fn) {
+			st.equal(
+				isEqualWhy(fn, fnNoSpace),
+				'toStringTag is not the same: [object AsyncFunction] !== [object Function]',
+				inspect(fn) + ' not equal to ' + inspect(fnNoSpace)
+			);
+			st.equal(
+				isEqualWhy(fnNoSpace, fn),
+				'toStringTag is not the same: [object Function] !== [object AsyncFunction]',
+				inspect(fnNoSpace) + ' not equal to ' + inspect(fn)
+			);
+			st.equal(isEqualWhy(fn, fn), '', inspect(fn) + ' is equal to itself');
+			st.equal(isEqualWhy(fn, copyFunction(fn)), '', inspect(fn) + ' is equal to copyFunction(fn)');
+		});
+
+		var fake = copyFunction(fnNoSpace);
+		fake[symbolToStringTag] = 'AsyncFunction';
+		st.equal(
+			isEqualWhy(fake, asyncNoSpaces),
+			'Function string representations differ',
+			// 'second argument is an async function; first is not',
+			'generator ' + inspect(asyncNoSpaces) + ' and ' + inspect(fake) + ' that are otherwise identical are not equal'
+		);
+		st.equal(
+			isEqualWhy(asyncNoSpaces, fake),
+			'Function string representations differ',
+			// 'first argument is an async function; second is not',
+			inspect(fake) + ' and generator ' + inspect(asyncNoSpaces) + ' that are otherwise identical are not equal'
+		);
+
+		st.equal(
+			isEqualWhy(fnNoSpace, asyncNoSpaces),
+			'toStringTag is not the same: [object Function] !== [object AsyncFunction]',
+			'generator ' + inspect(asyncNoSpaces) + ' and ' + inspect(fnNoSpace) + ' that are otherwise identical are not equal'
+		);
+		st.equal(
+			isEqualWhy(asyncNoSpaces, fnNoSpace),
+			'toStringTag is not the same: [object AsyncFunction] !== [object Function]',
+			inspect(fnNoSpace) + ' and generator ' + inspect(asyncNoSpaces) + ' that are otherwise identical are not equal'
+		);
+
 		st.end();
 	});
 
@@ -409,33 +718,55 @@ test('functions', function (t) {
 });
 
 test('symbols', { skip: !hasSymbols }, function (t) {
-	var foo = 'foo';
-	var fooSym = Symbol(foo);
-	var objectFooSym = Object(fooSym);
-	t.equal('', isEqualWhy(fooSym, fooSym), 'Symbol("foo") is equal to itself');
-	t.equal('', isEqualWhy(fooSym, objectFooSym), 'Symbol("foo") is equal to the object form of itself');
+	var desc = 'foo';
+	var sym = Symbol(desc);
+	var obj = Object(sym);
+	t.equal(isEqualWhy(sym, sym), '', inspect(sym) + ' is equal to itself');
+
+	t.equal(isEqualWhy(sym, obj), '', inspect(sym) + ' is equal to ' + inspect(obj));
+	t.equal(isEqualWhy(obj, sym), '', inspect(obj) + ' is equal to ' + inspect(sym));
+
 	t.equal(
+		isEqualWhy(Symbol(desc), Symbol(desc)),
 		'first Symbol value !== second Symbol value',
-		isEqualWhy(Symbol(foo), Symbol(foo)),
-		'Symbol("foo") is not equal to Symbol("foo"), even when the string is the same instance'
+		inspect(sym) + ' is not equal to ' + inspect(sym) + ', even when the description is the same string instance'
 	);
 	t.equal(
+		isEqualWhy(Symbol(desc), Object(Symbol(desc))),
 		'first Symbol value !== second Symbol value',
-		isEqualWhy(Symbol(foo), Object(Symbol(foo))),
-		'Symbol("foo") is not equal to Object(Symbol("foo")), even when the string is the same instance'
+		inspect(sym) + ' is not equal to ' + inspect(obj) + ', even when the description is the same string instance'
 	);
+
+	t.test('fakes', { skip: !symbolToStringTag }, function (st) {
+		var fake = { valueOf: function () { return sym; } };
+		if (symbolToStringTag) {
+			fake[symbolToStringTag] = 'Symbol';
+		}
+		st.equal(
+			isEqualWhy(fake, sym),
+			'second argument is Symbol; first is not',
+			inspect(fake) + ' and ' + inspect(sym) + ' are not equal'
+		);
+		st.equal(
+			isEqualWhy(sym, fake),
+			'first argument is Symbol; second is not',
+			inspect(sym) + ' and ' + inspect(fake) + ' are not equal'
+		);
+
+		st.end();
+	});
 
 	t.test('arrays containing symbols', function (st) {
 		st.equal(
+			isEqualWhy([sym], [sym]),
 			'',
-			isEqualWhy([fooSym], [fooSym]),
-			'Arrays each containing the same instance of Symbol("foo") are equal'
+			'Arrays each containing the same instance of ' + inspect(sym) + ' are equal'
 		);
 
 		st.equal(
+			isEqualWhy([Symbol(desc)], [Object(Symbol(desc))]),
 			'first Symbol value !== second Symbol value',
-			isEqualWhy([Symbol(foo)], [Object(Symbol(foo))]),
-			'An array containing Symbol("foo") is not equal to Object(Symbol("foo")), even when the string is the same instance'
+			'An array containing ' + inspect(sym) + ' is not equal to ' + inspect(obj) + ', even when the description is the same string instance'
 		);
 
 		st.end();
@@ -445,37 +776,72 @@ test('symbols', { skip: !hasSymbols }, function (t) {
 });
 
 test('bigints', { skip: !hasBigInts }, function (t) {
-	var bigInt = BigInt(42);
-	var objectBigInt = Object(bigInt);
-	t.equal('', isEqualWhy(bigInt, bigInt), '42n is equal to itself');
-	t.equal('', isEqualWhy(bigInt, objectBigInt), '42n is equal to the object form of itself');
+	forEach(v.bigints, function (bigInt) {
+		var objectBigInt = Object(bigInt);
+		t.equal(isEqualWhy(bigInt, bigInt), '', inspect(bigInt) + ' is equal to itself');
+		t.equal(isEqualWhy(bigInt, objectBigInt), '', inspect(bigInt) + ' is equal to ' + inspect(objectBigInt));
+		t.equal(isEqualWhy(objectBigInt, bigInt), '', inspect(objectBigInt) + ' is equal to ' + inspect(bigInt));
 
-	t.equal(
-		'first BigInt value !== second BigInt value',
-		isEqualWhy(bigInt, BigInt(40)),
-		'42n and 40n are not equal'
-	);
-
-	t.test('arrays containing bigints', function (st) {
-		st.equal(
-			'',
-			isEqualWhy([bigInt], [bigInt]),
-			'Arrays each containing 42n are equal'
+		var str = String(bigInt);
+		t.equal(
+			isEqualWhy(bigInt, str),
+			'toStringTag is not the same: [object BigInt] !== [object String]',
+			inspect(bigInt) + ' and ' + inspect(str) + ' are not equal'
+		);
+		t.equal(
+			isEqualWhy(str, bigInt),
+			'toStringTag is not the same: [object String] !== [object BigInt]',
+			inspect(str) + ' and ' + inspect(bigInt) + ' are not equal'
 		);
 
-		st.equal(
-			'',
-			isEqualWhy([objectBigInt], [Object(bigInt)]),
-			'Arrays each containing different instances of Object(42n) are equal'
+		var fake = { toString: function () { return bigInt; } };
+		if (symbolToStringTag) {
+			fake[symbolToStringTag] = 'BigInt';
+		}
+		t.equal(
+			isEqualWhy(fake, bigInt),
+			'second argument is BigInt; first is not',
+			inspect(fake) + ' and ' + inspect(bigInt) + ' are not equal'
+		);
+		t.equal(
+			isEqualWhy(bigInt, fake),
+			'first argument is BigInt; second is not',
+			inspect(bigInt) + ' and ' + inspect(fake) + ' are not equal'
 		);
 
-		st.equal(
-			'',
-			isEqualWhy([bigInt], [objectBigInt]),
-			'An array containing 42n is equal to an array containing Object(42n)'
+		var one = BigInt(1);
+		t.equal(
+			isEqualWhy(bigInt, bigInt + one),
+			'first BigInt value !== second BigInt value',
+			inspect(bigInt) + ' and ' + inspect(bigInt + one) + ' are not equal'
+		);
+		t.equal(
+			isEqualWhy(bigInt + one, bigInt),
+			'first BigInt value !== second BigInt value',
+			inspect(bigInt + one) + ' and ' + inspect(bigInt) + ' are not equal'
 		);
 
-		st.end();
+		t.test('arrays containing bigints', function (st) {
+			st.equal(
+				isEqualWhy([bigInt], [bigInt]),
+				'',
+				'Arrays each containing ' + inspect(bigInt) + ' are equal'
+			);
+
+			st.equal(
+				isEqualWhy([objectBigInt], [Object(bigInt)]),
+				'',
+				'Arrays each containing different instances of ' + inspect(objectBigInt) + ' are equal'
+			);
+
+			st.equal(
+				isEqualWhy([bigInt], [objectBigInt]),
+				'',
+				'An array containing ' + inspect(bigInt) + ' is equal to an array containing ' + inspect(objectBigInt)
+			);
+
+			st.end();
+		});
 	});
 
 	t.end();
@@ -516,24 +882,26 @@ test('iterables', function (t) {
 			'',
 			'equal Maps (b, a) are equal'
 		);
+
+		var tag = Object.prototype.toString.call(a) === '[object Map]' ? 'Map' : 'object';
 		mt.equal(
 			isEqualWhy(a, c),
-			'second Map argument finished iterating before first Map',
+			'second ' + tag + ' argument finished iterating before first ' + tag,
 			'unequal Maps (a, c) are not equal'
 		);
 		mt.equal(
 			isEqualWhy(b, c),
-			'second Map argument finished iterating before first Map',
+			'second ' + tag + ' argument finished iterating before first ' + tag,
 			'unequal Maps (b, c) are not equal'
 		);
 		mt.equal(
 			isEqualWhy(c, a),
-			'first Map argument finished iterating before second Map',
+			'first ' + tag + ' argument finished iterating before second ' + tag,
 			'unequal Maps (c, a) are not equal'
 		);
 		mt.equal(
 			isEqualWhy(c, b),
-			'first Map argument finished iterating before second Map',
+			'first ' + tag + ' argument finished iterating before second ' + tag,
 			'unequal Maps (c, b) are not equal'
 		);
 
@@ -550,26 +918,28 @@ test('iterables', function (t) {
 		var c = new Set();
 		c.add('a');
 
-		st.equal('', isEqualWhy(a, b), 'equal Set (a, b) are equal');
-		st.equal('', isEqualWhy(b, a), 'equal Set (b, a) are equal');
+		st.equal(isEqualWhy(a, b), '', 'equal Set (a, b) are equal');
+		st.equal(isEqualWhy(b, a), '', 'equal Set (b, a) are equal');
+
+		var tag = Object.prototype.toString.call(a) === '[object Set]' ? 'Set' : 'object';
 		st.equal(
 			isEqualWhy(a, c),
-			'second Set argument finished iterating before first Set',
+			'second ' + tag + ' argument finished iterating before first ' + tag,
 			'unequal Set (a, c) are not equal'
 		);
 		st.equal(
 			isEqualWhy(b, c),
-			'second Set argument finished iterating before first Set',
+			'second ' + tag + ' argument finished iterating before first ' + tag,
 			'unequal Set (b, c) are not equal'
 		);
 		st.equal(
 			isEqualWhy(c, a),
-			'first Set argument finished iterating before second Set',
+			'first ' + tag + ' argument finished iterating before second ' + tag,
 			'unequal Set (c, a) are not equal'
 		);
 		st.equal(
 			isEqualWhy(c, b),
-			'first Set argument finished iterating before second Set',
+			'first ' + tag + ' argument finished iterating before second ' + tag,
 			'unequal Set (b, c) are not equal'
 		);
 

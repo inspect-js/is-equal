@@ -5,13 +5,14 @@ var isEqual = require('../');
 var hasSymbols = require('has-symbols')();
 var hasSymbolShams = require('has-symbols/shams')();
 var hasBigInts = require('has-bigints')();
-var generators = require('make-generator-function')();
-var hasGeneratorSupport = generators.length > 0;
 var arrowFunctions = require('make-arrow-function').list();
 var hasArrowFunctionSupport = arrowFunctions.length > 0;
 var objectEntries = require('object.entries');
 var forEach = require('foreach');
 var functionsHaveNames = require('functions-have-names')();
+var inspect = require('object-inspect');
+var v = require('es-value-fixtures');
+var hasGeneratorSupport = v.generatorFunctions.length > 0;
 
 var symbolIterator = (hasSymbols || hasSymbolShams) && Symbol.iterator;
 
@@ -232,10 +233,14 @@ test('functions', function (t) {
 		var genNoSpaces = Function('return function*(){};')();
 		st.notOk(isEqual(fnNoSpace, genNoSpaces), 'generator and fn that are otherwise identical are not equal');
 
-		forEach(generators.concat(genFnStar, genFnSpaceStar, genNoSpaces), function (generator) {
+		forEach(v.generatorFunctions.concat(genFnStar, genFnSpaceStar, genNoSpaces), function (generator) {
 			st.ok(isEqual(generator, generator), generator + ' is equal to itself');
-			st.ok(isEqual(generator, copyFunction(generator)), generator + ' is equal to copyFunction(generator)');
+
+			var copied = copyFunction(generator);
+			st.ok(isEqual(generator, copied), inspect(generator) + ' is equal to copyFunction(' + inspect(generator) + ')');
+			st.ok(isEqual(copied, generator), 'copyFunction(' + inspect(generator) + ') is equal to ' + inspect(generator));
 		});
+
 		st.end();
 	});
 

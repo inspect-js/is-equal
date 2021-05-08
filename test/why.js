@@ -664,6 +664,19 @@ test('functions', function (t) {
 			st.equal(isEqualWhy(fn, copyFunction(fn)), '', inspect(fn) + ' is equal to copyFunction(fn)');
 		});
 
+		var arrow1 = Function('return (a) => {}');
+		var arrow2 = Function('return (b) => {}');
+		st.equal(
+			isEqualWhy(arrow1(), arrow2()),
+			'Function string representations differ',
+			'same name/length arrow functions with different source are not equal'
+		);
+		st.equal(
+			isEqualWhy(arrow1(), arrow1()),
+			'',
+			'same name/length arrow functions with same source are equal'
+		);
+
 		st.end();
 	});
 

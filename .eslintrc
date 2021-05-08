@@ -23,7 +23,8 @@
 			"number": false,
 			"string": true
 		}],
-		"no-restricted-syntax": [2, "BreakStatement", "ContinueStatement", "DebuggerStatement", "LabeledStatement", "WithStatement"]
+		"no-restricted-syntax": [2, "BreakStatement", "ContinueStatement", "DebuggerStatement", "LabeledStatement", "WithStatement"],
+		"operator-linebreak": [2, "before"],
 	},
 
 	"overrides": [

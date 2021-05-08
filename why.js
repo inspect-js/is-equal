@@ -178,12 +178,18 @@ module.exports = function whyNotEqual(value, other) {
 
 		var valueStr = normalizeFnWhitespace(String(value));
 		var otherStr = normalizeFnWhitespace(String(other));
-		if (whyNotEqual(valueStr, otherStr) === '') { return ''; }
-
-		if (!valueIsGen && !valueIsArrow) {
-			return whyNotEqual(valueStr.replace(/\)\s*\{/, '){'), otherStr.replace(/\)\s*\{/, '){')) === '' ? '' : 'Function string representations differ';
+		if (
+			whyNotEqual(valueStr, otherStr) === ''
+			|| (
+				!valueIsGen
+				&& !valueIsArrow
+				&& whyNotEqual(valueStr.replace(/\)\s*\{/, '){'), otherStr.replace(/\)\s*\{/, '){')) === ''
+			)
+		) {
+			return '';
 		}
-		return whyNotEqual(valueStr, otherStr) === '' ? '' : 'Function string representations differ';
+
+		return 'Function string representations differ';
 	}
 
 	if (typeof value === 'object' || typeof other === 'object') {

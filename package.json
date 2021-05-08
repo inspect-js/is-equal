@@ -14,9 +14,10 @@
 		"prepublishOnly": "safe-publish-latest",
 		"prepublish": "not-in-publish || npm run prepublishOnly",
 		"pretest": "npm run --silent lint",
-		"test": "npm run tests-only",
-		"posttest": "aud --production",
+		"test:corejs": "nyc tape test-corejs.js",
 		"tests-only": "nyc tape 'test/**/*.js'",
+		"test": "npm run tests-only && npm run test:corejs",
+		"posttest": "aud --production",
 		"lint": "eslint ."
 	},
 	"repository": {

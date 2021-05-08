@@ -24,13 +24,6 @@ jobs:
       fail-fast: false
       matrix:
         node-version: ${{ fromJson(needs.matrix.outputs.latest) }}
-        include:
-          - node-version: 'lts/*'
-            COREJS: 2
-          - node-version: '0.12'
-            COREJS: 2
-          - node-version: '0.10'
-            COREJS: 2
 
     steps:
       - uses: actions/checkout@v2

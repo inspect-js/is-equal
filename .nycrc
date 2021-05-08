@@ -5,6 +5,7 @@
 	"exclude": [
 		"coverage",
 		"test",
+		"test-corejs.js",
 		"getCollectionsForEach.js",
 		"getSymbolIterator.js"
 	]

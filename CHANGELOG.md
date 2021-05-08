@@ -5,6 +5,46 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.6.2](https://github.com/inspect-js/is-equal/compare/v1.6.1...v1.6.2) - 2021-05-08
+
+### Commits
+
+- [Tests] increase coverage [`18f85ad`](https://github.com/inspect-js/is-equal/commit/18f85ad1e0529eb5c5ce4f30c704f696aa5bf2e7)
+- [Tests] migrate tests to Github Actions [`61f82f7`](https://github.com/inspect-js/is-equal/commit/61f82f73825d6014aa95197ec873d1f6707de704)
+- [Tests] run core-js tests on v2 and v3 [`aaa111d`](https://github.com/inspect-js/is-equal/commit/aaa111dd432dbc6a74e8a0832c73f95aeda08d1b)
+- [actions] use `node/install` instead of `node/run`; use `codecov` action [`db83237`](https://github.com/inspect-js/is-equal/commit/db83237b8b787b8fc4d204e7036847141761cfbb)
+- [meta] remove unused Makefile and associated utilities [`cb9cf3f`](https://github.com/inspect-js/is-equal/commit/cb9cf3f9171e9790a5b8127757814bca50f5ff9e)
+- [Tests] run `nyc` on all tests [`6a55013`](https://github.com/inspect-js/is-equal/commit/6a55013564996c87e9c5566570495a8b99b85fc5)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `tape`, `make-arrow-function`, `make-generator-function` [`adf932c`](https://github.com/inspect-js/is-equal/commit/adf932c8961591d6eec8ab72653225b0246fb614)
+- [Refactor] use `object.getprototypeof` [`ed3445b`](https://github.com/inspect-js/is-equal/commit/ed3445b90bacfc6cf69a981dee4e6a1a09416eaf)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `aud`, `auto-changelog`, `es6-shim` [`abd29fa`](https://github.com/inspect-js/is-equal/commit/abd29fa8aedfe277f2651daf6ea191d12a3b3b0a)
+- [Deps] update `es-get-iterator`, `functions-have-names`, `is-boolean-object`, `is-callable`, `is-date-object`, `is-number-object`, `is-regex`, `is-symbol`, `is-string`, `object.entries`, `which-collection` [`fbdb778`](https://github.com/inspect-js/is-equal/commit/fbdb778805e03bf6a3af261768b4a4be17308d48)
+- [Fix] `why`: compare two numbers properly [`297b810`](https://github.com/inspect-js/is-equal/commit/297b810144fe6f8f15d99a9ad346be55d59ac61e)
+- [Deps] update `is-boolean-object`, `is-date-object`, `is-generator-function`, `is-number-object`, `is-regex`, `is-string`, `object-inspect` [`60aef5e`](https://github.com/inspect-js/is-equal/commit/60aef5e1d4a159f7e573d2acd54a47148a5c3502)
+- [Deps] update `es-get-iterator`, `is-bigint`, `is-callable`, `is-generator-function`, `is-regex`, `object-inspect`, `object.entries` [`25cc9cb`](https://github.com/inspect-js/is-equal/commit/25cc9cb8b7aa7535e1328223494564dc1831ddd4)
+- [patch] "arrow function" should not be capitalized; "Generator function" is the proper term [`4fa31c7`](https://github.com/inspect-js/is-equal/commit/4fa31c7d4463555e9803f564aacad167511445a6)
+- [actions] add "Allow Edits" workflow [`227f80e`](https://github.com/inspect-js/is-equal/commit/227f80ec4f1f1944e9879e3cb1f09923b4bae138)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `aud`, `has-symbols`, `tape` [`4bd6461`](https://github.com/inspect-js/is-equal/commit/4bd64617ee644f576ce0f71cf7cefc0245ae9594)
+- [Deps] update `es-get-iterator`, `functions-have-names`, `is-boolean-object`, `is-callable`, `which-boxed-primitive` [`b9bdb70`](https://github.com/inspect-js/is-equal/commit/b9bdb7021ecb7b2381fc2062215b4a91fcb49913)
+- [readme] fix broken URLs [`1d39cbf`](https://github.com/inspect-js/is-equal/commit/1d39cbf4a3d8070a075e0d82ad9a832958e260f4)
+- [Deps] update `is-bigint`, `is-date-object`, `is-regex`, `object-inspect` [`020835e`](https://github.com/inspect-js/is-equal/commit/020835e1a0d4524950510d278f805ad0cc4c5652)
+- [readme] use https URLs [`fd35312`](https://github.com/inspect-js/is-equal/commit/fd353127a454f6ca4e110ebac9a28a9121313eed)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `has-bigints`, `tape` [`3a58efc`](https://github.com/inspect-js/is-equal/commit/3a58efc39c9ee1c3863c8d49dee6036bf7ef5b54)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `tape`, `aud` [`733f027`](https://github.com/inspect-js/is-equal/commit/733f0272faa4f2b8cfdc90e8a8a0b7825da38e1f)
+- [readme] add actions and codecov badges [`a53d5e4`](https://github.com/inspect-js/is-equal/commit/a53d5e47f96c0793f51a57c30a3b302cf0ee2f71)
+- [Tests] exclude deprecated, unused files from coverage [`bdd471b`](https://github.com/inspect-js/is-equal/commit/bdd471b54169121dfbcd1ac0fdfa243dd5af140a)
+- [actions] switch Automatic Rebase workflow to `pull_request_target` event [`115392b`](https://github.com/inspect-js/is-equal/commit/115392b8ca3efba6a9721c4435bb72d60167ce70)
+- [Dev Deps] update `aud`, `tape` [`5e6018c`](https://github.com/inspect-js/is-equal/commit/5e6018c435ee11810c94c5c7445afe6a4bf98439)
+- [Dev Deps] update `auto-changelog`, `tape` [`c4fde3a`](https://github.com/inspect-js/is-equal/commit/c4fde3abd8699e6389b245483e68a3b69352f8b0)
+- [meta] use `prepublishOnly` script for npm 7+ [`143ba39`](https://github.com/inspect-js/is-equal/commit/143ba39689d249c89bf0e0fdb67dfbd2f397b1e6)
+- [readme] remove travis badge [`0583b0f`](https://github.com/inspect-js/is-equal/commit/0583b0f4ad865db21d9e4cbdf7f77b152b25d90a)
+- [Dev Deps] update `auto-changelog`; add `aud` [`afb177b`](https://github.com/inspect-js/is-equal/commit/afb177b9ccdae24ac94f7c52deac19bf6fd72d8b)
+- [Dev Deps] unpin `core-js` v3 [`d44ccc0`](https://github.com/inspect-js/is-equal/commit/d44ccc0b095c6c2e60e77ed635ec1c4008c09522)
+- [Dev Deps] pin `core-js` v3 to &lt; v3.9 [`63fd454`](https://github.com/inspect-js/is-equal/commit/63fd454dadd3319194384b7bfa90d4f2d3b4f4fc)
+- [Deps] update `object.entries` [`e5adb39`](https://github.com/inspect-js/is-equal/commit/e5adb39ed305c9b9ad95df780fa2b665711fc9bf)
+- [Tests] only audit prod deps [`5e285d5`](https://github.com/inspect-js/is-equal/commit/5e285d5fae8e24b5be5c8b473d5f416a9357fd99)
+- [actions] update workflows [`7945708`](https://github.com/inspect-js/is-equal/commit/794570862c0531e11eab62e05eef4bed5bd1e0e5)
+
 ## [v1.6.1](https://github.com/inspect-js/is-equal/compare/v1.6.0...v1.6.1) - 2019-11-28
 
 ### Commits

@@ -21,8 +21,8 @@ var primitives = [true, false, undefined, 42, 'foo'];
 primitives.forEach(function (primitive) {
 	assert.equal(isEqual(primitive, primitive), true);
 });
-assert.equal(isEqual(/a/g, /a/g));
-assert.equal(isEqual(/a/g, new RegExp('a', 'g')));
+assert.equal(isEqual(/a/g, /a/g), true);
+assert.equal(isEqual(/a/g, new RegExp('a', 'g')), true);
 assert.equal(isEqual({ a: 2 }, { a: 2 }), true);
 assert.equal(isEqual([1, [2, 3], 4], [1, [2, 3], 4]), true);
 var timestamp = Date.now();

@@ -27,5 +27,3 @@ coverage/
 .nyc_output/
 
 .github/workflows
-
-test-corejs.js

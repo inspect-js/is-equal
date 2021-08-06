@@ -19,6 +19,8 @@ var getIterator = require('es-get-iterator');
 var whichCollection = require('which-collection');
 var whichBoxedPrimitive = require('which-boxed-primitive');
 var getPrototypeOf = require('object.getprototypeof/polyfill')();
+var hasSymbols = require('has-symbols/shams')();
+var hasBigInts = require('has-bigints')();
 
 var objectType = function (v) { return whichCollection(v) || whichBoxedPrimitive(v) || typeof v; };
 
@@ -26,9 +28,9 @@ var isProto = Object.prototype.isPrototypeOf;
 
 var functionsHaveNames = require('functions-have-names')();
 
-var symbolValue = typeof Symbol === 'function' ? Symbol.prototype.valueOf : null;
+var symbolValue = hasSymbols ? Symbol.prototype.valueOf : null;
 
-var bigIntValue = typeof BigInt === 'function' ? BigInt.prototype.valueOf : null;
+var bigIntValue = hasBigInts ? BigInt.prototype.valueOf : null;
 
 var normalizeFnWhitespace = function normalizeWhitespace(fnStr) {
 	// this is needed in IE 9, at least, which has inconsistencies here.

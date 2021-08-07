@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.6.3](https://github.com/inspect-js/is-equal/compare/v1.6.2...v1.6.3) - 2021-08-06
+
+### Commits
+
+- [Refactor] increase coverage; remove redundant branches [`c6b6672`](https://github.com/inspect-js/is-equal/commit/c6b66729d9acfafcdeabf519091bc645a30d91ad)
+- [Deps] update `is-bigint`, `is-boolean-object`, `is-callable`, `is-date-object`, `is-generator-function`, `is-number-object`, `is-regex`, `is-string`, `is-symbol`, `object-inspect`, `object.entries` [`a3b5498`](https://github.com/inspect-js/is-equal/commit/a3b54982402e4af97be541b4321e1f22073ba1b4)
+- [Tests] `tape` v5.3 exposed a bug in corejs tests; use `--require` instead [`a1e004e`](https://github.com/inspect-js/is-equal/commit/a1e004e13537e2bc8ed1adc1f02336777b832a52)
+- [Refactor] use `has-symbols/shams` and `has-bigints` to more robustly detect these things [`4f3aee4`](https://github.com/inspect-js/is-equal/commit/4f3aee40f5791b20a7302f10c5566f17a12ca38d)
+- [Dev Deps] update `auto-changelog`, `core-js`, `eslint`, `tape` [`d6a7b8e`](https://github.com/inspect-js/is-equal/commit/d6a7b8ecc0a8672405d501661eff372d70b83586)
+- [readme] fix usage code sample [`04ce4d0`](https://github.com/inspect-js/is-equal/commit/04ce4d063880b441db57056c35d79e0b5a909549)
+
 ## [v1.6.2](https://github.com/inspect-js/is-equal/compare/v1.6.1...v1.6.2) - 2021-05-08
 
 ### Commits

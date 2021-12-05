@@ -3,10 +3,6 @@
 
 	"extends": "@ljharb",
 
-	"globals": {
-		"BigInt": false,
-	},
-
 	"rules": {
 		"complexity": [1, 10],
 		"eqeqeq": [2, "allow-null"],
@@ -24,7 +20,6 @@
 			"string": true
 		}],
 		"no-restricted-syntax": [2, "BreakStatement", "ContinueStatement", "DebuggerStatement", "LabeledStatement", "WithStatement"],
-		"operator-linebreak": [2, "before"],
 	},
 
 	"overrides": [

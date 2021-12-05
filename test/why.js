@@ -1,7 +1,5 @@
 'use strict';
 
-/* eslint-disable operator-linebreak */
-
 var test = require('tape');
 var isEqualWhy = require('../why');
 var hasSymbols = require('has-symbols')();

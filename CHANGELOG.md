@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.6.4](https://github.com/inspect-js/is-equal/compare/v1.6.3...v1.6.4) - 2022-01-10
+
+### Commits
+
+- [actions] reuse common workflows [`c8e9a71`](https://github.com/inspect-js/is-equal/commit/c8e9a716715788f472ee84ba55f21b775eb1247f)
+- [Fix] still check own properties on Dates, RegExps, and Functions [`3295149`](https://github.com/inspect-js/is-equal/commit/32951490626e3b4e6929bd0b06e50f4f4d82ebda)
+- [actions] update codecov uploader [`3157da9`](https://github.com/inspect-js/is-equal/commit/3157da9afdaabc6fb2423eea484aa47b75caf6e5)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `safe-publish-latest`, `tape` [`ee76f73`](https://github.com/inspect-js/is-equal/commit/ee76f7362b3b6d19fe908cf8f9f3b1510aa68dd6)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `tape` [`0653181`](https://github.com/inspect-js/is-equal/commit/0653181b78aedcc4f596c8e159e3cb0ff0962208)
+- [Deps] update `is-bigint`, `object.entries`, `object.getprototypeof` [`282a4e6`](https://github.com/inspect-js/is-equal/commit/282a4e68fceba7d8ce1d42b41fac4056a4eb97df)
+- [Deps] update `object-inspect` [`b084bdf`](https://github.com/inspect-js/is-equal/commit/b084bdfaea7dd5b5cf04ef77dbeaa3e0785137a8)
+
 ## [v1.6.3](https://github.com/inspect-js/is-equal/compare/v1.6.2...v1.6.3) - 2021-08-06
 
 ### Commits

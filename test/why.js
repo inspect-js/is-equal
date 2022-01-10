@@ -12,6 +12,7 @@ var functionsHaveNames = require('functions-have-names')();
 var inspect = require('object-inspect');
 var v = require('es-value-fixtures');
 var hasGeneratorSupport = v.generatorFunctions.length > 0;
+var assign = require('object.assign');
 
 var symbolIterator = (hasSymbols || hasSymbolShams) && Symbol.iterator;
 var symbolToStringTag = (hasSymbols || hasSymbolShams) && Symbol.toStringTag;
@@ -234,6 +235,14 @@ test('dates', function (t) {
 		st.end();
 	});
 
+	var zero = new Date(0);
+	var zeroPlus = assign(new Date(0), { a: 1 });
+	t.equal(
+		isEqualWhy(zero, zeroPlus),
+		'second argument has key "a"; first does not',
+		inspect(zero) + ' and ' + inspect(zeroPlus) + ' are not equal'
+	);
+
 	t.end();
 });
 
@@ -293,6 +302,14 @@ test('regexes', function (t) {
 
 		st.end();
 	});
+
+	var re = /a/g;
+	var rePlus = assign(/a/g, { a: 1 });
+	t.equal(
+		isEqualWhy(re, rePlus),
+		'second argument has key "a"; first does not',
+		inspect(re) + ' and ' + inspect(rePlus) + ' are not equal'
+	);
 
 	t.end();
 });
@@ -519,13 +536,11 @@ test('functions', function (t) {
 	var g = Object(function g() { /* SOME STUFF */ return 1; });
 	var anon1 = Object(function () { /* ANONYMOUS! */ return 'anon'; });
 	var anon2 = Object(function () { /* ANONYMOUS! */ return 'anon'; });
-	/* jscs: disable */
 	/* eslint-disable space-before-function-paren */
 	/* eslint-disable space-before-blocks */
 	var fnNoSpace = Object(function(){});
 	/* eslint-enable space-before-blocks */
 	/* eslint-enable space-before-function-paren */
-	/* jscs: enable */
 	var fnWithSpaceBeforeBody = Object(function () {});
 	var emptyFnWithName = Object(function a() {});
 	/* eslint-disable no-unused-vars */
@@ -564,7 +579,7 @@ test('functions', function (t) {
 			'functions with different names but same implementations are not equal'
 		);
 	}
-	t.equal('', isEqualWhy(f1, f2), 'functions with same names but same implementations are equal');
+	t.equal(isEqualWhy(f1, f2), '', 'functions with same names but same implementations are equal');
 	t.equal(
 		isEqualWhy(f1, f3),
 		'Function string representations differ',
@@ -724,6 +739,16 @@ test('functions', function (t) {
 
 		st.end();
 	});
+
+	/* eslint-disable no-unused-vars */
+	var fn = function f(x) { 'y'; };
+	var fnPlus = assign(function f(x) { 'y'; }, { a: 1 });
+	/* eslint-enable no-unused-vars */
+	t.equal(
+		isEqualWhy(fn, fnPlus),
+		'second argument has key "a"; first does not',
+		inspect(fn) + ' and ' + inspect(fnPlus) + ' are not equal'
+	);
 
 	t.end();
 });

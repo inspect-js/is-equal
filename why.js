@@ -98,8 +98,9 @@ module.exports = function whyNotEqual(value, other) {
 		if (!otherIsDate) { return 'first argument is Date, second is not'; }
 		var valTime = +value;
 		var otherTime = +other;
-		if (valTime === otherTime) { return ''; }
-		return 'Dates have different time values: ' + valTime + ' !== ' + otherTime;
+		if (valTime !== otherTime) {
+			return 'Dates have different time values: ' + valTime + ' !== ' + otherTime;
+		}
 	}
 
 	var valIsRegex = isRegex(value);
@@ -109,8 +110,9 @@ module.exports = function whyNotEqual(value, other) {
 		if (!otherIsRegex) { return 'first argument is RegExp, second is not'; }
 		var regexStringVal = String(value);
 		var regexStringOther = String(other);
-		if (regexStringVal === regexStringOther) { return ''; }
-		return 'regular expressions differ: ' + regexStringVal + ' !== ' + regexStringOther;
+		if (regexStringVal !== regexStringOther) {
+			return 'regular expressions differ: ' + regexStringVal + ' !== ' + regexStringOther;
+		}
 	}
 
 	var valIsArray = isArray(value);
@@ -170,7 +172,9 @@ module.exports = function whyNotEqual(value, other) {
 		return 'second argument is an arrow function; first is not';
 	}
 
-	if (isCallable(value) || isCallable(other)) {
+	var valueIsCallable = isCallable(value);
+	var otherIsCallable = isCallable(other);
+	if (valueIsCallable || otherIsCallable) {
 		if (functionsHaveNames && whyNotEqual(value.name, other.name) !== '') {
 			return 'Function names differ: "' + value.name + '" !== "' + other.name + '"';
 		}
@@ -181,20 +185,21 @@ module.exports = function whyNotEqual(value, other) {
 		var valueStr = normalizeFnWhitespace(String(value));
 		var otherStr = normalizeFnWhitespace(String(other));
 		if (
-			whyNotEqual(valueStr, otherStr) === ''
-			|| (
+			whyNotEqual(valueStr, otherStr) !== ''
+			&& !(
 				!valueIsGen
 				&& !valueIsArrow
 				&& whyNotEqual(valueStr.replace(/\)\s*\{/, '){'), otherStr.replace(/\)\s*\{/, '){')) === ''
 			)
 		) {
-			return '';
+			return 'Function string representations differ';
 		}
-
-		return 'Function string representations differ';
 	}
 
-	if (typeof value === 'object' || typeof other === 'object') {
+	var valueIsObj = valIsDate || valIsRegex || valIsArray || valueIsGen || valueIsArrow || valueIsCallable || Object(value) === value;
+	var otherIsObj = otherIsDate || otherIsRegex || otherIsArray || otherIsGen || otherIsArrow || otherIsCallable || Object(other) === other;
+
+	if (valueIsObj || otherIsObj) {
 		if (typeof value !== typeof other) { return 'arguments have a different typeof: ' + typeof value + ' !== ' + typeof other; }
 		if (isProto.call(value, other)) { return 'first argument is the [[Prototype]] of the second'; }
 		if (isProto.call(other, value)) { return 'second argument is the [[Prototype]] of the first'; }

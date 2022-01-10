@@ -69,6 +69,7 @@
 		"foreach": "^2.0.5",
 		"make-arrow-function": "~1.1.0",
 		"nyc": "^10.3.2",
+		"object.assign": "^4.1.2",
 		"safe-publish-latest": "^2.0.0",
 		"tape": "^5.3.2"
 	},

@@ -10,7 +10,7 @@
 		"id-length": [2, { "min": 1, "max": 23 }],
 		"max-depth": [2, 5],
 		"max-len": 0,
-		"max-lines-per-function": [2, { "max": 250 }],
+		"max-lines-per-function": [2, { "max": 300 }],
 		"max-statements": [1, 10],
 		"max-statements-per-line": [2, { "max": 2 }],
 		"new-cap": [2, { "capIsNewExceptions": ["BigInt"] }],

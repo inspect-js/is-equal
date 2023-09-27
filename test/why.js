@@ -10,6 +10,7 @@ var objectEntries = require('object.entries');
 var forEach = require('for-each');
 var functionsHaveNames = require('functions-have-names')();
 var inspect = require('object-inspect');
+var toPrimitive = require('es-to-primitive');
 var v = require('es-value-fixtures');
 var hasGeneratorSupport = v.generatorFunctions.length > 0;
 var assign = require('object.assign');
@@ -880,6 +881,62 @@ test('bigints', { skip: !hasBigInts }, function (t) {
 		});
 	});
 
+	t.end();
+});
+
+test('toPrimitive', { skip: !toPrimitive }, function (t) {
+	t.test('gracefully handles error throwing', function (mt) {
+		var toStringThrow = {
+			toString: function () { throw new Error(); }
+		};
+		var valueOfThrow = {
+			valueOf: function () { throw new Error(); }
+		};
+		var noThrow = {};
+
+		mt.equal(isEqualWhy(toStringThrow, noThrow), 'first argument toString throws; second does not');
+		mt.equal(isEqualWhy(noThrow, toStringThrow), 'second argument toString throws; first does not');
+		mt.equal(isEqualWhy(valueOfThrow, noThrow), 'first argument valueOf throws; second does not');
+		mt.equal(isEqualWhy(noThrow, valueOfThrow), 'second argument valueOf throws; first does not');
+
+		mt.end();
+	});
+
+	t.test('toString', function (mt) {
+		var foo1 = {
+			toString: function () { return 'foo'; }
+		};
+		var foo2 = {
+			toString: function () { return 'foo'; }
+		};
+		var bar = {
+			toString: function () { return 'bar'; }
+		};
+
+		mt.equal(isEqualWhy(foo1, foo2), '');
+		mt.equal(isEqualWhy(foo1, bar), 'first argument toString does not match second argument toString');
+		mt.equal(isEqualWhy(bar, foo1), 'first argument toString does not match second argument toString');
+
+		mt.end();
+	});
+
+	t.test('valueOf', function (mt) {
+		var value1 = {
+			valueOf: function () { return 1; }
+		};
+		var alsoValue1 = {
+			valueOf: function () { return 1; }
+		};
+		var value2 = {
+			valueOf: function () { return 2; }
+		};
+
+		mt.equal(isEqualWhy(value1, alsoValue1), '');
+		mt.equal(isEqualWhy(value1, value2), 'first argument valueOf does not match second argument valueOf');
+		mt.equal(isEqualWhy(value2, value1), 'first argument valueOf does not match second argument valueOf');
+
+		mt.end();
+	});
 	t.end();
 });
 

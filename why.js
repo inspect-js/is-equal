@@ -16,6 +16,7 @@ var isSymbol = require('is-symbol');
 var isCallable = require('is-callable');
 var isBigInt = require('is-bigint');
 var getIterator = require('es-get-iterator');
+var toPrimitive = require('es-to-primitive');
 var whichCollection = require('which-collection');
 var whichBoxedPrimitive = require('which-boxed-primitive');
 var getPrototypeOf = require('object.getprototypeof/polyfill')();
@@ -204,6 +205,55 @@ module.exports = function whyNotEqual(value, other) {
 		if (isProto.call(value, other)) { return 'first argument is the [[Prototype]] of the second'; }
 		if (isProto.call(other, value)) { return 'second argument is the [[Prototype]] of the first'; }
 		if (getPrototypeOf(value) !== getPrototypeOf(other)) { return 'arguments have a different [[Prototype]]'; }
+
+		var valStringPrimitive = null;
+		var valStringPrimitiveErr = null;
+		try {
+			valStringPrimitive = toPrimitive(value, String);
+		} catch (error) {
+			valStringPrimitiveErr = error;
+		}
+
+		var otherStringPrimitive = null;
+		var otherStringPrimitiveErr = null;
+		try {
+			otherStringPrimitive = toPrimitive(other, String);
+		} catch (error) {
+			otherStringPrimitiveErr = error;
+		}
+
+		if (valStringPrimitiveErr || otherStringPrimitiveErr) {
+			if (!valStringPrimitiveErr) { return 'second argument toString throws; first does not'; }
+			if (!otherStringPrimitiveErr) { return 'first argument toString throws; second does not'; }
+		}
+		console.log(valStringPrimitive, otherStringPrimitive);
+		if (valStringPrimitive !== otherStringPrimitive) {
+			return 'first argument toString does not match second argument toString';
+		}
+
+		var valNumberPrimitive = null;
+		var valNumberPrimitiveErr = null;
+		try {
+			valNumberPrimitive = toPrimitive(value, Number);
+		} catch (error) {
+			valNumberPrimitiveErr = error;
+		}
+
+		var otherNumberPrimitive = null;
+		var otherNumberPrimitiveErr = null;
+		try {
+			otherNumberPrimitive = toPrimitive(other, Number);
+		} catch (error) {
+			otherNumberPrimitiveErr = error;
+		}
+
+		if (valNumberPrimitiveErr || otherNumberPrimitiveErr) {
+			if (!valNumberPrimitiveErr) { return 'second argument valueOf throws; first does not'; }
+			if (!otherNumberPrimitiveErr) { return 'first argument valueOf throws; second does not'; }
+		}
+		if (valNumberPrimitive !== otherNumberPrimitive) {
+			return 'first argument valueOf does not match second argument valueOf';
+		}
 
 		var valueIterator = getIterator(value);
 		var otherIterator = getIterator(other);

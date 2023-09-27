@@ -226,7 +226,6 @@ module.exports = function whyNotEqual(value, other) {
 			if (!valStringPrimitiveErr) { return 'second argument toString throws; first does not'; }
 			if (!otherStringPrimitiveErr) { return 'first argument toString throws; second does not'; }
 		}
-		console.log(valStringPrimitive, otherStringPrimitive);
 		if (valStringPrimitive !== otherStringPrimitive) {
 			return 'first argument toString does not match second argument toString';
 		}

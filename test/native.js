@@ -311,6 +311,62 @@ test('bigints', { skip: !hasBigInts }, function (t) {
 	t.end();
 });
 
+test('toPrimitive', function (t) {
+	t.test('gracefully handles error throwing', function (mt) {
+		var toStringThrow = {
+			toString: function () { throw new Error(); }
+		};
+		var valueOfThrow = {
+			valueOf: function () { throw new Error(); }
+		};
+		var noThrow = {};
+
+		mt.equal(isEqual(toStringThrow, noThrow), false, 'first argument toPrimitive throws, second does not');
+		mt.equal(isEqual(noThrow, toStringThrow), false, 'second argument toPrimitive throws, first does not');
+		mt.equal(isEqual(valueOfThrow, noThrow), false, 'first argument toPrimitive throws, second does not');
+		mt.equal(isEqual(noThrow, valueOfThrow), false, 'second argument toPrimitive throws; first does not');
+
+		mt.end();
+	});
+
+	t.test('toPrimitive strings', function (mt) {
+		var foo1 = {
+			toString: function () { return 'foo'; }
+		};
+		var foo2 = {
+			toString: function () { return 'foo'; }
+		};
+		var bar = {
+			toString: function () { return 'bar'; }
+		};
+
+		mt.equal(isEqual(foo1, foo2), true, 'both argument toPrimitive values are equal');
+		mt.equal(isEqual(foo1, bar), false, 'argument toPrimitive values are not equal');
+		mt.equal(isEqual(bar, foo1), false, 'argument toPrimitive values are not equal');
+
+		mt.end();
+	});
+
+	t.test('toPrimitive numbers', function (mt) {
+		var value1 = {
+			valueOf: function () { return 1; }
+		};
+		var alsoValue1 = {
+			valueOf: function () { return 1; }
+		};
+		var value2 = {
+			valueOf: function () { return 2; }
+		};
+
+		mt.equal(isEqual(value1, alsoValue1), true, 'both argument toPrimitive values are equal');
+		mt.equal(isEqual(value1, value2), false, 'argument toPrimitive values are not equal');
+		mt.equal(isEqual(value2, value1), false, 'argument toPrimitive values are not equal');
+
+		mt.end();
+	});
+	t.end();
+});
+
 var genericIterator = function (obj) {
 	var entries = objectEntries(obj);
 	return function iterator() {

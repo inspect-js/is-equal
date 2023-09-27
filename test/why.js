@@ -883,6 +883,112 @@ test('bigints', { skip: !hasBigInts }, function (t) {
 	t.end();
 });
 
+test('toPrimitive', function (t) {
+	t.test('gracefully handles error throwing', function (mt) {
+		var toStringThrow = {
+			toString: function () { throw new Error(); }
+		};
+		var toStringThrowFalsy = {
+			toString: function () { throw false; }
+		};
+		var toStringThrowFalsy2 = {
+			toString: function () { throw false; }
+		};
+		var valueOfThrow = {
+			valueOf: function () { throw new Error(); }
+		};
+		var noThrow = {};
+
+		mt.equal(
+			isEqualWhy(toStringThrow, toStringThrowFalsy),
+			'value at key "toString" differs: Function string representations differ',
+			'both throw; falls back to toString comparison'
+		);
+		mt.equal(
+			isEqualWhy(toStringThrowFalsy, toStringThrowFalsy2),
+			'',
+			'both throw; falls back to toString comparison'
+		);
+
+		mt.equal(isEqualWhy(toStringThrow, noThrow), 'first argument toPrimitive (hint String) throws; second does not');
+		mt.equal(isEqualWhy(noThrow, toStringThrow), 'second argument toPrimitive (hint String) throws; first does not');
+		mt.equal(isEqualWhy(valueOfThrow, noThrow), 'first argument toPrimitive (hint Number) throws; second does not');
+		mt.equal(isEqualWhy(noThrow, valueOfThrow), 'second argument toPrimitive (hint Number) throws; first does not');
+
+		mt.end();
+	});
+
+	t.test('toPrimitive strings', function (mt) {
+		var foo1 = {
+			toString: function () { return 'foo'; }
+		};
+		var foo2 = {
+			toString: function () { return 'foo'; }
+		};
+		var bar = {
+			toString: function () { return 'bar'; }
+		};
+
+		mt.equal(isEqualWhy(foo1, foo2), '');
+		mt.equal(isEqualWhy(foo1, bar), 'first argument toPrimitive does not match second argument toPrimitive (hint String)');
+		mt.equal(isEqualWhy(bar, foo1), 'first argument toPrimitive does not match second argument toPrimitive (hint String)');
+
+		mt.end();
+	});
+
+	t.test('toPrimitive numbers', function (mt) {
+		var value1 = {
+			valueOf: function () { return 1; }
+		};
+		var alsoValue1 = {
+			valueOf: function () { return 1; }
+		};
+		var value2 = {
+			valueOf: function () { return 2; }
+		};
+
+		mt.equal(isEqualWhy(value1, alsoValue1), '');
+		mt.equal(isEqualWhy(value1, value2), 'first argument toPrimitive does not match second argument toPrimitive (hint Number)');
+		mt.equal(isEqualWhy(value2, value1), 'first argument toPrimitive does not match second argument toPrimitive (hint Number)');
+
+		mt.end();
+	});
+
+	t.test('Symbol.toPrimitive', { skip: !hasSymbols || !Symbol.toPrimitive }, function (st) {
+		var hints = [];
+		var obj = {
+			toString: function () { return 'toString'; },
+			valueOf: function () { return 'valueOf'; }
+		};
+		var obj2 = {
+			toString: function () { return 'toString'; },
+			valueOf: function () { return 'valueOf'; }
+		};
+		obj2[Symbol.toPrimitive] = function (hint) {
+			hints.push(hint);
+			if (hint === 'string') {
+				return 'toString';
+			}
+			if (hint === 'number') {
+				return 'valueOf';
+			}
+			return 'default';
+		};
+
+		st.equal(
+			isEqualWhy(obj, obj2),
+			'first argument toPrimitive does not match second argument toPrimitive (hint default)',
+			'test Symbol.toPrimitive'
+		);
+
+		st.deepEqual(hints, ['string', 'number', 'default'], 'all hints are tested');
+
+		st.end();
+	});
+
+	t.end();
+});
+
 var genericIterator = function (obj) {
 	var entries = objectEntries(obj);
 	return function iterator() {

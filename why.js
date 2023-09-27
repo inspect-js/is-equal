@@ -16,6 +16,7 @@ var isSymbol = require('is-symbol');
 var isCallable = require('is-callable');
 var isBigInt = require('is-bigint');
 var getIterator = require('es-get-iterator');
+var toPrimitive = require('es-to-primitive/es2015');
 var whichCollection = require('which-collection');
 var whichBoxedPrimitive = require('which-boxed-primitive');
 var getPrototypeOf = require('object.getprototypeof/polyfill')();
@@ -35,6 +36,32 @@ var bigIntValue = hasBigInts ? BigInt.prototype.valueOf : null;
 var normalizeFnWhitespace = function normalizeWhitespace(fnStr) {
 	// this is needed in IE 9, at least, which has inconsistencies here.
 	return fnStr.replace(/^function ?\(/, 'function (').replace('){', ') {');
+};
+
+var testToPrim = function testToPrimitive(value, other, hint, hintName) {
+	var valPrimitive = NaN;
+	var valPrimitiveThrows = false;
+	try {
+		valPrimitive = toPrimitive(value, hint);
+	} catch (error) {
+		valPrimitiveThrows = true;
+	}
+
+	var otherPrimitive = NaN;
+	var otherPrimitiveThrows = false;
+	try {
+		otherPrimitive = toPrimitive(other, hint);
+	} catch (error) {
+		otherPrimitiveThrows = true;
+	}
+
+	if (valPrimitiveThrows || otherPrimitiveThrows) {
+		if (!valPrimitiveThrows) { return 'second argument toPrimitive (hint ' + hintName + ') throws; first does not'; }
+		if (!otherPrimitiveThrows) { return 'first argument toPrimitive (hint ' + hintName + ') throws; second does not'; }
+	} else if (valPrimitive !== otherPrimitive) {
+		return 'first argument toPrimitive does not match second argument toPrimitive (hint ' + hintName + ')';
+	}
+	return '';
 };
 
 module.exports = function whyNotEqual(value, other) {
@@ -204,6 +231,18 @@ module.exports = function whyNotEqual(value, other) {
 		if (isProto.call(value, other)) { return 'first argument is the [[Prototype]] of the second'; }
 		if (isProto.call(other, value)) { return 'second argument is the [[Prototype]] of the first'; }
 		if (getPrototypeOf(value) !== getPrototypeOf(other)) { return 'arguments have a different [[Prototype]]'; }
+
+		var valueIsFn = typeof value === 'function';
+		var otherIsFn = typeof other === 'function';
+
+		if (!valueIsFn || !otherIsFn) {
+			var result = testToPrim(value, other, String, 'String')
+				|| testToPrim(value, other, Number, 'Number')
+				|| testToPrim(value, other, void undefined, 'default');
+			if (result) {
+				return result;
+			}
+		}
 
 		var valueIterator = getIterator(value);
 		var otherIterator = getIterator(other);

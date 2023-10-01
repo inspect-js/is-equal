@@ -37,7 +37,7 @@
 		"equality"
 	],
 	"dependencies": {
-		"es-get-iterator": "^1.1.2",
+		"es-get-iterator": "^1.1.3",
 		"functions-have-names": "^1.2.3",
 		"has": "^1.0.3",
 		"has-bigints": "^1.0.2",
@@ -53,9 +53,9 @@
 		"is-string": "^1.0.7",
 		"is-symbol": "^1.0.4",
 		"isarray": "^2.0.5",
-		"object-inspect": "^1.12.2",
-		"object.entries": "^1.1.5",
-		"object.getprototypeof": "^1.0.3",
+		"object-inspect": "^1.12.3",
+		"object.entries": "^1.1.7",
+		"object.getprototypeof": "^1.0.5",
 		"which-boxed-primitive": "^1.0.2",
 		"which-collection": "^1.0.1"
 	},

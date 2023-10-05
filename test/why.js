@@ -31,6 +31,27 @@ test('nullish', function (t) {
 	t.equal('', isEqualWhy(undefined, undefined), 'present undefineds are equal');
 	t.equal('', isEqualWhy(null, null), 'nulls are equal');
 
+	/* globals document: false */
+	t.test('document.all', { skip: typeof document !== 'undefined' }, function (st) {
+		var all = typeof document !== 'undefined' && document.all;
+
+		st.equal(
+			isEqualWhy(all, null),
+			String(all) + ' !== null',
+			'document.all and null are not equal'
+		);
+
+		st.equal(
+			isEqualWhy(all, all),
+			'',
+			'document.all is equal to itself'
+		);
+
+		// TODO: get a new iframe's document.all and compare to this one's
+
+		st.end();
+	});
+
 	t.end();
 });
 

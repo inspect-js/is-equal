@@ -412,6 +412,16 @@ test('arrays', function (t) {
 });
 
 test('objects', function (t) {
+	t.test('fake toStringTag', { skip: !symbolToStringTag }, function (st) {
+		var fake = function () {};
+		fake[symbolToStringTag] = 'Object';
+
+		st.equal(isEqualWhy({}, fake), 'second argument is callable; first is not');
+		st.equal(isEqualWhy(fake, {}), 'first argument is callable; second is not');
+
+		st.end();
+	});
+
 	t.test('prototypes', function (st) {
 		var F = function F() {
 			this.foo = 42;

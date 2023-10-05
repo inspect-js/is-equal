@@ -202,6 +202,9 @@ module.exports = function whyNotEqual(value, other) {
 	var valueIsCallable = isCallable(value);
 	var otherIsCallable = isCallable(other);
 	if (valueIsCallable || otherIsCallable) {
+		if (valueIsCallable !== otherIsCallable) {
+			return valueIsCallable ? 'first argument is callable; second is not' : 'second argument is callable; first is not';
+		}
 		if (functionsHaveNames && whyNotEqual(value.name, other.name) !== '') {
 			return 'Function names differ: "' + value.name + '" !== "' + other.name + '"';
 		}

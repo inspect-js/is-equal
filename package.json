@@ -54,7 +54,7 @@
 		"is-string": "^1.0.7",
 		"is-symbol": "^1.0.4",
 		"isarray": "^2.0.5",
-		"object-inspect": "^1.12.3",
+		"object-inspect": "^1.13.1",
 		"object.entries": "^1.1.7",
 		"object.getprototypeof": "^1.0.5",
 		"which-boxed-primitive": "^1.0.2",

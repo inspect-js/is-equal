@@ -3,7 +3,7 @@
 var ObjectPrototype = Object.prototype;
 var toStr = ObjectPrototype.toString;
 var booleanValue = Boolean.prototype.valueOf;
-var has = require('has');
+var hasOwn = require('hasown');
 var isArray = require('isarray');
 var isArrowFunction = require('is-arrow-function');
 var isBoolean = require('is-boolean-object');
@@ -155,8 +155,8 @@ module.exports = function whyNotEqual(value, other) {
 		var equal = '';
 		var valHasIndex, otherHasIndex;
 		while (equal === '' && index >= 0) {
-			valHasIndex = has(value, index);
-			otherHasIndex = has(other, index);
+			valHasIndex = hasOwn(value, index);
+			otherHasIndex = hasOwn(other, index);
 			if (!valHasIndex && otherHasIndex) { return 'second argument has index ' + index + '; first does not'; }
 			if (valHasIndex && !otherHasIndex) { return 'first argument has index ' + index + '; second does not'; }
 			equal = whyNotEqual(value[index], other[index]);
@@ -272,8 +272,8 @@ module.exports = function whyNotEqual(value, other) {
 
 		var key, valueKeyIsRecursive, otherKeyIsRecursive, keyWhy;
 		for (key in value) {
-			if (has(value, key)) {
-				if (!has(other, key)) { return 'first argument has key "' + key + '"; second does not'; }
+			if (hasOwn(value, key)) {
+				if (!hasOwn(other, key)) { return 'first argument has key "' + key + '"; second does not'; }
 				valueKeyIsRecursive = !!value[key] && value[key][key] === value;
 				otherKeyIsRecursive = !!other[key] && other[key][key] === other;
 				if (valueKeyIsRecursive !== otherKeyIsRecursive) {
@@ -289,7 +289,7 @@ module.exports = function whyNotEqual(value, other) {
 			}
 		}
 		for (key in other) {
-			if (has(other, key) && !has(value, key)) {
+			if (hasOwn(other, key) && !hasOwn(value, key)) {
 				return 'second argument has key "' + key + '"; first does not';
 			}
 		}

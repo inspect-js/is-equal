@@ -32,6 +32,7 @@ export default [
 		files: ['test/**'],
 		rules: {
 			'func-name-matching': 'off',
+			'no-shadow': 'off',
 			'no-throw-literal': 'off',
 			'prefer-regex-literals': 'off',
 		},

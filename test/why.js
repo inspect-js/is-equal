@@ -1202,6 +1202,85 @@ test('iterables', function (t) {
 		it.end();
 	});
 
+	t.test('hostile iterators', { skip: !symbolIterator }, function (ht) {
+		var makeBomb = function () {
+			var bomb = {};
+			bomb[symbolIterator] = function () {
+				return { next: function () { throw new Error('boom'); } };
+			};
+			return bomb;
+		};
+		var makeFinite = function () {
+			var fin = {};
+			fin[symbolIterator] = function () {
+				var i = 0;
+				return { next: function () {
+					i += 1;
+					return { value: 1, done: i > 1 };
+				} };
+			};
+			return fin;
+		};
+
+		ht.equal(
+			isEqualWhy(makeBomb(), makeFinite()),
+			'first object iterator next() throws; second does not',
+			'first iterator next() throws, second does not'
+		);
+		ht.equal(
+			isEqualWhy(makeFinite(), makeBomb()),
+			'second object iterator next() throws; first does not',
+			'second iterator next() throws, first does not'
+		);
+		ht.equal(
+			isEqualWhy(makeBomb(), makeBomb()),
+			'',
+			'both iterators next() throw'
+		);
+
+		var makeDoneThrow = function () {
+			var dt = {};
+			dt[symbolIterator] = function () {
+				return {
+					next: function () {
+						return Object.defineProperty({ value: 1 }, 'done', { get: function () { throw new Error('done!'); } });
+					}
+				};
+			};
+			return dt;
+		};
+
+		ht.equal(
+			isEqualWhy(makeDoneThrow(), makeFinite()),
+			'first object iterator next() throws; second does not',
+			'.done getter throws'
+		);
+
+		ht.test('infinite iterators are bounded by MAX_ITER', function (it) {
+			it.timeoutAfter(5000);
+			var makeInfinite = function () {
+				var inf = {};
+				inf[symbolIterator] = function () {
+					return { next: function () { return { value: 0, done: false }; } };
+				};
+				return inf;
+			};
+			var why = isEqualWhy(makeInfinite(), makeInfinite());
+			it.equal(
+				typeof why,
+				'string',
+				'infinite-iterator comparison returns a string'
+			);
+			it.ok(
+				(/iteration aborted: maximum iteration count/).test(why),
+				'iteration aborted: ' + why
+			);
+			it.end();
+		});
+
+		ht.end();
+	});
+
 	t.end();
 });
 

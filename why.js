@@ -25,6 +25,8 @@ var hasBigInts = require('has-bigints')();
 var getSideChannel = require('side-channel');
 var alreadyVisitedPair = require('./visited');
 
+var MAX_ITER = 1e6;
+
 var objectType = function (v) { return whichCollection(v) || whichBoxedPrimitive(v) || typeof v; };
 
 var isProto = Object.prototype.isPrototypeOf;
@@ -258,19 +260,37 @@ module.exports = function whyNotEqual(value, other, visited) {
 			return 'second argument is iterable; first is not';
 		}
 		if (valueIterator && otherIterator) { // both should be truthy or falsy at this point
-			var valueNext, otherNext, nextWhy;
+			var valueIterResult, otherIterResult, nextWhy;
+			var valueDone, otherDone, valueIterVal, otherIterVal;
+			var valueNextThrows, otherNextThrows;
+			var iterCount = 0;
 			do {
-				valueNext = valueIterator.next();
-				otherNext = otherIterator.next();
-				if (!valueNext.done && !otherNext.done) {
-					nextWhy = whyNotEqual(valueNext, otherNext, seen);
-					if (nextWhy !== '') {
-						return 'iteration results are not equal: ' + nextWhy;
-					}
+				if (iterCount >= MAX_ITER) { return 'iteration aborted: maximum iteration count (' + MAX_ITER + ') exceeded'; }
+				iterCount += 1;
+				valueNextThrows = false;
+				otherNextThrows = false;
+				try {
+					valueIterResult = valueIterator.next();
+					valueDone = !!valueIterResult.done;
+					valueIterVal = valueIterResult.value;
+				} catch (e) { valueNextThrows = true; }
+				try {
+					otherIterResult = otherIterator.next();
+					otherDone = !!otherIterResult.done;
+					otherIterVal = otherIterResult.value;
+				} catch (e) { otherNextThrows = true; }
+				if (valueNextThrows || otherNextThrows) {
+					if (!valueNextThrows) { return 'second ' + objectType(other) + ' iterator next() throws; first does not'; }
+					if (!otherNextThrows) { return 'first ' + objectType(value) + ' iterator next() throws; second does not'; }
+					return ''; // both throw, treat as equal-so-far, mirroring testToPrim
 				}
-			} while (!valueNext.done && !otherNext.done);
-			if (valueNext.done && !otherNext.done) { return 'first ' + objectType(value) + ' argument finished iterating before second ' + objectType(other); }
-			if (!valueNext.done && otherNext.done) { return 'second ' + objectType(other) + ' argument finished iterating before first ' + objectType(value); }
+				if (!valueDone && !otherDone) {
+					nextWhy = whyNotEqual(valueIterVal, otherIterVal, seen);
+					if (nextWhy !== '') { return 'iteration results are not equal: value at key "value" differs: ' + nextWhy; }
+				}
+			} while (!valueDone && !otherDone);
+			if (valueDone && !otherDone) { return 'first ' + objectType(value) + ' argument finished iterating before second ' + objectType(other); }
+			if (!valueDone && otherDone) { return 'second ' + objectType(other) + ' argument finished iterating before first ' + objectType(value); }
 			return '';
 		}
 

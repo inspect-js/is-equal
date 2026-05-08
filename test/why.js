@@ -1265,5 +1265,75 @@ test('circular references', function (t) {
 		st.end();
 	});
 
+	t.test('cyclic arrays', function (st) {
+		var ca = [];
+		ca.push(ca);
+		var cb = [];
+		cb.push(cb);
+		st.equal(isEqualWhy(ca, cb), '', 'two self-referential arrays are equal');
+
+		var cc = [];
+		cc.push(cc, 1);
+		var cd = [];
+		cd.push(cd, 2);
+		st.equal(
+			isEqualWhy(cc, cd),
+			'numbers are different: 1 !== 2',
+			'two self-referential arrays with differing tail are not equal'
+		);
+
+		st.end();
+	});
+
+	t.test('multi-hop mutual object cycles', function (st) {
+		// 2-hop: a <-> b
+		var a1 = {};
+		var b1 = {};
+		a1.x = b1;
+		b1.y = a1;
+		var a2 = {};
+		var b2 = {};
+		a2.x = b2;
+		b2.y = a2;
+		st.equal(isEqualWhy(a1, a2), '', 'two 2-hop mutual cycles are equal');
+
+		// 3-hop: a -b-> x -c-> y -b-> a (closing edge at a different key)
+		var p1 = {};
+		var q1 = {};
+		var r1 = {};
+		p1.b = q1;
+		q1.c = r1;
+		r1.b = p1;
+		var p2 = {};
+		var q2 = {};
+		var r2 = {};
+		p2.b = q2;
+		q2.c = r2;
+		r2.b = p2;
+		st.equal(isEqualWhy(p1, p2), '', 'two 3-hop mutual cycles are equal');
+
+		st.end();
+	});
+
+	t.test('cyclic Sets', { skip: typeof Set !== 'function' }, function (st) {
+		var s1 = new Set();
+		s1.add(s1);
+		var s2 = new Set();
+		s2.add(s2);
+		st.equal(isEqualWhy(s1, s2), '', 'two self-containing Sets are equal');
+
+		st.end();
+	});
+
+	t.test('cyclic Maps', { skip: typeof Map !== 'function' }, function (st) {
+		var m1 = new Map();
+		m1.set('k', m1);
+		var m2 = new Map();
+		m2.set('k', m2);
+		st.equal(isEqualWhy(m1, m2), '', 'two self-referencing Maps are equal');
+
+		st.end();
+	});
+
 	t.end();
 });

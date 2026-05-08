@@ -22,6 +22,8 @@ var whichBoxedPrimitive = require('which-boxed-primitive');
 var getPrototypeOf = require('object.getprototypeof/polyfill')();
 var hasSymbols = require('has-symbols/shams')();
 var hasBigInts = require('has-bigints')();
+var getSideChannel = require('side-channel');
+var alreadyVisitedPair = require('./visited');
 
 var objectType = function (v) { return whichCollection(v) || whichBoxedPrimitive(v) || typeof v; };
 
@@ -64,11 +66,13 @@ var testToPrim = function testToPrimitive(value, other, hint, hintName) {
 	return '';
 };
 
-module.exports = function whyNotEqual(value, other) {
+module.exports = function whyNotEqual(value, other, visited) {
 	if (value === other) { return ''; }
 	if (value == null || other == null) {
 		return value === other ? '' : String(value) + ' !== ' + String(other);
 	}
+	var seen = visited || getSideChannel();
+	if (alreadyVisitedPair(seen, value, other)) { return ''; }
 
 	var valToStr = toStr.call(value);
 	var otherToStr = toStr.call(other);
@@ -159,7 +163,7 @@ module.exports = function whyNotEqual(value, other) {
 			otherHasIndex = hasOwn(other, index);
 			if (!valHasIndex && otherHasIndex) { return 'second argument has index ' + index + '; first does not'; }
 			if (valHasIndex && !otherHasIndex) { return 'first argument has index ' + index + '; second does not'; }
-			equal = whyNotEqual(value[index], other[index]);
+			equal = whyNotEqual(value[index], other[index], seen);
 			index -= 1;
 		}
 		return equal;
@@ -205,21 +209,21 @@ module.exports = function whyNotEqual(value, other) {
 		if (valueIsCallable !== otherIsCallable) {
 			return valueIsCallable ? 'first argument is callable; second is not' : 'second argument is callable; first is not';
 		}
-		if (functionsHaveNames && whyNotEqual(value.name, other.name) !== '') {
+		if (functionsHaveNames && whyNotEqual(value.name, other.name, seen) !== '') {
 			return 'Function names differ: "' + value.name + '" !== "' + other.name + '"';
 		}
-		if (whyNotEqual(value.length, other.length) !== '') {
+		if (whyNotEqual(value.length, other.length, seen) !== '') {
 			return 'Function lengths differ: ' + value.length + ' !== ' + other.length;
 		}
 
 		var valueStr = normalizeFnWhitespace(String(value));
 		var otherStr = normalizeFnWhitespace(String(other));
 		if (
-			whyNotEqual(valueStr, otherStr) !== ''
+			whyNotEqual(valueStr, otherStr, seen) !== ''
 			&& !(
 				!valueIsGen
 				&& !valueIsArrow
-				&& whyNotEqual(valueStr.replace(/\)\s*\{/, '){'), otherStr.replace(/\)\s*\{/, '){')) === ''
+				&& whyNotEqual(valueStr.replace(/\)\s*\{/, '){'), otherStr.replace(/\)\s*\{/, '){'), seen) === ''
 			)
 		) {
 			return 'Function string representations differ';
@@ -259,7 +263,7 @@ module.exports = function whyNotEqual(value, other) {
 				valueNext = valueIterator.next();
 				otherNext = otherIterator.next();
 				if (!valueNext.done && !otherNext.done) {
-					nextWhy = whyNotEqual(valueNext, otherNext);
+					nextWhy = whyNotEqual(valueNext, otherNext, seen);
 					if (nextWhy !== '') {
 						return 'iteration results are not equal: ' + nextWhy;
 					}
@@ -281,7 +285,7 @@ module.exports = function whyNotEqual(value, other) {
 					return 'second argument has a circular reference at key "' + key + '"; first does not';
 				}
 				if (!valueKeyIsRecursive && !otherKeyIsRecursive) {
-					keyWhy = whyNotEqual(value[key], other[key]);
+					keyWhy = whyNotEqual(value[key], other[key], seen);
 					if (keyWhy !== '') {
 						return 'value at key "' + key + '" differs: ' + keyWhy;
 					}

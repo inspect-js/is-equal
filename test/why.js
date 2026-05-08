@@ -1020,6 +1020,98 @@ test('toPrimitive', function (t) {
 	t.end();
 });
 
+test('throwing boundary reads', function (t) {
+	var canRedefineFnProps = require('functions-have-names').functionsHaveConfigurableNames();
+
+	t.test('throwing .name on a function', { skip: !canRedefineFnProps }, function (st) {
+		var bomb = function () {};
+		Object.defineProperty(bomb, 'name', { configurable: true, get: function () { throw new Error('name'); } });
+		var ok = function () {};
+		st.equal(
+			isEqualWhy(bomb, ok),
+			'first argument .name throws; second does not',
+			'.name throws on first arg only'
+		);
+		st.equal(
+			isEqualWhy(ok, bomb),
+			'second argument .name throws; first does not',
+			'.name throws on second arg only'
+		);
+
+		st.end();
+	});
+
+	t.test('throwing .length on a function', { skip: !canRedefineFnProps }, function (st) {
+		var bomb = function () {};
+		Object.defineProperty(bomb, 'name', { configurable: true, value: 'fn' });
+		Object.defineProperty(bomb, 'length', { configurable: true, get: function () { throw new Error('length'); } });
+		var ok = function () {};
+		Object.defineProperty(ok, 'name', { configurable: true, value: 'fn' });
+		st.equal(
+			isEqualWhy(bomb, ok),
+			'first argument .length throws; second does not',
+			'.length throws on first arg only'
+		);
+
+		st.end();
+	});
+
+	t.test('throwing own-key getter', function (st) {
+		var bomb = Object.defineProperty({}, 'k', {
+			enumerable: true,
+			get: function () { throw new Error('k'); }
+		});
+		var ok = { k: 1 };
+		st.equal(
+			isEqualWhy(bomb, ok),
+			'first argument key "k" throws; second does not',
+			'own-key getter throws on first arg only'
+		);
+
+		st.end();
+	});
+
+	t.test('throwing array index getter', function (st) {
+		var bomb = [1, 2];
+		Object.defineProperty(bomb, 0, { get: function () { throw new Error('idx'); } });
+		var ok = [1, 2];
+		st.equal(
+			isEqualWhy(bomb, ok),
+			'first argument index 0 throws; second does not',
+			'index getter throws on first arg only'
+		);
+
+		st.end();
+	});
+
+	t.test('throwing RegExp toString', function (st) {
+		var bomb = /a/;
+		bomb.toString = function () { throw new Error('rx'); };
+		var ok = /a/;
+		st.equal(
+			isEqualWhy(bomb, ok),
+			'first argument String(regex) throws; second does not',
+			'regex toString throws on first arg only'
+		);
+
+		st.end();
+	});
+
+	t.test('Proxy getPrototypeOf trap throws', { skip: typeof Proxy !== 'function' }, function (st) {
+		var bomb = new Proxy({}, { getPrototypeOf: function () { throw new Error('proto'); } });
+		var ok = {};
+		var why = isEqualWhy(bomb, ok);
+		st.ok(
+			(/throws; (first|second) does not$/).test(why),
+			'Proxy getPrototypeOf trap throws: ' + why
+		);
+
+		st.end();
+	});
+
+	t.end();
+});
+
 var genericIterator = function (obj) {
 	var entries = objectEntries(obj);
 	return function iterator() {

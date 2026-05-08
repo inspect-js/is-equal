@@ -1,5 +1,7 @@
 'use strict';
 
+/* eslint max-lines: 0 */
+
 var ObjectPrototype = Object.prototype;
 var toStr = ObjectPrototype.toString;
 var booleanValue = Boolean.prototype.valueOf;
@@ -24,23 +26,26 @@ var hasSymbols = require('has-symbols/shams')();
 var hasBigInts = require('has-bigints')();
 var getSideChannel = require('side-channel');
 var alreadyVisitedPair = require('./visited');
+var compareCallable = require('./compareCallable');
+var pairTry = require('./pairTry');
 
 var MAX_ITER = 1e6;
+
+var isKeyRecursive = function (parent, container, key) {
+	try {
+		return !!container && container[key] === parent;
+	} catch (e) {
+		return false;
+	}
+};
 
 var objectType = function (v) { return whichCollection(v) || whichBoxedPrimitive(v) || typeof v; };
 
 var isProto = Object.prototype.isPrototypeOf;
 
-var functionsHaveNames = require('functions-have-names')();
-
 var symbolValue = hasSymbols ? Symbol.prototype.valueOf : null;
 
 var bigIntValue = hasBigInts ? BigInt.prototype.valueOf : null;
-
-var normalizeFnWhitespace = function normalizeWhitespace(fnStr) {
-	// this is needed in IE 9, at least, which has inconsistencies here.
-	return fnStr.replace(/^function ?\(/, 'function (').replace('){', ') {');
-};
 
 var testToPrim = function testToPrimitive(value, other, hint, hintName) {
 	var valPrimitive = NaN;
@@ -141,10 +146,14 @@ module.exports = function whyNotEqual(value, other, visited) {
 	if (valIsRegex || otherIsRegex) {
 		if (!valIsRegex) { return 'second argument is RegExp, first is not'; }
 		if (!otherIsRegex) { return 'first argument is RegExp, second is not'; }
-		var regexStringVal = String(value);
-		var regexStringOther = String(other);
-		if (regexStringVal !== regexStringOther) {
-			return 'regular expressions differ: ' + regexStringVal + ' !== ' + regexStringOther;
+		var rs = pairTry(
+			function () { return String(value); },
+			function () { return String(other); },
+			'String(regex)'
+		);
+		if (rs.diag) { return rs.diag; }
+		if (rs.v.ok && rs.v.val !== rs.o.val) {
+			return 'regular expressions differ: ' + rs.v.val + ' !== ' + rs.o.val;
 		}
 	}
 
@@ -165,7 +174,15 @@ module.exports = function whyNotEqual(value, other, visited) {
 			otherHasIndex = hasOwn(other, index);
 			if (!valHasIndex && otherHasIndex) { return 'second argument has index ' + index + '; first does not'; }
 			if (valHasIndex && !otherHasIndex) { return 'first argument has index ' + index + '; second does not'; }
-			equal = whyNotEqual(value[index], other[index], seen);
+			var pi = pairTry(
+				// eslint-disable-next-line no-loop-func
+				function () { return value[index]; },
+				// eslint-disable-next-line no-loop-func
+				function () { return other[index]; },
+				'index ' + index
+			);
+			if (pi.diag) { return pi.diag; }
+			if (pi.v.ok) { equal = whyNotEqual(pi.v.val, pi.o.val, seen); }
 			index -= 1;
 		}
 		return equal;
@@ -208,28 +225,8 @@ module.exports = function whyNotEqual(value, other, visited) {
 	var valueIsCallable = isCallable(value);
 	var otherIsCallable = isCallable(other);
 	if (valueIsCallable || otherIsCallable) {
-		if (valueIsCallable !== otherIsCallable) {
-			return valueIsCallable ? 'first argument is callable; second is not' : 'second argument is callable; first is not';
-		}
-		if (functionsHaveNames && whyNotEqual(value.name, other.name, seen) !== '') {
-			return 'Function names differ: "' + value.name + '" !== "' + other.name + '"';
-		}
-		if (whyNotEqual(value.length, other.length, seen) !== '') {
-			return 'Function lengths differ: ' + value.length + ' !== ' + other.length;
-		}
-
-		var valueStr = normalizeFnWhitespace(String(value));
-		var otherStr = normalizeFnWhitespace(String(other));
-		if (
-			whyNotEqual(valueStr, otherStr, seen) !== ''
-			&& !(
-				!valueIsGen
-				&& !valueIsArrow
-				&& whyNotEqual(valueStr.replace(/\)\s*\{/, '){'), otherStr.replace(/\)\s*\{/, '){'), seen) === ''
-			)
-		) {
-			return 'Function string representations differ';
-		}
+		var fnResult = compareCallable(value, other, valueIsCallable, otherIsCallable, valueIsGen, valueIsArrow, seen, whyNotEqual);
+		if (fnResult) { return fnResult; }
 	}
 
 	var valueIsObj = valIsDate || valIsRegex || valIsArray || valueIsGen || valueIsArrow || valueIsCallable || Object(value) === value;
@@ -237,9 +234,23 @@ module.exports = function whyNotEqual(value, other, visited) {
 
 	if (valueIsObj || otherIsObj) {
 		if (typeof value !== typeof other) { return 'arguments have a different typeof: ' + typeof value + ' !== ' + typeof other; }
-		if (isProto.call(value, other)) { return 'first argument is the [[Prototype]] of the second'; }
-		if (isProto.call(other, value)) { return 'second argument is the [[Prototype]] of the first'; }
-		if (getPrototypeOf(value) !== getPrototypeOf(other)) { return 'arguments have a different [[Prototype]]'; }
+		var pp = pairTry(
+			function () { return isProto.call(value, other); },
+			function () { return isProto.call(other, value); },
+			'[[Prototype]] check'
+		);
+		if (pp.diag) { return pp.diag; }
+		if (pp.v.ok) {
+			if (pp.v.val) { return 'first argument is the [[Prototype]] of the second'; }
+			if (pp.o.val) { return 'second argument is the [[Prototype]] of the first'; }
+		}
+		var pgp = pairTry(
+			function () { return getPrototypeOf(value); },
+			function () { return getPrototypeOf(other); },
+			'getPrototypeOf'
+		);
+		if (pgp.diag) { return pgp.diag; }
+		if (pgp.v.ok && pgp.v.val !== pgp.o.val) { return 'arguments have a different [[Prototype]]'; }
 
 		var valueIsFn = typeof value === 'function';
 		var otherIsFn = typeof other === 'function';
@@ -298,16 +309,24 @@ module.exports = function whyNotEqual(value, other, visited) {
 		for (key in value) {
 			if (hasOwn(value, key)) {
 				if (!hasOwn(other, key)) { return 'first argument has key "' + key + '"; second does not'; }
-				valueKeyIsRecursive = !!value[key] && value[key][key] === value;
-				otherKeyIsRecursive = !!other[key] && other[key][key] === other;
-				if (valueKeyIsRecursive !== otherKeyIsRecursive) {
-					if (valueKeyIsRecursive) { return 'first argument has a circular reference at key "' + key + '"; second does not'; }
-					return 'second argument has a circular reference at key "' + key + '"; first does not';
-				}
-				if (!valueKeyIsRecursive && !otherKeyIsRecursive) {
-					keyWhy = whyNotEqual(value[key], other[key], seen);
-					if (keyWhy !== '') {
-						return 'value at key "' + key + '" differs: ' + keyWhy;
+				var pk = pairTry(
+					// eslint-disable-next-line no-loop-func
+					function () { return value[key]; },
+					// eslint-disable-next-line no-loop-func
+					function () { return other[key]; },
+					'key "' + key + '"'
+				);
+				if (pk.diag) { return pk.diag; }
+				if (pk.v.ok) {
+					valueKeyIsRecursive = isKeyRecursive(value, pk.v.val, key);
+					otherKeyIsRecursive = isKeyRecursive(other, pk.o.val, key);
+					if (valueKeyIsRecursive !== otherKeyIsRecursive) {
+						if (valueKeyIsRecursive) { return 'first argument has a circular reference at key "' + key + '"; second does not'; }
+						return 'second argument has a circular reference at key "' + key + '"; first does not';
+					}
+					if (!valueKeyIsRecursive && !otherKeyIsRecursive) {
+						keyWhy = whyNotEqual(pk.v.val, pk.o.val, seen);
+						if (keyWhy !== '') { return 'value at key "' + key + '" differs: ' + keyWhy; }
 					}
 				}
 			}

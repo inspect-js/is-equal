@@ -18,7 +18,7 @@
 		"test:corejs": "nyc tape --require=core-js 'test/**/*.js'",
 		"tests-only": "nyc tape 'test/**/*.js'",
 		"test": "npm run tests-only && npm run test:corejs",
-		"posttest": "aud --production",
+		"posttest": "npx npm@\">= 10.2\" audit --production",
 		"lint": "eslint ."
 	},
 	"repository": {
@@ -63,7 +63,6 @@
 	},
 	"devDependencies": {
 		"@ljharb/eslint-config": "^21.1.0",
-		"aud": "^2.0.3",
 		"auto-changelog": "^2.4.0",
 		"core-js": "^2.6.5 || ^3.16.0",
 		"es-value-fixtures": "^1.4.2",

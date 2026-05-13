@@ -13,6 +13,7 @@ var inspect = require('object-inspect');
 var v = require('es-value-fixtures');
 var hasGeneratorSupport = v.generatorFunctions.length > 0;
 var assign = require('object.assign');
+var fnNamesConfigurable = require('functions-have-names').functionsHaveConfigurableNames();
 
 var symbolIterator = (hasSymbols || hasSymbolShams) && Symbol.iterator;
 var symbolToStringTag = (hasSymbols || hasSymbolShams) && Symbol.toStringTag;
@@ -1021,9 +1022,7 @@ test('toPrimitive', function (t) {
 });
 
 test('throwing boundary reads', function (t) {
-	var canRedefineFnProps = require('functions-have-names').functionsHaveConfigurableNames();
-
-	t.test('throwing .name on a function', { skip: !canRedefineFnProps }, function (st) {
+	t.test('throwing .name on a function', { skip: !fnNamesConfigurable }, function (st) {
 		var bomb = function () {};
 		Object.defineProperty(bomb, 'name', { configurable: true, get: function () { throw new Error('name'); } });
 		var ok = function () {};
@@ -1041,7 +1040,7 @@ test('throwing boundary reads', function (t) {
 		st.end();
 	});
 
-	t.test('throwing .length on a function', { skip: !canRedefineFnProps }, function (st) {
+	t.test('throwing .length on a function', { skip: !fnNamesConfigurable }, function (st) {
 		var bomb = function () {};
 		Object.defineProperty(bomb, 'name', { configurable: true, value: 'fn' });
 		Object.defineProperty(bomb, 'length', { configurable: true, get: function () { throw new Error('length'); } });

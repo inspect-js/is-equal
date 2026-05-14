@@ -2,6 +2,7 @@
 
 var pairTry = require('./pairTry');
 var functionsHaveNames = require('functions-have-names')();
+var inspect = require('object-inspect');
 
 /** @param {string} fnStr */
 function normalizeFnWhitespace(fnStr) {
@@ -30,7 +31,9 @@ module.exports = function compareCallable(
 			'.name'
 		);
 		if (pn.diag) { return pn.diag; }
-		if (pn.v.ok && whyNotEqual(pn.v.val, pn.o.val, seen) !== '') { return 'Function names differ: "' + pn.v.val + '" !== "' + pn.o.val + '"'; }
+		if (pn.v.ok && whyNotEqual(pn.v.val, pn.o.val, seen) !== '') {
+			return 'Function names differ: ' + inspect(pn.v.val, { quoteStyle: 'double' }) + ' !== ' + inspect(pn.o.val, { quoteStyle: 'double' });
+		}
 	}
 	var pl = pairTry(
 		function () { return (/** @type {Function} */ (value)).length; },
@@ -38,7 +41,9 @@ module.exports = function compareCallable(
 		'.length'
 	);
 	if (pl.diag) { return pl.diag; }
-	if (pl.v.ok && whyNotEqual(pl.v.val, pl.o.val, seen) !== '') { return 'Function lengths differ: ' + pl.v.val + ' !== ' + pl.o.val; }
+	if (pl.v.ok && whyNotEqual(pl.v.val, pl.o.val, seen) !== '') {
+		return 'Function lengths differ: ' + inspect(pl.v.val) + ' !== ' + inspect(pl.o.val);
+	}
 
 	var ps = pairTry(
 		function () { return String(value); },

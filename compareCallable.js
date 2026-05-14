@@ -10,6 +10,15 @@ function normalizeFnWhitespace(fnStr) {
 	return fnStr.replace(/^function ?\(/, 'function (').replace('){', ') {');
 }
 
+/** @type {typeof inspect} */
+function safeInspect(val, opts) {
+	try {
+		return inspect(val, opts);
+	} catch (e) {
+		return '<inspection threw>';
+	}
+}
+
 /** @type {typeof import('./compareCallable')} */
 module.exports = function compareCallable(
 	value,
@@ -32,7 +41,7 @@ module.exports = function compareCallable(
 		);
 		if (pn.diag) { return pn.diag; }
 		if (pn.v.ok && whyNotEqual(pn.v.val, pn.o.val, seen) !== '') {
-			return 'Function names differ: ' + inspect(pn.v.val, { quoteStyle: 'double' }) + ' !== ' + inspect(pn.o.val, { quoteStyle: 'double' });
+			return 'Function names differ: ' + safeInspect(pn.v.val, { quoteStyle: 'double' }) + ' !== ' + safeInspect(pn.o.val, { quoteStyle: 'double' });
 		}
 	}
 	var pl = pairTry(
@@ -42,7 +51,7 @@ module.exports = function compareCallable(
 	);
 	if (pl.diag) { return pl.diag; }
 	if (pl.v.ok && whyNotEqual(pl.v.val, pl.o.val, seen) !== '') {
-		return 'Function lengths differ: ' + inspect(pl.v.val) + ' !== ' + inspect(pl.o.val);
+		return 'Function lengths differ: ' + safeInspect(pl.v.val) + ' !== ' + safeInspect(pl.o.val);
 	}
 
 	var ps = pairTry(

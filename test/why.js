@@ -1183,6 +1183,48 @@ test('throwing boundary reads', function (t) {
 		st.end();
 	});
 
+	t.test('.name with hostile getter on a sub-property does not crash diagnostic', { skip: !fnNamesConfigurable }, function (st) {
+		var bomb = Object.defineProperty({}, 'x', { enumerable: true, get: function () { throw new Error('getter'); } });
+		function f1() {}
+		function f2() {}
+		Object.defineProperty(f1, 'name', { configurable: true, value: bomb });
+		Object.defineProperty(f2, 'name', { configurable: true, value: 'normal' });
+		var why;
+		/** @type {false | Error} */
+		var threw = false;
+		try {
+			why = isEqualWhy(f1, f2);
+		} catch (e) {
+			threw = /** @type {Error} */ (e);
+		}
+		st.equal(threw, false, '.name diagnostic with hostile sub-getter does not throw (got: ' + (threw && threw.message) + ')');
+		st.equal(typeof why, 'string', 'returns a string diagnostic');
+
+		st.end();
+	});
+
+	t.test('.length with hostile getter on a sub-property does not crash diagnostic', { skip: !fnNamesConfigurable }, function (st) {
+		var bomb = Object.defineProperty({}, 'x', { enumerable: true, get: function () { throw new Error('getter'); } });
+		function f1() {}
+		function f2() {}
+		Object.defineProperty(f1, 'name', { configurable: true, value: 'same' });
+		Object.defineProperty(f2, 'name', { configurable: true, value: 'same' });
+		Object.defineProperty(f1, 'length', { configurable: true, value: bomb });
+		Object.defineProperty(f2, 'length', { configurable: true, value: 'normal' });
+		var why;
+		/** @type {false | Error} */
+		var threw = false;
+		try {
+			why = isEqualWhy(f1, f2);
+		} catch (e) {
+			threw = /** @type {Error} */ (e);
+		}
+		st.equal(threw, false, '.length diagnostic with hostile sub-getter does not throw (got: ' + (threw && threw.message) + ')');
+		st.equal(typeof why, 'string', 'returns a string diagnostic');
+
+		st.end();
+	});
+
 	t.end();
 });
 

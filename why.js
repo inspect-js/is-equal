@@ -137,29 +137,27 @@ module.exports = function whyNotEqual(value, other, visited) {
 		}
 	}
 
-	var valIsBool = isBoolean(value);
-	var otherIsBool = isBoolean(other);
-	if (valIsBool || otherIsBool) {
-		if (!valIsBool) { return 'first argument is not a boolean; second argument is'; }
-		if (!otherIsBool) { return 'second argument is not a boolean; first argument is'; }
-		var valBoolVal = booleanValue.call(value);
-		var otherBoolVal = booleanValue.call(other);
+	var valAsBool = isBoolean(value) ? value : null;
+	var otherAsBool = isBoolean(other) ? other : null;
+	if (valAsBool !== null || otherAsBool !== null) {
+		if (valAsBool === null) { return 'first argument is not a boolean; second argument is'; }
+		if (otherAsBool === null) { return 'second argument is not a boolean; first argument is'; }
+		var valBoolVal = booleanValue.call(valAsBool);
+		var otherBoolVal = booleanValue.call(otherAsBool);
 		if (valBoolVal === otherBoolVal) { return ''; }
 		return 'primitive value of boolean arguments do not match: ' + valBoolVal + ' !== ' + otherBoolVal;
 	}
 
-	var valIsNumber = isNumber(value);
-	var otherIsNumber = isNumber(other);
-	if (valIsNumber || otherIsNumber) {
-		if (!valIsNumber) { return 'first argument is not a number; second argument is'; }
-		if (!otherIsNumber) { return 'second argument is not a number; first argument is'; }
-		var valNum = Number(value);
-		var otherNum = Number(other);
+	var valAsNumber = isNumber(value) ? value : null;
+	var otherAsNumber = isNumber(other) ? other : null;
+	if (valAsNumber !== null || otherAsNumber !== null) {
+		if (valAsNumber === null) { return 'first argument is not a number; second argument is'; }
+		if (otherAsNumber === null) { return 'second argument is not a number; first argument is'; }
+		var valNum = Number(valAsNumber);
+		var otherNum = Number(otherAsNumber);
 		if (valNum === otherNum) { return ''; }
-
-		var valIsNaN = isNaN(/** @type {number} */ (value));
-
-		var otherIsNaN = isNaN(/** @type {number} */ (other));
+		var valIsNaN = isNaN(/** @type {number} */ (valAsNumber));
+		var otherIsNaN = isNaN(/** @type {number} */ (otherAsNumber));
 		if (valIsNaN && !otherIsNaN) {
 			return 'first argument is NaN; second is not';
 		} else if (!valIsNaN && otherIsNaN) {
@@ -167,42 +165,40 @@ module.exports = function whyNotEqual(value, other, visited) {
 		} else if (valIsNaN && otherIsNaN) {
 			return '';
 		}
-		return 'numbers are different: ' + value + ' !== ' + other;
+		return 'numbers are different: ' + valAsNumber + ' !== ' + otherAsNumber;
 	}
 
-	var valIsString = isString(value);
-	var otherIsString = isString(other);
-	if (valIsString || otherIsString) {
-		if (!valIsString) { return 'second argument is string; first is not'; }
-		if (!otherIsString) { return 'first argument is string; second is not'; }
-		var stringVal = String(value);
-		var otherVal = String(other);
+	var valAsString = isString(value) ? value : null;
+	var otherAsString = isString(other) ? other : null;
+	if (valAsString !== null || otherAsString !== null) {
+		if (valAsString === null) { return 'second argument is string; first is not'; }
+		if (otherAsString === null) { return 'first argument is string; second is not'; }
+		var stringVal = String(valAsString);
+		var otherVal = String(otherAsString);
 		if (stringVal === otherVal) { return ''; }
 		return 'string values are different: "' + stringVal + '" !== "' + otherVal + '"';
 	}
 
-	var valIsDate = isDate(value);
-	var otherIsDate = isDate(other);
-	if (valIsDate || otherIsDate) {
-		if (!valIsDate) { return 'second argument is Date, first is not'; }
-		if (!otherIsDate) { return 'first argument is Date, second is not'; }
-
-		var valTime = +value;
-
-		var otherTime = +other;
+	var valAsDate = isDate(value) ? value : null;
+	var otherAsDate = isDate(other) ? other : null;
+	if (valAsDate !== null || otherAsDate !== null) {
+		if (valAsDate === null) { return 'second argument is Date, first is not'; }
+		if (otherAsDate === null) { return 'first argument is Date, second is not'; }
+		var valTime = +valAsDate;
+		var otherTime = +otherAsDate;
 		if (valTime !== otherTime) {
 			return 'Dates have different time values: ' + valTime + ' !== ' + otherTime;
 		}
 	}
 
-	var valIsRegex = isRegex(value);
-	var otherIsRegex = isRegex(other);
-	if (valIsRegex || otherIsRegex) {
-		if (!valIsRegex) { return 'second argument is RegExp, first is not'; }
-		if (!otherIsRegex) { return 'first argument is RegExp, second is not'; }
+	var valAsRegex = isRegex(value) ? value : null;
+	var otherAsRegex = isRegex(other) ? other : null;
+	if (valAsRegex !== null || otherAsRegex !== null) {
+		if (valAsRegex === null) { return 'second argument is RegExp, first is not'; }
+		if (otherAsRegex === null) { return 'first argument is RegExp, second is not'; }
 		var rs = pairTry(
-			function () { return String(value); },
-			function () { return String(other); },
+			function () { return String(valAsRegex); },
+			function () { return String(otherAsRegex); },
 			'String(regex)'
 		);
 		if (rs.diag) { return rs.diag; }
@@ -211,29 +207,29 @@ module.exports = function whyNotEqual(value, other, visited) {
 		}
 	}
 
-	var valIsArray = isArray(value);
-	var otherIsArray = isArray(other);
-	if (valIsArray || otherIsArray) {
-		if (!isArray(value)) { return 'second argument is an Array, first is not'; }
-		if (!isArray(other)) { return 'first argument is an Array, second is not'; }
-		if (value.length !== other.length) {
-			return 'arrays have different length: ' + value.length + ' !== ' + other.length;
+	var valAsArray = isArray(value) ? value : null;
+	var otherAsArray = isArray(other) ? other : null;
+	if (valAsArray !== null || otherAsArray !== null) {
+		if (valAsArray === null) { return 'second argument is an Array, first is not'; }
+		if (otherAsArray === null) { return 'first argument is an Array, second is not'; }
+		if (valAsArray.length !== otherAsArray.length) {
+			return 'arrays have different length: ' + valAsArray.length + ' !== ' + otherAsArray.length;
 		}
 
-		var index = value.length - 1;
+		var index = valAsArray.length - 1;
 		/** @type {string | false} */
 		var equal = '';
 		var valHasIndex, otherHasIndex;
 		while (equal === '' && index >= 0) {
-			valHasIndex = hasOwn(value, index);
-			otherHasIndex = hasOwn(other, index);
+			valHasIndex = hasOwn(valAsArray, index);
+			otherHasIndex = hasOwn(otherAsArray, index);
 			if (!valHasIndex && otherHasIndex) { return 'second argument has index ' + index + '; first does not'; }
 			if (valHasIndex && !otherHasIndex) { return 'first argument has index ' + index + '; second does not'; }
 			var pi = pairTry(
 				// eslint-disable-next-line no-loop-func
-				function () { return value[index]; },
+				function () { return (/** @type {NonNullable<typeof valAsArray>} */ (valAsArray))[index]; },
 				// eslint-disable-next-line no-loop-func
-				function () { return other[index]; },
+				function () { return (/** @type {NonNullable<typeof otherAsArray>} */ (otherAsArray))[index]; },
 				'index ' + index
 			);
 			if (pi.diag) { return pi.diag; }
@@ -243,62 +239,62 @@ module.exports = function whyNotEqual(value, other, visited) {
 		return equal;
 	}
 
-	var valueIsSym = isSymbol(value);
-	var otherIsSym = isSymbol(other);
-	if (valueIsSym !== otherIsSym) {
-		if (valueIsSym) { return 'first argument is Symbol; second is not'; }
+	var valAsSym = isSymbol(value) ? value : null;
+	var otherAsSym = isSymbol(other) ? other : null;
+	if ((valAsSym === null) !== (otherAsSym === null)) {
+		if (valAsSym !== null) { return 'first argument is Symbol; second is not'; }
 		return 'second argument is Symbol; first is not';
 	}
-	if (valueIsSym && otherIsSym) {
-		return (/** @type {NonNullable<typeof symbolValue>} */ (symbolValue)).call(value) === (/** @type {(this: unknown) => symbol} */ (symbolValue)).call(other)
+	if (valAsSym !== null && otherAsSym !== null) {
+		return (/** @type {NonNullable<typeof symbolValue>} */ (symbolValue)).call(valAsSym) === (/** @type {(this: unknown) => symbol} */ (symbolValue)).call(otherAsSym)
 			? ''
 			: 'first Symbol value !== second Symbol value';
 	}
 
-	var valueIsBigInt = isBigInt(value);
-	var otherIsBigInt = isBigInt(other);
-	if (valueIsBigInt !== otherIsBigInt) {
-		if (valueIsBigInt) { return 'first argument is BigInt; second is not'; }
+	var valAsBigInt = isBigInt(value) ? value : null;
+	var otherAsBigInt = isBigInt(other) ? other : null;
+	if ((valAsBigInt === null) !== (otherAsBigInt === null)) {
+		if (valAsBigInt !== null) { return 'first argument is BigInt; second is not'; }
 		return 'second argument is BigInt; first is not';
 	}
-	if (valueIsBigInt && otherIsBigInt) {
-		return (/** @type {NonNullable<typeof bigIntValue>} */ (bigIntValue)).call(value) === (/** @type {(this: unknown) => bigint} */ (bigIntValue)).call(other)
+	if (valAsBigInt !== null && otherAsBigInt !== null) {
+		return (/** @type {NonNullable<typeof bigIntValue>} */ (bigIntValue)).call(valAsBigInt) === (/** @type {(this: unknown) => bigint} */ (bigIntValue)).call(otherAsBigInt)
 			? ''
 			: 'first BigInt value !== second BigInt value';
 	}
 
-	var valueIsGen = isGenerator(value);
-	var otherIsGen = isGenerator(other);
-	if (valueIsGen !== otherIsGen) {
-		if (valueIsGen) { return 'first argument is a Generator function; second is not'; }
+	var valAsGen = isGenerator(value) ? value : null;
+	var otherAsGen = isGenerator(other) ? other : null;
+	if ((valAsGen === null) !== (otherAsGen === null)) {
+		if (valAsGen !== null) { return 'first argument is a Generator function; second is not'; }
 		return 'second argument is a Generator function; first is not';
 	}
 
-	var valueIsArrow = isArrowFunction(value);
-	var otherIsArrow = isArrowFunction(other);
-	if (valueIsArrow !== otherIsArrow) {
-		if (valueIsArrow) { return 'first argument is an arrow function; second is not'; }
+	var valAsArrow = isArrowFunction(value) ? value : null;
+	var otherAsArrow = isArrowFunction(other) ? other : null;
+	if ((valAsArrow === null) !== (otherAsArrow === null)) {
+		if (valAsArrow !== null) { return 'first argument is an arrow function; second is not'; }
 		return 'second argument is an arrow function; first is not';
 	}
 
-	var valueIsCallable = isCallable(value);
-	var otherIsCallable = isCallable(other);
-	if (valueIsCallable || otherIsCallable) {
+	var valAsCallable = isCallable(value) ? value : null;
+	var otherAsCallable = isCallable(other) ? other : null;
+	if (valAsCallable !== null || otherAsCallable !== null) {
 		var fnResult = compareCallable(
 			value,
 			other,
-			valueIsCallable,
-			otherIsCallable,
-			valueIsGen,
-			valueIsArrow,
+			valAsCallable !== null,
+			otherAsCallable !== null,
+			valAsGen !== null,
+			valAsArrow !== null,
 			seen,
 			whyNotEqual
 		);
 		if (fnResult) { return fnResult; }
 	}
 
-	var valueIsObj = valIsDate || valIsRegex || valIsArray || valueIsGen || valueIsArrow || valueIsCallable || Object(value) === value;
-	var otherIsObj = otherIsDate || otherIsRegex || otherIsArray || otherIsGen || otherIsArrow || otherIsCallable || Object(other) === other;
+	var valueIsObj = valAsDate !== null || valAsRegex !== null || valAsArray !== null || valAsGen !== null || valAsArrow !== null || valAsCallable !== null || Object(value) === value;
+	var otherIsObj = otherAsDate !== null || otherAsRegex !== null || otherAsArray !== null || otherAsGen !== null || otherAsArrow !== null || otherAsCallable !== null || Object(other) === other;
 
 	if (valueIsObj || otherIsObj) {
 		if (typeof value !== typeof other) { return 'arguments have a different typeof: ' + typeof value + ' !== ' + typeof other; }

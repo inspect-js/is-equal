@@ -1225,6 +1225,58 @@ test('throwing boundary reads', function (t) {
 		st.end();
 	});
 
+	t.test('toString block tolerates non-string String() return', function (st) {
+		/* globals window: false */
+		var globalObj = /** @type {{ String: any }} */ (/** @type {unknown} */ (typeof global === 'undefined' ? window : global));
+		var origString = globalObj.String;
+		var why;
+		/** @type {false | Error} */
+		var threw = false;
+		try {
+			globalObj.String = function () { return 42; };
+			try {
+				why = isEqualWhy(function () {}, function () {});
+			} catch (e) {
+				threw = /** @type {Error} */ (e);
+			}
+		} finally {
+			globalObj.String = origString;
+		}
+		st.equal(threw, false, 'comparison does not throw when String() returns a non-string (got: ' + (threw && threw.message) + ')');
+		st.equal(typeof why, 'string', 'returns a string diagnostic');
+
+		st.end();
+	});
+
+	t.test('toString block reports differ when only one side returns a string', { skip: !fnNamesConfigurable }, function (st) {
+		var globalObj = /** @type {{ String: any }} */ (/** @type {unknown} */ (typeof global === 'undefined' ? window : global));
+		var origString = globalObj.String;
+		function f1() {}
+		function f2() {}
+		Object.defineProperty(f1, 'name', { configurable: true, value: 'same' });
+		Object.defineProperty(f2, 'name', { configurable: true, value: 'same' });
+		var why;
+		/** @type {false | Error} */
+		var threw = false;
+		try {
+			globalObj.String = function (/** @type {unknown} */ x) {
+				if (x === f2) { return 42; }
+				return origString(x);
+			};
+			try {
+				why = isEqualWhy(f1, f2);
+			} catch (e) {
+				threw = /** @type {Error} */ (e);
+			}
+		} finally {
+			globalObj.String = origString;
+		}
+		st.equal(threw, false, 'asymmetric String() type does not throw (got: ' + (threw && threw.message) + ')');
+		st.notEqual(why, '', 'asymmetric String() type is reported as different (got: ' + JSON.stringify(why) + ')');
+
+		st.end();
+	});
+
 	t.end();
 });
 

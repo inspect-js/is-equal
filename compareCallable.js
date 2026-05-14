@@ -7,7 +7,14 @@ var inspect = require('object-inspect');
 /** @param {string} fnStr */
 function normalizeFnWhitespace(fnStr) {
 	// this is needed in IE 9, at least, which has inconsistencies here.
-	return fnStr.replace(/^function ?\(/, 'function (').replace('){', ') {');
+	return typeof fnStr === 'string'
+		? fnStr.replace(/^function ?\(/, 'function (').replace('){', ') {')
+		: fnStr;
+}
+
+/** @param {string} fnStr */
+function stripBraceWhitespace(fnStr) {
+	return typeof fnStr === 'string' ? fnStr.replace(/\)\s*\{/, '){') : fnStr;
 }
 
 /** @type {typeof inspect} */
@@ -65,7 +72,16 @@ module.exports = function compareCallable(
 		var otherStr = normalizeFnWhitespace(ps.o.val);
 		var fnStrDiff = whyNotEqual(valueStr, otherStr, seen) !== '';
 		var canStripBraceWs = !valueIsGen && !valueIsArrow;
-		if (fnStrDiff && (!canStripBraceWs || whyNotEqual(valueStr.replace(/\)\s*\{/, '){'), otherStr.replace(/\)\s*\{/, '){'), seen) !== '')) {
+		if (
+			fnStrDiff && (
+				!canStripBraceWs
+				|| whyNotEqual(
+					stripBraceWhitespace(valueStr),
+					stripBraceWhitespace(otherStr),
+					seen
+				) !== ''
+			)
+		) {
 			return 'Function string representations differ';
 		}
 	}

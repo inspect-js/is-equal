@@ -106,8 +106,12 @@ function testToPrim(value, other, hint, hintName) {
 	}
 
 	if (valPrimitiveThrows || otherPrimitiveThrows) {
-		if (!valPrimitiveThrows) { return 'second argument toPrimitive (hint ' + hintName + ') throws; first does not'; }
-		if (!otherPrimitiveThrows) { return 'first argument toPrimitive (hint ' + hintName + ') throws; second does not'; }
+		if (!valPrimitiveThrows) {
+			return 'second argument toPrimitive (hint ' + hintName + ') throws; first does not';
+		}
+		if (!otherPrimitiveThrows) {
+			return 'first argument toPrimitive (hint ' + hintName + ') throws; second does not';
+		}
 	} else if (valPrimitive !== otherPrimitive) {
 		return 'first argument toPrimitive does not match second argument toPrimitive (hint ' + hintName + ')';
 	}

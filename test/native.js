@@ -496,3 +496,74 @@ test('circular references', function (t) {
 
 	t.end();
 });
+
+var hasIntegrityLevels = typeof Object.isExtensible === 'function'
+	&& typeof Object.isSealed === 'function'
+	&& typeof Object.isFrozen === 'function';
+
+test('integrity levels', { skip: !hasIntegrityLevels }, function (t) {
+	t.test('plain objects', function (st) {
+		st.ok(
+			isEqual(Object.freeze({ a: 1 }), Object.freeze({ a: 1 })),
+			'two frozen objects with the same contents are equal'
+		);
+		st.ok(
+			isEqual(Object.seal({ a: 1 }), Object.seal({ a: 1 })),
+			'two sealed objects with the same contents are equal'
+		);
+		st.ok(
+			isEqual(Object.preventExtensions({ a: 1 }), Object.preventExtensions({ a: 1 })),
+			'two non-extensible objects with the same contents are equal'
+		);
+
+		st.notOk(
+			isEqual(Object.freeze({ a: 1 }), { a: 1 }),
+			'frozen and extensible objects with the same contents are not equal'
+		);
+		st.notOk(
+			isEqual({ a: 1 }, Object.freeze({ a: 1 })),
+			'extensible and frozen objects with the same contents are not equal'
+		);
+		st.notOk(
+			isEqual(Object.seal({ a: 1 }), { a: 1 }),
+			'sealed and extensible objects with the same contents are not equal'
+		);
+		st.notOk(
+			isEqual(Object.preventExtensions({ a: 1 }), { a: 1 }),
+			'non-extensible and extensible objects with the same contents are not equal'
+		);
+		st.notOk(
+			isEqual(Object.freeze({ a: 1 }), Object.seal({ a: 1 })),
+			'frozen and sealed objects with the same contents are not equal'
+		);
+		st.notOk(
+			isEqual(Object.seal({ a: 1 }), Object.preventExtensions({ a: 1 })),
+			'sealed and non-extensible objects with the same contents are not equal'
+		);
+
+		st.end();
+	});
+
+	t.test('arrays', function (st) {
+		st.ok(
+			isEqual(Object.freeze([1, 2, 3]), Object.freeze([1, 2, 3])),
+			'two frozen arrays with the same contents are equal'
+		);
+		st.notOk(
+			isEqual(Object.freeze([1, 2, 3]), [1, 2, 3]),
+			'frozen and extensible arrays with the same contents are not equal'
+		);
+		st.notOk(
+			isEqual(Object.seal([1, 2, 3]), [1, 2, 3]),
+			'sealed and extensible arrays with the same contents are not equal'
+		);
+		st.notOk(
+			isEqual(Object.preventExtensions([1, 2, 3]), [1, 2, 3]),
+			'non-extensible and extensible arrays with the same contents are not equal'
+		);
+
+		st.end();
+	});
+
+	t.end();
+});

@@ -1507,3 +1507,87 @@ test('circular references', function (t) {
 
 	t.end();
 });
+
+var hasIntegrityLevels = typeof Object.isExtensible === 'function'
+	&& typeof Object.isSealed === 'function'
+	&& typeof Object.isFrozen === 'function';
+
+test('integrity levels', { skip: !hasIntegrityLevels }, function (t) {
+	t.test('plain objects', function (st) {
+		st.equal(
+			isEqualWhy(Object.freeze({ a: 1 }), Object.freeze({ a: 1 })),
+			'',
+			'two frozen objects with the same contents are equal'
+		);
+		st.equal(
+			isEqualWhy(Object.seal({ a: 1 }), Object.seal({ a: 1 })),
+			'',
+			'two sealed objects with the same contents are equal'
+		);
+		st.equal(
+			isEqualWhy(Object.preventExtensions({ a: 1 }), Object.preventExtensions({ a: 1 })),
+			'',
+			'two non-extensible objects with the same contents are equal'
+		);
+
+		st.equal(
+			isEqualWhy(Object.freeze({ a: 1 }), { a: 1 }),
+			'integrity levels differ: frozen !== extensible',
+			'frozen vs extensible objects are not equal'
+		);
+		st.equal(
+			isEqualWhy({ a: 1 }, Object.freeze({ a: 1 })),
+			'integrity levels differ: extensible !== frozen',
+			'extensible vs frozen objects are not equal'
+		);
+		st.equal(
+			isEqualWhy(Object.seal({ a: 1 }), { a: 1 }),
+			'integrity levels differ: sealed !== extensible',
+			'sealed vs extensible objects are not equal'
+		);
+		st.equal(
+			isEqualWhy(Object.preventExtensions({ a: 1 }), { a: 1 }),
+			'integrity levels differ: non-extensible !== extensible',
+			'non-extensible vs extensible objects are not equal'
+		);
+		st.equal(
+			isEqualWhy(Object.freeze({ a: 1 }), Object.seal({ a: 1 })),
+			'integrity levels differ: frozen !== sealed',
+			'frozen vs sealed objects are not equal'
+		);
+		st.equal(
+			isEqualWhy(Object.seal({ a: 1 }), Object.preventExtensions({ a: 1 })),
+			'integrity levels differ: sealed !== non-extensible',
+			'sealed vs non-extensible objects are not equal'
+		);
+
+		st.end();
+	});
+
+	t.test('arrays', function (st) {
+		st.equal(
+			isEqualWhy(Object.freeze([1, 2, 3]), Object.freeze([1, 2, 3])),
+			'',
+			'two frozen arrays with the same contents are equal'
+		);
+		st.equal(
+			isEqualWhy(Object.freeze([1, 2, 3]), [1, 2, 3]),
+			'integrity levels differ: frozen !== extensible',
+			'frozen vs extensible arrays are not equal'
+		);
+		st.equal(
+			isEqualWhy(Object.seal([1, 2, 3]), [1, 2, 3]),
+			'integrity levels differ: sealed !== extensible',
+			'sealed vs extensible arrays are not equal'
+		);
+		st.equal(
+			isEqualWhy(Object.preventExtensions([1, 2, 3]), [1, 2, 3]),
+			'integrity levels differ: non-extensible !== extensible',
+			'non-extensible vs extensible arrays are not equal'
+		);
+
+		st.end();
+	});
+
+	t.end();
+});

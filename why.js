@@ -47,6 +47,18 @@ var symbolValue = hasSymbols ? Symbol.prototype.valueOf : null;
 
 var bigIntValue = hasBigInts ? BigInt.prototype.valueOf : null;
 
+var $isExtensible = typeof Object.isExtensible === 'function' ? Object.isExtensible : null;
+var $isSealed = typeof Object.isSealed === 'function' ? Object.isSealed : null;
+var $isFrozen = typeof Object.isFrozen === 'function' ? Object.isFrozen : null;
+var hasIntegrityLevels = !!$isExtensible && !!$isSealed && !!$isFrozen;
+
+var integrityLevel = function getIntegrityLevel(o) {
+	if ($isFrozen(o)) { return 'frozen'; }
+	if ($isSealed(o)) { return 'sealed'; }
+	if (!$isExtensible(o)) { return 'non-extensible'; }
+	return 'extensible';
+};
+
 var testToPrim = function testToPrimitive(value, other, hint, hintName) {
 	var valPrimitive = NaN;
 	var valPrimitiveThrows = false;
@@ -85,6 +97,14 @@ module.exports = function whyNotEqual(value, other, visited) {
 	var otherToStr = toStr.call(other);
 	if (valToStr !== otherToStr) {
 		return 'toStringTag is not the same: ' + valToStr + ' !== ' + otherToStr;
+	}
+
+	if (hasIntegrityLevels && Object(value) === value && Object(other) === other) {
+		var valueLevel = integrityLevel(value);
+		var otherLevel = integrityLevel(other);
+		if (valueLevel !== otherLevel) {
+			return 'integrity levels differ: ' + valueLevel + ' !== ' + otherLevel;
+		}
 	}
 
 	var valIsBool = isBoolean(value);

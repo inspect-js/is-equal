@@ -31,15 +31,17 @@ var pairTry = require('./pairTry');
 
 var MAX_ITER = 1e6;
 
-var isKeyRecursive = function (parent, container, key) {
+function isKeyRecursive(parent, container, key) {
 	try {
 		return !!container && container[key] === parent;
 	} catch (e) {
 		return false;
 	}
-};
+}
 
-var objectType = function (v) { return whichCollection(v) || whichBoxedPrimitive(v) || typeof v; };
+function objectType(v) {
+	return whichCollection(v) || whichBoxedPrimitive(v) || typeof v;
+}
 
 var isProto = Object.prototype.isPrototypeOf;
 
@@ -52,14 +54,14 @@ var $isSealed = typeof Object.isSealed === 'function' ? Object.isSealed : null;
 var $isFrozen = typeof Object.isFrozen === 'function' ? Object.isFrozen : null;
 var hasIntegrityLevels = !!$isExtensible && !!$isSealed && !!$isFrozen;
 
-var integrityLevel = function getIntegrityLevel(o) {
+function getIntegrityLevel(o) {
 	if ($isFrozen(o)) { return 'frozen'; }
 	if ($isSealed(o)) { return 'sealed'; }
 	if (!$isExtensible(o)) { return 'non-extensible'; }
 	return 'extensible';
-};
+}
 
-var testToPrim = function testToPrimitive(value, other, hint, hintName) {
+function testToPrim(value, other, hint, hintName) {
 	var valPrimitive = NaN;
 	var valPrimitiveThrows = false;
 	try {
@@ -83,7 +85,7 @@ var testToPrim = function testToPrimitive(value, other, hint, hintName) {
 		return 'first argument toPrimitive does not match second argument toPrimitive (hint ' + hintName + ')';
 	}
 	return '';
-};
+}
 
 module.exports = function whyNotEqual(value, other, visited) {
 	if (value === other) { return ''; }
@@ -100,8 +102,8 @@ module.exports = function whyNotEqual(value, other, visited) {
 	}
 
 	if (hasIntegrityLevels && Object(value) === value && Object(other) === other) {
-		var valueLevel = integrityLevel(value);
-		var otherLevel = integrityLevel(other);
+		var valueLevel = getIntegrityLevel(value);
+		var otherLevel = getIntegrityLevel(other);
 		if (valueLevel !== otherLevel) {
 			return 'integrity levels differ: ' + valueLevel + ' !== ' + otherLevel;
 		}

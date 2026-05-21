@@ -3,10 +3,10 @@
 var pairTry = require('./pairTry');
 var functionsHaveNames = require('functions-have-names')();
 
-var normalizeFnWhitespace = function normalizeWhitespace(fnStr) {
+function normalizeFnWhitespace(fnStr) {
 	// this is needed in IE 9, at least, which has inconsistencies here.
 	return fnStr.replace(/^function ?\(/, 'function (').replace('){', ') {');
-};
+}
 
 module.exports = function compareCallable(value, other, valueIsCallable, otherIsCallable, valueIsGen, valueIsArrow, seen, whyNotEqual) {
 	if (valueIsCallable !== otherIsCallable) {

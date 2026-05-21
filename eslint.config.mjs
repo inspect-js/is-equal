@@ -4,15 +4,16 @@ export default [
 	...ljharbConfig,
 	{
 		rules: {
-			complexity: ['warn', 10],
+			complexity: 'off',
 			eqeqeq: ['error', 'allow-null'],
 			'func-names': 'off',
+			'func-style': ['error', 'declaration'],
 			'id-length': ['error', { max: 23, min: 1 }],
 			'max-depth': ['error', 5],
 			'max-len': 'off',
 			'max-lines-per-function': ['error', { max: 300 }],
 			'max-params': 'off',
-			'max-statements': ['warn', 10],
+			'max-statements': 'off',
 			'max-statements-per-line': ['error', { max: 2 }],
 			'new-cap': ['error', { capIsNewExceptions: ['BigInt'] }],
 			'no-extra-parens': ['warn'],
@@ -32,6 +33,7 @@ export default [
 		files: ['test/**'],
 		rules: {
 			'func-name-matching': 'off',
+			'func-style': 'off',
 			'no-shadow': 'off',
 			'no-throw-literal': 'off',
 			'prefer-regex-literals': 'off',

@@ -63,11 +63,11 @@
 	},
 	"devDependencies": {
 		"@ljharb/eslint-config": "^22.2.3",
-		"auto-changelog": "^2.5.1",
+		"auto-changelog": "^2.6.0",
 		"core-js": "^2.6.5 || ^3.16.0",
 		"es-value-fixtures": "^1.7.1",
 		"es6-shim": "^0.35.8",
-		"eslint": "^10.0.3",
+		"eslint": "^10.5.0",
 		"for-each": "^0.3.5",
 		"in-publish": "^2.0.1",
 		"jiti": "^0.0.0",
@@ -76,7 +76,7 @@
 		"nyc": "^10.3.2",
 		"object.assign": "^4.1.7",
 		"safe-publish-latest": "^2.0.0",
-		"tape": "^5.9.0"
+		"tape": "^5.10.1"
 	},
 	"testling": {
 		"files": "test/native.js",
@@ -106,7 +106,8 @@
 		"unreleased": false,
 		"commitLimit": false,
 		"backfillLimit": false,
-		"hideCredit": true
+		"hideCredit": true,
+		"autodetectMonorepoDisabled": false
 	},
 	"publishConfig": {
 		"ignore": [

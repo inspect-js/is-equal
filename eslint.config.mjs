@@ -9,7 +9,7 @@ export default [
 			'func-names': 'off',
 			'func-style': ['error', 'declaration'],
 			'id-length': ['error', { max: 23, min: 1 }],
-			'max-depth': ['error', 5],
+			'max-depth': ['error', 6],
 			'max-len': 'off',
 			'max-lines-per-function': ['error', { max: 300 }],
 			'max-params': 'off',

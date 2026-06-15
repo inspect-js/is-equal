@@ -431,10 +431,10 @@ test('iterables', function (t) {
 			var ac;
 			// eslint-disable-next-line max-statements-per-line
 			try { ac = new Set('ac'); } catch (e) { ac = new Set(); } // node 0.12 throws when given a string
-			if (ab.size !== 2) {
+			if (ac.size !== 2) {
 				// work around IE 11 (and others) bug accepting iterables
-				ab.add('a');
-				ab.add('c');
+				ac.add('a');
+				ac.add('c');
 			}
 			sst.notOk(isEqual(ab, ac), 'Sets initially populated with different strings are not equal');
 			sst.end();

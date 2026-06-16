@@ -16,7 +16,7 @@ export default [
 			'max-statements': 'off',
 			'max-statements-per-line': ['error', { max: 2 }],
 			'new-cap': ['error', { capIsNewExceptions: ['BigInt'] }],
-			'no-extra-parens': ['warn'],
+			'no-extra-parens': 'off',
 			'no-implicit-coercion': [
 				'error', {
 					boolean: false,
@@ -33,7 +33,7 @@ export default [
 		files: ['test/**'],
 		rules: {
 			'func-name-matching': 'off',
-			'func-style': 'off',
+			'func-style': ['error', 'declaration'],
 			'no-shadow': 'off',
 			'no-throw-literal': 'off',
 			'prefer-regex-literals': 'off',

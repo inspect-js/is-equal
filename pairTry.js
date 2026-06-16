@@ -1,12 +1,15 @@
 'use strict';
 
+/** @type {import('./pairTry')} */
 module.exports = function pairTry(vFn, oFn, label) {
+	/** @type {import('./pairTry').TryResult<ReturnType<typeof vFn>>} */
 	var v;
 	try {
 		v = { ok: true, val: vFn() };
 	} catch (e) {
 		v = { ok: false, val: undefined };
 	}
+	/** @type {import('./pairTry').TryResult<ReturnType<typeof oFn>>} */
 	var o;
 	try {
 		o = { ok: true, val: oFn() };

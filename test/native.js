@@ -14,16 +14,17 @@ var inspect = require('object-inspect');
 var v = require('es-value-fixtures');
 var hasGeneratorSupport = v.generatorFunctions.length > 0;
 
-var symbolIterator = (hasSymbols || hasSymbolShams) && Symbol.iterator;
+var symbolIterator = /** @type {symbol | undefined | false} */ ((hasSymbols || hasSymbolShams) && Symbol.iterator);
 
-var copyFunction = function (fn) {
+/** @param {Function} fn */
+function copyFunction(fn) {
 	/* eslint-disable no-new-func */
 	try {
 		return Function('return ' + String(fn))();
 	} catch (e) {
 		return Function('return {' + String(fn) + '}["' + fn.name + '"];')();
 	}
-};
+}
 
 test('primitives', function (t) {
 	t.ok(isEqual(), 'undefineds are equal');
@@ -109,15 +110,17 @@ test('arrays', function (t) {
 
 test('objects', function (t) {
 	t.test('prototypes', function (st) {
-		var F = function F() {
-			this.foo = 42;
-		};
-		var G = function G() {};
+		/** @constructor */
+		function F() { this.foo = 42; }
+		/** @constructor */
+		function G() {}
 		G.prototype = new F();
 		G.prototype.constructor = G;
-		var H = function H() {};
+		/** @constructor */
+		function H() {}
 		H.prototype = G.prototype;
-		var I = function I() {};
+		/** @constructor */
+		function I() {}
 
 		var f1 = new F();
 		var f2 = new F();
@@ -135,6 +138,7 @@ test('objects', function (t) {
 		var isChildEqualToParent = isEqual(g1, f1);
 		st.notOk(isChildEqualToParent, 'two instances of a child and parent are not equal');
 
+		// @ts-expect-error
 		g1.foo = 'bar';
 		var g2 = new G();
 		st.notOk(isEqual(g1, g2), 'two instances of the same thing with different properties are not equal');
@@ -164,6 +168,7 @@ test('objects', function (t) {
 
 	t.test('key ordering', function (st) {
 		var a = { a: 1, b: 2 };
+		/** @type {Record<string, number>} */
 		var b = { b: 2 };
 		b.a = 1;
 		st.ok(isEqual(a, b), 'objects with different key orderings but same contents are equal');
@@ -190,7 +195,9 @@ test('functions', function (t) {
 	var fnWithSpaceBeforeBody = Object(function () {});
 	var emptyFnWithName = Object(function a() {});
 	/* eslint-disable no-unused-vars */
+	// @ts-expect-error intentional unused arg in function-comparison fixture
 	var emptyFnOneArg = Object(function (a) {});
+	// @ts-expect-error intentional unused arg in function-comparison fixture
 	var anon1withArg = Object(function (a) { /* ANONYMOUS! */ return 'anon'; });
 	/* eslint-enable no-unused-vars */
 
@@ -367,7 +374,8 @@ test('toPrimitive', function (t) {
 	t.end();
 });
 
-var genericIterator = function (obj) {
+/** @template {object} T @param {T} obj */
+function genericIterator(obj) {
 	var entries = objectEntries(obj);
 	return function iterator() {
 		return {
@@ -379,7 +387,7 @@ var genericIterator = function (obj) {
 			}
 		};
 	};
-};
+}
 
 test('iterables', function (t) {
 	t.test('Maps', { skip: typeof Map !== 'function' }, function (mt) {
@@ -445,30 +453,38 @@ test('iterables', function (t) {
 
 	var obj = { a: { aa: true }, b: [2] };
 	t.test('generic iterables', { skip: !symbolIterator }, function (it) {
-		var a = { foo: 'bar' };
-		var b = { bar: 'baz' };
+		if (symbolIterator) {
+			/** @type {Record<PropertyKey, unknown>} */
+			var a = { foo: 'bar' };
+			/** @type {Record<PropertyKey, unknown>} */
+			var b = { bar: 'baz' };
 
-		it.equal(isEqual(a, b), false, 'normal a and normal b are not equal');
+			it.equal(isEqual(a, b), false, 'normal a and normal b are not equal');
 
-		a[symbolIterator] = genericIterator(obj);
-		it.equal(isEqual(a, b), false, 'iterable a / normal b are not equal');
-		it.equal(isEqual(b, a), false, 'iterable b / normal a are not equal');
-		it.equal(isEqual(a, obj), false, 'iterable a / normal obj are not equal');
-		it.equal(isEqual(obj, a), false, 'normal obj / iterable a are not equal');
+			a[symbolIterator] = genericIterator(obj);
+			it.equal(isEqual(a, b), false, 'iterable a / normal b are not equal');
+			it.equal(isEqual(b, a), false, 'iterable b / normal a are not equal');
+			it.equal(isEqual(a, obj), false, 'iterable a / normal obj are not equal');
+			it.equal(isEqual(obj, a), false, 'normal obj / iterable a are not equal');
 
-		b[symbolIterator] = genericIterator(obj);
-		it.equal(isEqual(a, b), true, 'iterable a / iterable b are equal');
-		it.equal(isEqual(b, a), true, 'iterable b / iterable a are equal');
-		it.equal(isEqual(b, obj), false, 'iterable b and normal obj are not equal');
-		it.equal(isEqual(obj, b), false, 'normal obj / iterable b are not equal');
+			b[symbolIterator] = genericIterator(obj);
+			it.equal(isEqual(a, b), true, 'iterable a / iterable b are equal');
+			it.equal(isEqual(b, a), true, 'iterable b / iterable a are equal');
+			it.equal(isEqual(b, obj), false, 'iterable b and normal obj are not equal');
+			it.equal(isEqual(obj, b), false, 'normal obj / iterable b are not equal');
+		}
 
 		it.end();
 	});
 
 	t.test('unequal iterables', { skip: !symbolIterator }, function (it) {
+		/** @type {Record<PropertyKey, unknown>} */
 		var c = {};
+		// @ts-expect-error TS doesn't understand tape's skip
 		c[symbolIterator] = genericIterator({});
+		/** @type {Record<PropertyKey, unknown>} */
 		var d = {};
+		// @ts-expect-error TS doesn't understand tape's skip
 		d[symbolIterator] = genericIterator(obj);
 
 		it.equal(isEqual(c, d), false, 'iterable c / iterable d are not equal');
@@ -480,9 +496,10 @@ test('iterables', function (t) {
 	t.end();
 });
 
-var Circular = function Circular() {
+/** @constructor */
+function Circular() {
 	this.circularRef = this;
-};
+}
 test('circular references', function (t) {
 	var a = new Circular();
 	var b = new Circular();

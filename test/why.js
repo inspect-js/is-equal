@@ -15,17 +15,19 @@ var hasGeneratorSupport = v.generatorFunctions.length > 0;
 var assign = require('object.assign');
 var fnNamesConfigurable = require('functions-have-names').functionsHaveConfigurableNames();
 
-var symbolIterator = (hasSymbols || hasSymbolShams) && Symbol.iterator;
-var symbolToStringTag = (hasSymbols || hasSymbolShams) && Symbol.toStringTag;
+var symbolIterator = /** @type {symbol | false | undefined} */ ((hasSymbols || hasSymbolShams) && Symbol.iterator);
 
-var copyFunction = function (fn) {
+var symbolToStringTag = /** @type {symbol | false | undefined} */ ((hasSymbols || hasSymbolShams) && Symbol.toStringTag);
+
+/** @param {Function} fn */
+function copyFunction(fn) {
 	/* eslint-disable no-new-func */
 	try {
 		return Function('return ' + String(fn))();
 	} catch (e) {
 		return Function('return {' + String(fn) + '}["' + fn.name + '"];')();
 	}
-};
+}
 
 test('nullish', function (t) {
 	t.equal('', isEqualWhy(), 'absent undefineds are equal');
@@ -75,7 +77,9 @@ test('strings', function (t) {
 
 	t.test('fakes', { skip: !symbolToStringTag }, function (st) {
 		forEach(v.strings, function (str) {
+			/** @type {Record<PropertyKey, unknown>} */
 			var fake = { toString: function () { return str; } };
+			// @ts-expect-error TS doesn't understand tape's skip
 			fake[symbolToStringTag] = 'String';
 
 			st.equal(
@@ -143,6 +147,7 @@ test('booleans', function (t) {
 
 	t.test('fakes', { skip: !symbolToStringTag }, function (st) {
 		forEach(v.booleans, function (bool) {
+			/** @type {Record<PropertyKey, unknown>} */
 			var fake = { valueOf: function () { return bool; } };
 			if (symbolToStringTag) {
 				fake[symbolToStringTag] = 'Boolean';
@@ -169,7 +174,9 @@ test('numbers', function (t) {
 	t.equal(isEqualWhy(NaN, NaN), '', 'NaNs are equal');
 
 	t.test('fake', { skip: !symbolToStringTag }, function (st) {
+		/** @type {Record<PropertyKey, unknown>} */
 		var notNaN = { valueOf: function () { return NaN; } };
+		// @ts-expect-error TS doesn't understand tape's skip
 		notNaN[symbolToStringTag] = 'Number';
 
 		st.equal(isEqualWhy(NaN, notNaN), 'second argument is not a number; first argument is', 'NaN and ' + inspect(notNaN) + ' are not equal');
@@ -236,11 +243,13 @@ test('dates', function (t) {
 
 	t.test('fake', { skip: !symbolToStringTag }, function (st) {
 		var date = new Date(123);
+		/** @type {Record<PropertyKey, unknown>} */
 		var fake = {
 			__proto__: Date.prototype,
 			toString: function () { return String(date); },
 			valueOf: function () { return +date; }
 		};
+		// @ts-expect-error TS doesn't understand tape's skip
 		fake[symbolToStringTag] = 'Date';
 
 		st.equal(
@@ -303,12 +312,14 @@ test('regexes', function (t) {
 
 	t.test('fake', { skip: !symbolToStringTag }, function (st) {
 		var re = /a/g;
+		/** @type {Record<PropertyKey, unknown>} */
 		var fake = {
 			__proto__: RegExp.prototype,
 			source: re.source,
 			flags: 'g',
 			toString: function () { return String(re); }
 		};
+		// @ts-expect-error TS doesn't understand tape's skip
 		fake[symbolToStringTag] = 'RegExp';
 
 		st.equal(
@@ -410,8 +421,11 @@ test('arrays', function (t) {
 	});
 
 	t.test('fakes', { skip: !symbolToStringTag }, function (st) {
-		var fake = function (x) {}; // eslint-disable-line no-unused-vars
+		// @ts-expect-error
+		function fake(x) {} // eslint-disable-line no-unused-vars
 		var fnArr = [String(fake)];
+
+		// @ts-expect-error TS doesn't understand tape's skip
 		fake[symbolToStringTag] = 'Array';
 
 		st.equal(fake.length, fnArr.length, 'precondition: fake and fnArr have the same length');
@@ -435,7 +449,9 @@ test('arrays', function (t) {
 
 test('objects', function (t) {
 	t.test('fake toStringTag', { skip: !symbolToStringTag }, function (st) {
-		var fake = function () {};
+		function fake() {}
+
+		// @ts-expect-error
 		fake[symbolToStringTag] = 'Object';
 
 		st.equal(isEqualWhy({}, fake), 'second argument is callable; first is not');
@@ -445,15 +461,17 @@ test('objects', function (t) {
 	});
 
 	t.test('prototypes', function (st) {
-		var F = function F() {
-			this.foo = 42;
-		};
-		var G = function G() {};
+		/** @constructor */
+		function F() { this.foo = 42; }
+		/** @constructor */
+		function G() {}
 		G.prototype = new F();
 		G.prototype.constructor = G;
-		var H = function H() {};
+		/** @constructor */
+		function H() {}
 		H.prototype = G.prototype;
-		var I = function I() {};
+		/** @constructor */
+		function I() {}
 
 		var f1 = new F();
 		var f2 = new F();
@@ -483,6 +501,7 @@ test('objects', function (t) {
 			'two instances of a child and parent are not equal'
 		);
 
+		// @ts-expect-error
 		g1.foo = 'bar';
 		var g2 = new G();
 		st.equal(
@@ -552,6 +571,7 @@ test('objects', function (t) {
 
 	t.test('key ordering', function (st) {
 		var a = { a: 1, b: 2 };
+		/** @type {Record<string, number>} */
 		var b = { b: 2 };
 		b.a = 1;
 		st.equal('', isEqualWhy(a, b), 'objects with different key orderings but same contents are equal');
@@ -576,7 +596,9 @@ test('functions', function (t) {
 	var fnWithSpaceBeforeBody = Object(function () {});
 	var emptyFnWithName = Object(function a() {});
 	/* eslint-disable no-unused-vars */
+	// @ts-expect-error intentional unused arg in function-comparison fixture
 	var emptyFnOneArg = Object(function (a) {});
+	// @ts-expect-error intentional unused arg in function-comparison fixture
 	var anon1withArg = Object(function (a) { /* ANONYMOUS! */ return 'anon'; });
 	/* eslint-enable no-unused-vars */
 
@@ -648,6 +670,7 @@ test('functions', function (t) {
 
 		st.equal(
 			isEqualWhy(fnNoSpace, genNoSpaces),
+			// @ts-expect-error TS doesn't understand tape's skip
 			genNoSpaces[symbolToStringTag]
 				? 'toStringTag is not the same: [object Function] !== [object GeneratorFunction]'
 				: 'second argument is a Generator function; first is not',
@@ -655,6 +678,7 @@ test('functions', function (t) {
 		);
 		st.equal(
 			isEqualWhy(genNoSpaces, fnNoSpace),
+			// @ts-expect-error TS doesn't understand tape's skip
 			genNoSpaces[symbolToStringTag]
 				? 'toStringTag is not the same: [object GeneratorFunction] !== [object Function]'
 				: 'first argument is a Generator function; second is not',
@@ -663,9 +687,11 @@ test('functions', function (t) {
 
 		t.test('fakes', { skip: !symbolToStringTag }, function (s2t) {
 			var fake = copyFunction(fnNoSpace);
+			// @ts-expect-error TS doesn't understand tape's skip
 			fake[symbolToStringTag] = 'GeneratorFunction';
 			s2t.equal(
 				isEqualWhy(fake, genNoSpaces),
+				// @ts-expect-error TS doesn't understand tape's skip
 				genNoSpaces[symbolToStringTag]
 					? 'second argument is a Generator function; first is not'
 					: 'toStringTag is not the same: [object GeneratorFunction] !== [object Function]',
@@ -673,6 +699,7 @@ test('functions', function (t) {
 			);
 			s2t.equal(
 				isEqualWhy(genNoSpaces, fake),
+				// @ts-expect-error TS doesn't understand tape's skip
 				genNoSpaces[symbolToStringTag]
 					? 'first argument is a Generator function; second is not'
 					: 'toStringTag is not the same: [object Function] !== [object GeneratorFunction]',
@@ -744,6 +771,7 @@ test('functions', function (t) {
 		});
 
 		var fake = copyFunction(fnNoSpace);
+		// @ts-expect-error TS doesn't understand tape's skip
 		fake[symbolToStringTag] = 'AsyncFunction';
 		st.equal(
 			isEqualWhy(fake, asyncNoSpaces),
@@ -773,8 +801,10 @@ test('functions', function (t) {
 	});
 
 	/* eslint-disable no-unused-vars */
-	var fn = function f(x) { 'y'; };
-	var fnPlus = assign(function f(x) { 'y'; }, { a: 1 });
+	// @ts-expect-error intentional unused arg in function-comparison fixture
+	function fn(x) { 'y'; }
+	// @ts-expect-error intentional unused arg in function-comparison fixture
+	var fnPlus = assign(function fn(x) { 'y'; }, { a: 1 });
 	/* eslint-enable no-unused-vars */
 	t.equal(
 		isEqualWhy(fn, fnPlus),
@@ -806,6 +836,7 @@ test('symbols', { skip: !hasSymbols }, function (t) {
 	);
 
 	t.test('fakes', { skip: !symbolToStringTag }, function (st) {
+		/** @type {Record<PropertyKey, unknown>} */
 		var fake = { valueOf: function () { return sym; } };
 		if (symbolToStringTag) {
 			fake[symbolToStringTag] = 'Symbol';
@@ -862,6 +893,7 @@ test('bigints', { skip: !hasBigInts }, function (t) {
 			inspect(str) + ' and ' + inspect(bigInt) + ' are not equal'
 		);
 
+		/** @type {Record<PropertyKey, unknown>} */
 		var fake = { toString: function () { return bigInt; } };
 		if (symbolToStringTag) {
 			fake[symbolToStringTag] = 'BigInt';
@@ -987,15 +1019,18 @@ test('toPrimitive', function (t) {
 	});
 
 	t.test('Symbol.toPrimitive', { skip: !hasSymbols || !Symbol.toPrimitive }, function (st) {
+		/** @type {string[]} */
 		var hints = [];
 		var obj = {
 			toString: function () { return 'toString'; },
 			valueOf: function () { return 'valueOf'; }
 		};
+		/** @type {Record<PropertyKey, unknown>} */
 		var obj2 = {
 			toString: function () { return 'toString'; },
 			valueOf: function () { return 'valueOf'; }
 		};
+		/** @param {string} hint */
 		obj2[Symbol.toPrimitive] = function (hint) {
 			hints.push(hint);
 			if (hint === 'string') {
@@ -1023,9 +1058,9 @@ test('toPrimitive', function (t) {
 
 test('throwing boundary reads', function (t) {
 	t.test('throwing .name on a function', { skip: !fnNamesConfigurable }, function (st) {
-		var bomb = function () {};
+		function bomb() {}
 		Object.defineProperty(bomb, 'name', { configurable: true, get: function () { throw new Error('name'); } });
-		var ok = function () {};
+		function ok() {}
 		st.equal(
 			isEqualWhy(bomb, ok),
 			'first argument .name throws; second does not',
@@ -1041,10 +1076,10 @@ test('throwing boundary reads', function (t) {
 	});
 
 	t.test('throwing .length on a function', { skip: !fnNamesConfigurable }, function (st) {
-		var bomb = function () {};
+		function bomb() {}
 		Object.defineProperty(bomb, 'name', { configurable: true, value: 'fn' });
 		Object.defineProperty(bomb, 'length', { configurable: true, get: function () { throw new Error('length'); } });
-		var ok = function () {};
+		function ok() {}
 		Object.defineProperty(ok, 'name', { configurable: true, value: 'fn' });
 		st.equal(
 			isEqualWhy(bomb, ok),
@@ -1101,7 +1136,7 @@ test('throwing boundary reads', function (t) {
 		var ok = {};
 		var why = isEqualWhy(bomb, ok);
 		st.ok(
-			(/throws; (first|second) does not$/).test(why),
+			(/throws; (first|second) does not$/).test(why || ''),
 			'Proxy getPrototypeOf trap throws: ' + why
 		);
 
@@ -1111,7 +1146,8 @@ test('throwing boundary reads', function (t) {
 	t.end();
 });
 
-var genericIterator = function (obj) {
+/** @template {object} T @param {T} obj */
+function genericIterator(obj) {
 	var entries = objectEntries(obj);
 	return function iterator() {
 		return {
@@ -1123,7 +1159,7 @@ var genericIterator = function (obj) {
 			}
 		};
 	};
-};
+}
 
 test('iterables', function (t) {
 	t.test('Maps', { skip: typeof Map !== 'function' }, function (mt) {
@@ -1237,11 +1273,14 @@ test('iterables', function (t) {
 
 	var obj = { a: { aa: true }, b: [2] };
 	t.test('generic iterables', { skip: !symbolIterator }, function (it) {
+		/** @type {Record<PropertyKey, unknown>} */
 		var a = { foo: 'bar' };
+		/** @type {Record<PropertyKey, unknown>} */
 		var b = { bar: 'baz' };
 
 		it.equal(isEqualWhy(a, b), 'first argument has key "foo"; second does not', 'normal a and normal b are not equal');
 
+		// @ts-expect-error TS doesn't understand tape's skip
 		a[symbolIterator] = genericIterator(obj);
 		it.equal(isEqualWhy(a, b), 'first argument is iterable; second is not', 'iterable a / normal b are not equal');
 		it.equal(isEqualWhy(b, a), 'second argument is iterable; first is not', 'iterable b / normal a are not equal');
@@ -1256,6 +1295,7 @@ test('iterables', function (t) {
 			'normal obj / iterable a are not equal'
 		);
 
+		// @ts-expect-error TS doesn't understand tape's skip
 		b[symbolIterator] = genericIterator(obj);
 		it.equal(isEqualWhy(a, b), '', 'iterable a / iterable b are equal');
 		it.equal(isEqualWhy(b, a), '', 'iterable b / iterable a are equal');
@@ -1274,10 +1314,12 @@ test('iterables', function (t) {
 	});
 
 	t.test('unequal iterables', { skip: !symbolIterator }, function (it) {
+		/** @type {Record<PropertyKey, unknown>} */
 		var c = {};
-		c[symbolIterator] = genericIterator({});
+		c[symbolIterator || ''] = genericIterator({});
+		/** @type {Record<PropertyKey, unknown>} */
 		var d = {};
-		d[symbolIterator] = genericIterator(obj);
+		d[symbolIterator || ''] = genericIterator(obj);
 
 		it.equal(
 			isEqualWhy(c, d),
@@ -1294,16 +1336,18 @@ test('iterables', function (t) {
 	});
 
 	t.test('hostile iterators', { skip: !symbolIterator }, function (ht) {
-		var makeBomb = function () {
+		function makeBomb() {
+			/** @type {Record<PropertyKey, unknown>} */
 			var bomb = {};
-			bomb[symbolIterator] = function () {
+			bomb[symbolIterator || ''] = function () {
 				return { next: function () { throw new Error('boom'); } };
 			};
 			return bomb;
-		};
-		var makeFinite = function () {
+		}
+		function makeFinite() {
+			/** @type {Record<PropertyKey, unknown>} */
 			var fin = {};
-			fin[symbolIterator] = function () {
+			fin[symbolIterator || ''] = function () {
 				var i = 0;
 				return { next: function () {
 					i += 1;
@@ -1311,7 +1355,7 @@ test('iterables', function (t) {
 				} };
 			};
 			return fin;
-		};
+		}
 
 		ht.equal(
 			isEqualWhy(makeBomb(), makeFinite()),
@@ -1329,9 +1373,10 @@ test('iterables', function (t) {
 			'both iterators next() throw'
 		);
 
-		var makeDoneThrow = function () {
+		function makeDoneThrow() {
+			/** @type {Record<PropertyKey, unknown>} */
 			var dt = {};
-			dt[symbolIterator] = function () {
+			dt[symbolIterator || ''] = function () {
 				return {
 					next: function () {
 						return Object.defineProperty({ value: 1 }, 'done', { get: function () { throw new Error('done!'); } });
@@ -1339,7 +1384,7 @@ test('iterables', function (t) {
 				};
 			};
 			return dt;
-		};
+		}
 
 		ht.equal(
 			isEqualWhy(makeDoneThrow(), makeFinite()),
@@ -1349,13 +1394,15 @@ test('iterables', function (t) {
 
 		ht.test('infinite iterators are bounded by MAX_ITER', function (it) {
 			it.timeoutAfter(5000);
-			var makeInfinite = function () {
+			function makeInfinite() {
+				/** @type {Record<PropertyKey, unknown>} */
 				var inf = {};
-				inf[symbolIterator] = function () {
+				inf[symbolIterator || ''] = function () {
 					return { next: function () { return { value: 0, done: false }; } };
 				};
 				return inf;
-			};
+			}
+
 			var why = isEqualWhy(makeInfinite(), makeInfinite());
 			it.equal(
 				typeof why,
@@ -1363,7 +1410,7 @@ test('iterables', function (t) {
 				'infinite-iterator comparison returns a string'
 			);
 			it.ok(
-				(/iteration aborted: maximum iteration count/).test(why),
+				(/iteration aborted: maximum iteration count/).test(why || ''),
 				'iteration aborted: ' + why
 			);
 			it.end();
@@ -1375,9 +1422,10 @@ test('iterables', function (t) {
 	t.end();
 });
 
-var Circular = function Circular() {
+/** @constructor */
+function Circular() {
 	this.circularRef = this;
-};
+}
 test('circular references', function (t) {
 	var a = new Circular();
 	var b = new Circular();
@@ -1397,7 +1445,9 @@ test('circular references', function (t) {
 		'two objects with different circular references are not equal'
 	);
 
+	/** @type {Record<string, unknown>} */
 	var e = {};
+	/** @type {Record<string, unknown>} */
 	var f = {};
 	e.e = e;
 	f.e = null;
@@ -1436,14 +1486,18 @@ test('circular references', function (t) {
 	});
 
 	t.test('cyclic arrays', function (st) {
+		/** @type {unknown[][]} */
 		var ca = [];
 		ca.push(ca);
+		/** @type {unknown[][]} */
 		var cb = [];
 		cb.push(cb);
 		st.equal(isEqualWhy(ca, cb), '', 'two self-referential arrays are equal');
 
+		/** @type {unknown[]} */
 		var cc = [];
 		cc.push(cc, 1);
+		/** @type {unknown[]} */
 		var cd = [];
 		cd.push(cd, 2);
 		st.equal(

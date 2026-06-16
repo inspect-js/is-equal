@@ -31,14 +31,21 @@ var pairTry = require('./pairTry');
 
 var MAX_ITER = 1e6;
 
+/**
+ * @param {unknown} parent
+ * @param {unknown} container
+ * @param {PropertyKey} key
+ * @returns {boolean}
+ */
 function isKeyRecursive(parent, container, key) {
 	try {
-		return !!container && container[key] === parent;
+		return !!container && (/** @type {Record<PropertyKey, unknown>} */ (container))[key] === parent;
 	} catch (e) {
 		return false;
 	}
 }
 
+/** @param {unknown} v */
 function objectType(v) {
 	return whichCollection(v) || whichBoxedPrimitive(v) || typeof v;
 }
@@ -54,14 +61,33 @@ var $isSealed = typeof Object.isSealed === 'function' ? Object.isSealed : null;
 var $isFrozen = typeof Object.isFrozen === 'function' ? Object.isFrozen : null;
 var hasIntegrityLevels = !!$isExtensible && !!$isSealed && !!$isFrozen;
 
+/** @param {object} o */
 function getIntegrityLevel(o) {
-	if ($isFrozen(o)) { return 'frozen'; }
-	if ($isSealed(o)) { return 'sealed'; }
-	if (!$isExtensible(o)) { return 'non-extensible'; }
-	return 'extensible';
+	if ((/** @type {NonNullable<typeof $isFrozen>} */ ($isFrozen))(o)) {
+		return /** @type {const} */ ('frozen');
+	}
+	if ((/** @type {NonNullable<typeof $isSealed>} */ ($isSealed))(o)) {
+		return /** @type {const} */ ('sealed');
+	}
+	if (!(/** @type {NonNullable<typeof $isExtensible>} */ ($isExtensible))(o)) {
+		return /** @type {const} */ ('non-extensible');
+	}
+	return /** @type {const} */ ('extensible');
 }
 
+/** @typedef {import('es-to-primitive').primitive} primitive */
+
+/**
+ * @template V
+ * @template O
+ * @param {V} value
+ * @param {O} other
+ * @param {StringConstructor | NumberConstructor | undefined} hint
+ * @param {string} hintName
+ * @returns {string}
+ */
 function testToPrim(value, other, hint, hintName) {
+	/** @type {primitive} */
 	var valPrimitive = NaN;
 	var valPrimitiveThrows = false;
 	try {
@@ -70,6 +96,7 @@ function testToPrim(value, other, hint, hintName) {
 		valPrimitiveThrows = true;
 	}
 
+	/** @type {primitive} */
 	var otherPrimitive = NaN;
 	var otherPrimitiveThrows = false;
 	try {
@@ -87,6 +114,7 @@ function testToPrim(value, other, hint, hintName) {
 	return '';
 }
 
+/** @type {import('./why')} */
 module.exports = function whyNotEqual(value, other, visited) {
 	if (value === other) { return ''; }
 	if (value == null || other == null) {
@@ -128,8 +156,10 @@ module.exports = function whyNotEqual(value, other, visited) {
 		var valNum = Number(value);
 		var otherNum = Number(other);
 		if (valNum === otherNum) { return ''; }
-		var valIsNaN = isNaN(value);
-		var otherIsNaN = isNaN(other);
+
+		var valIsNaN = isNaN(/** @type {number} */ (value));
+
+		var otherIsNaN = isNaN(/** @type {number} */ (other));
 		if (valIsNaN && !otherIsNaN) {
 			return 'first argument is NaN; second is not';
 		} else if (!valIsNaN && otherIsNaN) {
@@ -156,7 +186,9 @@ module.exports = function whyNotEqual(value, other, visited) {
 	if (valIsDate || otherIsDate) {
 		if (!valIsDate) { return 'second argument is Date, first is not'; }
 		if (!otherIsDate) { return 'first argument is Date, second is not'; }
+
 		var valTime = +value;
+
 		var otherTime = +other;
 		if (valTime !== otherTime) {
 			return 'Dates have different time values: ' + valTime + ' !== ' + otherTime;
@@ -182,13 +214,14 @@ module.exports = function whyNotEqual(value, other, visited) {
 	var valIsArray = isArray(value);
 	var otherIsArray = isArray(other);
 	if (valIsArray || otherIsArray) {
-		if (!valIsArray) { return 'second argument is an Array, first is not'; }
-		if (!otherIsArray) { return 'first argument is an Array, second is not'; }
+		if (!isArray(value)) { return 'second argument is an Array, first is not'; }
+		if (!isArray(other)) { return 'first argument is an Array, second is not'; }
 		if (value.length !== other.length) {
 			return 'arrays have different length: ' + value.length + ' !== ' + other.length;
 		}
 
 		var index = value.length - 1;
+		/** @type {string | false} */
 		var equal = '';
 		var valHasIndex, otherHasIndex;
 		while (equal === '' && index >= 0) {
@@ -217,7 +250,9 @@ module.exports = function whyNotEqual(value, other, visited) {
 		return 'second argument is Symbol; first is not';
 	}
 	if (valueIsSym && otherIsSym) {
-		return symbolValue.call(value) === symbolValue.call(other) ? '' : 'first Symbol value !== second Symbol value';
+		return (/** @type {NonNullable<typeof symbolValue>} */ (symbolValue)).call(value) === (/** @type {(this: unknown) => symbol} */ (symbolValue)).call(other)
+			? ''
+			: 'first Symbol value !== second Symbol value';
 	}
 
 	var valueIsBigInt = isBigInt(value);
@@ -227,7 +262,9 @@ module.exports = function whyNotEqual(value, other, visited) {
 		return 'second argument is BigInt; first is not';
 	}
 	if (valueIsBigInt && otherIsBigInt) {
-		return bigIntValue.call(value) === bigIntValue.call(other) ? '' : 'first BigInt value !== second BigInt value';
+		return (/** @type {NonNullable<typeof bigIntValue>} */ (bigIntValue)).call(value) === (/** @type {(this: unknown) => bigint} */ (bigIntValue)).call(other)
+			? ''
+			: 'first BigInt value !== second BigInt value';
 	}
 
 	var valueIsGen = isGenerator(value);
@@ -247,7 +284,16 @@ module.exports = function whyNotEqual(value, other, visited) {
 	var valueIsCallable = isCallable(value);
 	var otherIsCallable = isCallable(other);
 	if (valueIsCallable || otherIsCallable) {
-		var fnResult = compareCallable(value, other, valueIsCallable, otherIsCallable, valueIsGen, valueIsArrow, seen, whyNotEqual);
+		var fnResult = compareCallable(
+			value,
+			other,
+			valueIsCallable,
+			otherIsCallable,
+			valueIsGen,
+			valueIsArrow,
+			seen,
+			whyNotEqual
+		);
 		if (fnResult) { return fnResult; }
 	}
 
@@ -327,7 +373,9 @@ module.exports = function whyNotEqual(value, other, visited) {
 			return '';
 		}
 
-		var key, valueKeyIsRecursive, otherKeyIsRecursive, keyWhy;
+		/** @type {string} */
+		var key;
+		var valueKeyIsRecursive, otherKeyIsRecursive, keyWhy;
 		for (key in value) {
 			if (hasOwn(value, key)) {
 				if (!hasOwn(other, key)) { return 'first argument has key "' + key + '"; second does not'; }
@@ -342,14 +390,11 @@ module.exports = function whyNotEqual(value, other, visited) {
 				if (pk.v.ok) {
 					valueKeyIsRecursive = isKeyRecursive(value, pk.v.val, key);
 					otherKeyIsRecursive = isKeyRecursive(other, pk.o.val, key);
-					if (valueKeyIsRecursive !== otherKeyIsRecursive) {
-						if (valueKeyIsRecursive) { return 'first argument has a circular reference at key "' + key + '"; second does not'; }
-						return 'second argument has a circular reference at key "' + key + '"; first does not';
-					}
-					if (!valueKeyIsRecursive && !otherKeyIsRecursive) {
-						keyWhy = whyNotEqual(pk.v.val, pk.o.val, seen);
-						if (keyWhy !== '') { return 'value at key "' + key + '" differs: ' + keyWhy; }
-					}
+					if (valueKeyIsRecursive && !otherKeyIsRecursive) { return 'first argument has a circular reference at key "' + key + '"; second does not'; }
+					if (otherKeyIsRecursive && !valueKeyIsRecursive) { return 'second argument has a circular reference at key "' + key + '"; first does not'; }
+					keyWhy = '';
+					if (!valueKeyIsRecursive && !otherKeyIsRecursive) { keyWhy = whyNotEqual(pk.v.val, pk.o.val, seen); }
+					if (keyWhy !== '') { return 'value at key "' + key + '" differs: ' + keyWhy; }
 				}
 			}
 		}

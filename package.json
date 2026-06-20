@@ -112,6 +112,11 @@
 			"android-browser/4.2"
 		]
 	},
+	"overrides": {
+		"@arethetypeswrong/core": {
+			"typescript": "$typescript"
+		}
+	},
 	"engines": {
 		"node": ">= 0.4"
 	},

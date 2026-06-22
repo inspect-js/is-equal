@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.8.0](https://github.com/inspect-js/is-equal/compare/v1.7.0...v1.8.0) - 2026-06-21
+
+### Fixed
+
+- [Tests] fix variable typo [`#81`](https://github.com/inspect-js/is-equal/issues/81)
+
+### Commits
+
+- [New] add types [`028b8da`](https://github.com/inspect-js/is-equal/commit/028b8da05545828b29655632d9517cf61d11d7dd)
+- [Fix] isolate user-code-boundary reads so hostile getters/Proxies cannot throw out [`44bcea8`](https://github.com/inspect-js/is-equal/commit/44bcea8eb943da661520e81f42ed35e561cfa2b8)
+- [New] compare integrity levels when supported [`bbdfee2`](https://github.com/inspect-js/is-equal/commit/bbdfee2249dfdc280ce8ef3200d629562aea74b3)
+- [Fix] iterator branch: tolerate hostile next()/getters and bound iteration [`e1d324f`](https://github.com/inspect-js/is-equal/commit/e1d324f42b4bb5b2c37fa46b6a69f74cf46c09a0)
+- [Fix] track visited value/other pairs to handle cyclic inputs [`f12f7ac`](https://github.com/inspect-js/is-equal/commit/f12f7acbea76ae3788a8bad5275a830a6f9b49f3)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`; migrate to flat config [`1edb538`](https://github.com/inspect-js/is-equal/commit/1edb538a462d3b64cb758bb297537cc599197ca7)
+- [actions] update workflows [`71543b8`](https://github.com/inspect-js/is-equal/commit/71543b858f98e10c720c777f3be8d21f36014775)
+- [Deps] update `es-to-primitive`, `has-bigints`, `has-symbols`, `hasown`, `is-bigint`, `is-boolean-object`, `is-date-object`, `is-generator-function`, `is-number-object`, `is-regex`, `is-string`, `is-symbol`, `object-inspect`, `object.entries`, `object.getprototypeof`, `which-boxed-primitive`, `which-collection` [`b229b7c`](https://github.com/inspect-js/is-equal/commit/b229b7c3b5af4a7d3e3e00b662e313d9e110ce4a)
+- [eslint] cleanup [`af14c35`](https://github.com/inspect-js/is-equal/commit/af14c3593a35b8c1f8663fc21813a0e6d59c2a64)
+- [Dev Deps] update `@ljharb/eslint-config`, `auto-changelog`, `es-value-fixtures`, `eslint`, `for-each`, `npmignore`, `object.assign`, `tape` [`0e2ef60`](https://github.com/inspect-js/is-equal/commit/0e2ef60b30d2fea6c126b49775a43edd3e47e0fc)
+- [Dev Deps] update `auto-changelog`, `eslint`, `tape` [`9d7b1a0`](https://github.com/inspect-js/is-equal/commit/9d7b1a0f8bf9d62671df0c2e6d84ea3f5cc88578)
+- [Tests] fix linter error [`4e9b715`](https://github.com/inspect-js/is-equal/commit/4e9b7158932285e5c258bda70e44f98525802a14)
+- [Tests] override attw's `typescript` to the root version to fix bun `npm ls` [`c00ea89`](https://github.com/inspect-js/is-equal/commit/c00ea8979e714424572c40e6ab5e2def89c1930a)
+- [Deps] update `hasown`, `side-channel` [`5d8df24`](https://github.com/inspect-js/is-equal/commit/5d8df246bc3eb0b4865a6339c62f45d7bdfe181b)
+- [Dev Deps] update `eslint` [`1b6b4fa`](https://github.com/inspect-js/is-equal/commit/1b6b4fa9ebe2ae7f5755ba91e27a404e60e48f89)
+- [meta] use `npm audit` instead of `aud` [`c47b4db`](https://github.com/inspect-js/is-equal/commit/c47b4db2b590778d7c0f8832344327f22fa13da4)
+- [Dev Deps] update `tape` [`e741737`](https://github.com/inspect-js/is-equal/commit/e7417372945e71b875cb4a1786c43129eebff22e)
+- [Deps] update `es-to-primitive` [`cbfc8cf`](https://github.com/inspect-js/is-equal/commit/cbfc8cf4fbb03bcfa06613d54f9861090b3dc137)
+- [readme] replace runkit CI badge with shields.io check-runs badge [`334f360`](https://github.com/inspect-js/is-equal/commit/334f360bc50aedf7aa1983fc22432580a570157e)
+
 ## [v1.7.0](https://github.com/inspect-js/is-equal/compare/v1.6.5...v1.7.0) - 2023-10-20
 
 ## [v1.6.5](https://github.com/inspect-js/is-equal/compare/v1.6.4...v1.6.5) - 2023-10-20

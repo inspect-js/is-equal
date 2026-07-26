@@ -91,7 +91,7 @@
 		"object.assign": "^4.1.7",
 		"safe-publish-latest": "^2.0.0",
 		"tape": "^5.10.2",
-		"typescript": "next"
+		"typescript": "^6.0.3"
 	},
 	"testling": {
 		"files": "test/native.js",

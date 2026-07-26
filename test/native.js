@@ -110,7 +110,7 @@ test('arrays', function (t) {
 
 test('objects', function (t) {
 	t.test('prototypes', function (st) {
-		/** @constructor */
+		/** @constructor @this {typeof F & { foo: number }} */
 		function F() { this.foo = 42; }
 		/** @constructor */
 		function G() {}

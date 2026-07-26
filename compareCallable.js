@@ -9,7 +9,7 @@ function normalizeFnWhitespace(fnStr) {
 	return fnStr.replace(/^function ?\(/, 'function (').replace('){', ') {');
 }
 
-/** @type {import('./compareCallable')} */
+/** @type {typeof import('./compareCallable')} */
 module.exports = function compareCallable(
 	value,
 	other,

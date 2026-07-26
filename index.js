@@ -2,7 +2,7 @@
 
 var whyNotEqual = require('./why');
 
-/** @type {import('.')} */
+/** @type {typeof import('.')} */
 module.exports = function isEqual(value, other) {
 	return whyNotEqual(value, other) === '';
 };

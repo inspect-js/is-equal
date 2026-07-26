@@ -114,7 +114,7 @@ function testToPrim(value, other, hint, hintName) {
 	return '';
 }
 
-/** @type {import('./why')} */
+/** @type {typeof import('./why')} */
 module.exports = function whyNotEqual(value, other, visited) {
 	if (value === other) { return ''; }
 	if (value == null || other == null) {

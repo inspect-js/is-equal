@@ -1,6 +1,6 @@
 'use strict';
 
-/** @type {import('./pairTry')} */
+/** @type {typeof import('./pairTry')} */
 module.exports = function pairTry(vFn, oFn, label) {
 	/** @type {import('./pairTry').TryResult<ReturnType<typeof vFn>>} */
 	var v;

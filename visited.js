@@ -4,7 +4,7 @@ var getSideChannel = require('side-channel');
 
 /** @import { Channel } from 'side-channel' */
 
-/** @type {import('./visited')} */
+/** @type {typeof import('./visited')} */
 module.exports = function alreadyVisitedPair(visited, value, other) {
 	if (!value || !other) { return false; }
 	var typeV = typeof value;

@@ -64,7 +64,7 @@
 		"which-collection": "^1.0.2"
 	},
 	"devDependencies": {
-		"@arethetypeswrong/cli": "^0.18.3",
+		"@arethetypeswrong/cli": "^0.18.5",
 		"@ljharb/eslint-config": "^22.2.3",
 		"@ljharb/tsconfig": "^0.3.2",
 		"@types/es-get-iterator": "^1.1.5",
@@ -81,7 +81,7 @@
 		"core-js": "^2.6.5 || ^3.16.0",
 		"es-value-fixtures": "^1.7.1",
 		"es6-shim": "^0.35.8",
-		"eslint": "^10.5.0",
+		"eslint": "^10.8.0",
 		"for-each": "^0.3.5",
 		"in-publish": "^2.0.1",
 		"jiti": "^0.0.0",
